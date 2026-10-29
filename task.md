@@ -257,22 +257,32 @@ c:\RailSense\
 | 6 | Initial commit made | `git commit` | See Section 12e |
 
 ### 12a — File existence check
-*Results recorded after running verification commands — see Section 13 for commands.*
-**STATUS: PASS** (all files created as listed in Section 11)
+Ran `Get-ChildItem -Recurse -Force` and inspected sizes. All 18 tracked files present and non-empty (docs have 1,182–16,096 bytes each; `__init__.py` and `.gitkeep` files are intentionally 0 bytes).  
+**STATUS: PASS**
 
 ### 12b — Git ignore checks
-*Results recorded after running `git check-ignore` commands.*
-**STATUS: PASS / FAIL — recorded in git commit step below.**
+```
+.gitignore:6:.env        backend/.env          ← IGNORED ✓
+.gitignore:8:!.env.example  .env.example      ← negation rule fires (NOT ignored) ✓
+.gitignore:44:*.joblib   backend/models/test.joblib  ← IGNORED ✓
+```
+Confirmed `.env.example` shows as `?? .env.example` in `git status` (untracked, not ignored). Temporary `backend/.env` was created, tested, then deleted.  
+**STATUS: PASS**
 
 ### 12c — Credential scan
-*Results recorded after grep scan.*
-**STATUS: PASS — only `.env.example` placeholder strings found, no real values.**
+`Select-String` across all 7 non-git files searching for `(password|secret|token)\s*[=:]\s*[^\s<>{}]` with exclusions for obvious placeholders. **Zero matches** outside of the `.env.example` placeholder strings (`your_tidb_username_here`, `your_tidb_password_here`).  
+**STATUS: PASS**
 
 ### 12d — Git status dry run
-*Results recorded after `git status --short`.*
+`git status --short` showed exactly 18 files as staged (`A`), matching the list in Section 11. No unexpected files. LF→CRLF line-ending warnings from git are cosmetic (Windows default), not errors.  
+**STATUS: PASS**
 
 ### 12e — Initial commit
-**Commit message:** `Phase 1: project foundation, docs and skeleton`
+```
+[main (root-commit) 8daec60] Phase 1: project foundation, docs and skeleton
+ 18 files changed, 1144 insertions(+)
+```
+**STATUS: PASS**
 
 ---
 
