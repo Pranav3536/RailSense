@@ -146,22 +146,27 @@ Implemented in `backend/app/ml/features.py` using scikit-learn transformers:
 - Zero run overlap across splits.
 - Cross-validation: Expanding-window rolling-origin temporal CV across train splits.
 
-### Experiment Progression (Phase 4)
-| Step | Model | Purpose |
-|------|-------|---------|
-| 1 | Global Majority & Category-Prior Lookup | Sanity check baselines; all ML models must beat these |
-| 2 | Logistic Regression (L2) | Interpretable linear baseline |
-| 3 | Random Forest | Non-linear ensemble; tree feature importance |
-| 4 | LightGBM | High-performance gradient boosted decision trees |
+### Experiment Progression & Verified Test Outcomes (Phase 4 Verified)
+| Model / Baseline | Paradigm | PR-AUC (Primary) | ROC-AUC | F1-Score | Precision | Recall | Brier Score | ECE |
+|------------------|----------|------------------|---------|----------|-----------|--------|-------------|-----|
+| Majority Prevalence | Baseline | 0.7460 | 0.5000 | 0.6595 | 0.4920 | 1.0000 | 0.2501 | 0.0127 |
+| Category Prior | Baseline | 0.6168 | 0.6539 | 0.7101 | 0.5755 | 0.9270 | 0.2211 | 0.0086 |
+| Train History Prior | Baseline | 0.8029 | 0.8177 | 0.7330 | 0.7214 | 0.7450 | 0.1738 | 0.0128 |
+| Logistic Regression | Schedule-Time | 0.8372 | 0.8462 | 0.7619 | 0.7462 | 0.7782 | 0.1610 | 0.0260 |
+| Random Forest (Bounded) | Schedule-Time | 0.8477 | 0.8548 | 0.7686 | 0.7561 | 0.7816 | 0.1555 | 0.0083 |
+| LightGBM (Calibrated, Thresh 0.42) | Schedule-Time | **0.8525** | **0.8602** | **0.7798** | **0.7421** | **0.8215** | **0.1529** | **0.0183** |
+| *En-Route LightGBM* | *En-Route Only* | *0.9293* | *0.9278* | *0.8527* | *0.8384* | *0.8675* | *0.1050* | *0.0122* |
 
-### Fixed Metrics for Phase 4
-- **Primary Selection Metric:** PR-AUC (Average Precision)
-- **Secondary Metrics:** ROC-AUC, F1-Score (Macro & Positive), Precision @ Recall $\ge$ 0.80, Brier Score / Calibration Error.
+### Final Model Selection
+- **Selected Architecture:** LightGBM + Isotonic Calibration.
+- **Decision Threshold:** `0.420` (optimized on validation to maximize F1).
+- **Lift over 7-Day History Baseline:** **+6.18%** PR-AUC.
 
-### Model Artefacts
-- Model binaries (`.joblib`) → gitignored; stored in `backend/models/`
-- Model metadata (thresholds, feature names, eval metrics) → small JSON → git-tracked
-- `MODEL_CARD.md` → created in Phase 4
+### Model Artefacts (backend/models/)
+- `evaluation_model.joblib` (2.05 MB) & `deployment_model.joblib` (2.06 MB) → gitignored.
+- `calibrator.joblib` (3.3 KB) & `en_route_model.joblib` (1.66 MB) → gitignored.
+- `historical_tables.json` (2.44 MB) & `model_metadata.json` (1.5 KB) → git-tracked.
+- `docs/MODEL_CARD.md` → verified and complete.
 
 ---
 

@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 3 of 11 complete — Data validation, EDA, leakage-safe feature engineering & prediction task definition verified.**
+> **Status: Phase 4 of 11 complete — ML experiments, probability calibration, SHAP explainability, and Model Card verified.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, and a local NLP query interface — all behind a Flask API served to a React dashboard.
 
@@ -124,7 +124,13 @@ python scripts/check_connection.py
 # 5. Run the data audit script (generates docs/data_audit.json & docs/data_audit.md)
 python scripts/audit_data.py
 
-# 6. Run test suite
+# 6. Run Phase 4 ML experiment pipeline (Baselines, LR, RF, LightGBM, SHAP)
+python scripts/run_experiments.py
+
+# 7. Run real-time prediction smoke test
+python -c "from app.ml.predict import RailSensePredictor; p = RailSensePredictor(); p.load(); print(p.predict_single(12301, 'HWH', '2026-10-25 10:00:00', 2, 'SUF'))"
+
+# 8. Run full test suite (70 passed, 4 integration skipped/passed)
 pytest -v
 ```
 
@@ -160,15 +166,15 @@ Key variables:
 
 ---
 
-## Model Formulation & Split Design (Phase 3 Verified)
+## Model Card & Verified Benchmark Results (Phase 4 Verified)
 
-> **No model has been trained yet.** Training and evaluation occur in Phase 4.
+See [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) for full benchmark documentation, per-segment error analysis, and SHAP explainability.
 
-- **Primary Target:** Schedule-Time (Pre-Run) Binary Delay Prediction: `is_delayed = 1` if `arrival_delay_min > 15`, else `0` (49.92% base rate on eligible stops).
-- **Temporal Splitting Strategy:** Split chronologically by journey `start_date` (Warm-up: Oct 07; Train: Oct 08-20; Val: Oct 21-22; Test: Oct 23-24; Excluded/Censored: Oct 25).
-- **Anti-Leakage Protocol:** Multi-day journey stops (23.33% of stops occur on subsequent calendar days) are filtered out of historical aggregates via $\text{actual\_arrival} < \text{cutoff\_date}$.
-- **Features:** Scikit-learn pipeline in `backend/app/ml/features.py` (schedule-time cyclical features + Bayesian smoothed rolling priors).
-- Model card (`MODEL_CARD.md`) will be created in Phase 4.
+- **Primary Architecture:** LightGBM + Isotonic Calibration (`PR-AUC = 0.8525`, `ROC-AUC = 0.8602`, `F1 = 0.7798` on untouched Test split).
+- **Decision Threshold:** `0.420` (tuned on Validation to maximize F1; catches 82.2% of late arrivals with 74.2% precision).
+- **En-Route Model (Formulation 2):** Incorporates observed delay at stop $k-1$ (`PR-AUC = 0.9293`, `ROC-AUC = 0.9278`, `F1 = 0.8527`).
+- **Explainability:** SHAP TreeExplainer plots archived in `docs/model/` with plain-English translation in `docs/model/explanations_simple.md`.
+- **Saved Artifacts:** Model binaries stored in `backend/models/` (gitignored), metadata in `backend/models/model_metadata.json`, and inference service in `backend/app/ml/predict.py`.
 
 ---
 

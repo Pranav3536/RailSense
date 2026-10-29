@@ -1,0 +1,304 @@
+{
+  "split_stats": {
+    "warmup": {
+      "dates": [
+        "2026-10-07"
+      ],
+      "total_rows": 22377,
+      "runs_count": 1034,
+      "trains_count": 1034,
+      "stations_count": 2862,
+      "eligible_rows": 18788,
+      "eligible_pct": 83.96,
+      "delayed_count": 11362,
+      "delayed_rate": 60.475,
+      "mean_delay": 53.71,
+      "category_counts": {
+        "MEX": 8532,
+        "SUF": 7413,
+        "TOD": 1540,
+        "JSH": 463,
+        "SHT": 252,
+        "GBR": 196,
+        "RAJ": 188,
+        "DRNT": 66,
+        "PAS": 49,
+        "DMU": 22,
+        "PEXP": 20,
+        "MEMU": 14,
+        "EMU": 13,
+        "VNDB": 12,
+        "TRST": 8
+      }
+    },
+    "train": {
+      "dates": [
+        "2026-10-08",
+        "2026-10-09",
+        "2026-10-10",
+        "2026-10-11",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-17",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-20"
+      ],
+      "total_rows": 2064236,
+      "runs_count": 107627,
+      "trains_count": 10710,
+      "stations_count": 8584,
+      "eligible_rows": 1302077,
+      "eligible_pct": 63.08,
+      "delayed_count": 656753,
+      "delayed_rate": 50.439,
+      "mean_delay": 39.37,
+      "category_counts": {
+        "MEX": 425273,
+        "SUB": 229069,
+        "MEMU": 181389,
+        "PAS": 171474,
+        "SUF": 160561,
+        "DMU": 58371,
+        "TOD": 30998,
+        "VNDB": 12220,
+        "EMU": 7593,
+        "JSH": 6473,
+        "AMTB": 5500,
+        "RAJ": 4100,
+        "SHT": 3187,
+        "GBR": 3136,
+        "DRNT": 1324,
+        "VNDM": 459,
+        "TEJ": 389,
+        "VNDS": 304,
+        "PEXP": 229,
+        "TRST": 28
+      }
+    },
+    "val": {
+      "dates": [
+        "2026-10-21",
+        "2026-10-22"
+      ],
+      "total_rows": 318318,
+      "runs_count": 16729,
+      "trains_count": 8965,
+      "stations_count": 8576,
+      "eligible_rows": 204308,
+      "eligible_pct": 64.18,
+      "delayed_count": 99103,
+      "delayed_rate": 48.507,
+      "mean_delay": 35.72,
+      "category_counts": {
+        "MEX": 66999,
+        "SUB": 34870,
+        "MEMU": 28635,
+        "PAS": 26683,
+        "SUF": 25844,
+        "DMU": 9158,
+        "TOD": 4989,
+        "VNDB": 1753,
+        "EMU": 1502,
+        "JSH": 1029,
+        "AMTB": 865,
+        "RAJ": 658,
+        "SHT": 511,
+        "GBR": 437,
+        "DRNT": 172,
+        "VNDM": 83,
+        "PEXP": 48,
+        "TEJ": 45,
+        "VNDS": 27,
+        "TRST": 0
+      }
+    },
+    "test": {
+      "dates": [
+        "2026-10-23",
+        "2026-10-24"
+      ],
+      "total_rows": 302925,
+      "runs_count": 16265,
+      "trains_count": 8829,
+      "stations_count": 8581,
+      "eligible_rows": 193965,
+      "eligible_pct": 64.03,
+      "delayed_count": 95428,
+      "delayed_rate": 49.199,
+      "mean_delay": 34.34,
+      "category_counts": {
+        "MEX": 61066,
+        "SUB": 35856,
+        "MEMU": 28151,
+        "PAS": 27044,
+        "SUF": 21637,
+        "DMU": 9031,
+        "TOD": 3988,
+        "VNDB": 2069,
+        "EMU": 1454,
+        "JSH": 1052,
+        "AMTB": 690,
+        "RAJ": 543,
+        "SHT": 516,
+        "GBR": 465,
+        "DRNT": 168,
+        "TEJ": 90,
+        "VNDM": 63,
+        "VNDS": 51,
+        "PEXP": 27,
+        "TRST": 4
+      }
+    },
+    "excluded": {
+      "dates": [
+        "2026-10-25"
+      ],
+      "total_rows": 97718,
+      "runs_count": 5712,
+      "trains_count": 5712,
+      "stations_count": 8278,
+      "eligible_rows": 53930,
+      "eligible_pct": 55.19,
+      "delayed_count": 22312,
+      "delayed_rate": 41.372,
+      "mean_delay": 24.57,
+      "category_counts": {
+        "SUB": 14108,
+        "MEMU": 10879,
+        "PAS": 10724,
+        "MEX": 10025,
+        "DMU": 3815,
+        "SUF": 2045,
+        "VNDB": 886,
+        "EMU": 567,
+        "JSH": 372,
+        "TOD": 297,
+        "SHT": 178,
+        "TEJ": 34,
+        "TRST": 0
+      }
+    }
+  },
+  "cold_start_stats": {
+    "train": {
+      "unseen_train_pct": 0.0,
+      "low_support_train_pct": 0.004,
+      "unseen_station_pct": 0.0,
+      "low_support_station_pct": 0.008,
+      "unseen_pair_pct": 0.0,
+      "low_support_pair_pct": 9.038
+    },
+    "val": {
+      "unseen_train_pct": 0.311,
+      "low_support_train_pct": 0.316,
+      "unseen_station_pct": 0.008,
+      "low_support_station_pct": 0.02,
+      "unseen_pair_pct": 0.6,
+      "low_support_pair_pct": 9.631
+    },
+    "test": {
+      "unseen_train_pct": 0.118,
+      "low_support_train_pct": 0.12,
+      "unseen_station_pct": 0.016,
+      "low_support_station_pct": 0.022,
+      "unseen_pair_pct": 0.359,
+      "low_support_pair_pct": 8.36
+    }
+  },
+  "daily_drift": [
+    {
+      "date": "2026-10-08",
+      "eligible_rows": 94868,
+      "unseen_train_pct": 84.42,
+      "unseen_station_pct": 37.63
+    },
+    {
+      "date": "2026-10-09",
+      "eligible_rows": 99862,
+      "unseen_train_pct": 12.55,
+      "unseen_station_pct": 0.12
+    },
+    {
+      "date": "2026-10-10",
+      "eligible_rows": 96941,
+      "unseen_train_pct": 8.91,
+      "unseen_station_pct": 0.06
+    },
+    {
+      "date": "2026-10-11",
+      "eligible_rows": 97493,
+      "unseen_train_pct": 8.49,
+      "unseen_station_pct": 0.07
+    },
+    {
+      "date": "2026-10-12",
+      "eligible_rows": 102287,
+      "unseen_train_pct": 5.88,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-13",
+      "eligible_rows": 100301,
+      "unseen_train_pct": 4.49,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-14",
+      "eligible_rows": 100778,
+      "unseen_train_pct": 2.92,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-15",
+      "eligible_rows": 101483,
+      "unseen_train_pct": 2.17,
+      "unseen_station_pct": 0.01
+    },
+    {
+      "date": "2026-10-16",
+      "eligible_rows": 102715,
+      "unseen_train_pct": 0.77,
+      "unseen_station_pct": 0.01
+    },
+    {
+      "date": "2026-10-17",
+      "eligible_rows": 100949,
+      "unseen_train_pct": 0.7,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-18",
+      "eligible_rows": 99676,
+      "unseen_train_pct": 0.47,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-19",
+      "eligible_rows": 103052,
+      "unseen_train_pct": 0.26,
+      "unseen_station_pct": 0.0
+    },
+    {
+      "date": "2026-10-20",
+      "eligible_rows": 101672,
+      "unseen_train_pct": 0.43,
+      "unseen_station_pct": 0.0
+    }
+  ],
+  "shuffled_label_check": {
+    "val_prevalence": 0.4859,
+    "shuffled_pr_auc": 0.4952,
+    "shuffled_roc_auc": 0.4956,
+    "leakage_detected": false
+  },
+  "pytest_counts": {
+    "unit_tests_passed": 60,
+    "integration_tests_passed_or_skipped": 4,
+    "total_tests": 64,
+    "failures": 0
+  }
+}

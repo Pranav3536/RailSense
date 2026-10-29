@@ -28,6 +28,11 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-18 | Temporal Split Protocol & Multi-Day In-Flight Anti-Leakage Rule | Phase 3 |
 | D-19 | Explicit Validation & Label Eligibility Masking (No Silent Row Deletion) | Phase 3 |
 | D-20 | Empirical Bayesian Smoothing for Cold-Start Trains and Stations | Phase 3 |
+| D-21 | Final Model Choice: LightGBM Gradient Boosted Decision Trees | Phase 4 |
+| D-22 | Decision Threshold Selection Policy: 0.420 on Validation | Phase 4 |
+| D-23 | Probability Calibration via Isotonic Regression on Validation | Phase 4 |
+| D-24 | Evaluation Model vs Deployment Model Refitting Policy | Phase 4 |
+| D-25 | Formulation 2 En-Route Model Segregation | Phase 4 |
 
 ---
 
@@ -352,4 +357,62 @@ To prevent multi-day journey leakage (where 23.3% of stops occur on subsequent c
 **Date decided:** 2026-10-29 (Phase 3)
 
 **Decision:** Unseen or low-support trains in validation/test splits are smoothed via Laplace/Bayesian shrinkage: train priors shrink toward category priors with weight $m=10$; station priors shrink toward global priors with weight $m=20$. Zero test rows are dropped due to missing prior history.
+
+---
+
+## D-21 — Final Model Choice: LightGBM Gradient Boosted Decision Trees
+
+**Date decided:** 2026-10-29 (Phase 4)
+
+**Decision:** The primary machine learning engine for RailSense delay prediction is LightGBM (`num_leaves=63`, `learning_rate=0.08`, `max_depth=8`, `min_child_samples=50`, early stopping best iteration `298`).
+
+**Rationale:**
+- Outperformed Logistic Regression (0.8525 vs 0.8372 PR-AUC on test) and Random Forest (0.8525 vs 0.8477).
+- Trains in seconds on hundreds of thousands of rows while maintaining sub-millisecond inference latency.
+- Seamless integration with SHAP `TreeExplainer` for localized and global explanations.
+
+---
+
+## D-22 — Decision Threshold Selection Policy: 0.420 on Validation
+
+**Date decided:** 2026-10-29 (Phase 4)
+
+**Decision:** The default binary decision threshold is set to `0.420`, tuned strictly on the Validation split to maximize F1-score (`0.7798` on Test).
+
+**Rationale:**
+- The default 0.50 threshold yields 79.1% recall. Lowering threshold to 0.420 increases recall to 82.2% with 74.2% precision.
+- In passenger trip planning, missing a delay (false negative) causes missed trains and connections; a slight threshold tilt toward recall provides higher practical user utility.
+
+---
+
+## D-23 — Probability Calibration via Isotonic Regression on Validation
+
+**Date decided:** 2026-10-29 (Phase 4)
+
+**Decision:** Output probabilities from LightGBM are calibrated using Isotonic Regression fitted strictly on Validation split probabilities.
+
+**Rationale:**
+- Raw tree probabilities can be overconfident near decision boundaries.
+- Isotonic regression reduced Expected Calibration Error (ECE) from 0.0338 down to 0.0035 on Validation without degrading PR-AUC ranking ($0.8525$).
+- Calibrated probabilities ensure the UI dashboard accurately presents statements like "70% probability of delay".
+
+---
+
+## D-24 — Evaluation Model vs Deployment Model Refitting Policy
+
+**Date decided:** 2026-10-29 (Phase 4)
+
+**Decision:** We maintain two strictly separated models:
+1. `evaluation_model.joblib`: Fitted strictly on Train (`2026-10-08` to `2026-10-20`). Used for all reported test benchmark metrics in `MODEL_CARD.md`.
+2. `deployment_model.joblib`: Refitted with the exact same hyperparameters and best iteration (`298`) on Train + Validation (`2026-10-08` to `2026-10-22`). Used strictly for real-time serving in Phase 5+.
+No test metrics are ever reported for the deployment model.
+
+---
+
+## D-25 — Formulation 2 En-Route Model Segregation
+
+**Date decided:** 2026-10-29 (Phase 4)
+
+**Decision:** An en-route model incorporating adjacent stop observed lag (`prev_stop_arrival_delay_min`) is trained and evaluated as a distinct secondary model (`en_route_model.joblib`, PR-AUC `0.9293`). It is never conflated with the pre-run schedule-time model.
+
 

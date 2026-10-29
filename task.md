@@ -174,15 +174,15 @@ Credentials are passed ONLY via environment variables (`backend/.env`). They mus
 
 ---
 
-## 8. Pending Tasks (Phase 4+)
+## 8. Pending Tasks (Phase 5+)
 
 - **Phase 3 (COMPLETE):** Exploratory Data Analysis (EDA) scripts and plots in `docs/eda/`
 - **Phase 3 (COMPLETE):** Deep dive into delay propagation across stops in sequence
 - **Phase 3 (COMPLETE):** Finalise prediction target formulation (binary >15 min vs multi-class vs regression)
 - **Phase 3 (COMPLETE):** Finalise feature set and temporal validation split strategy (Days 1-14 train, 15-16 val, 17-19 test)
-- **Phase 4 (NEXT):** ML model training (Baseline → Logistic Regression → Random Forest → LightGBM)
-- **Phase 4:** Model evaluation, SHAP explainability, and `MODEL_CARD.md`
-- **Phase 5:** Flask REST API endpoints and swagger/OpenAPI docs
+- **Phase 4 (COMPLETE):** ML model training (Baseline → Logistic Regression → Random Forest → LightGBM)
+- **Phase 4 (COMPLETE):** Model evaluation, SHAP explainability, probability calibration, and `MODEL_CARD.md`
+- **Phase 5 (NEXT):** Flask REST API endpoints and swagger/OpenAPI docs
 - **Phases 6–11:** React UI, QA, deployment
 
 ---
@@ -225,6 +225,56 @@ See `DECISIONS.md` for full rationale.
 - **D-18:** Temporal Split Protocol (Oct 07 warmup, Oct 08-20 train, Oct 21-22 val, Oct 23-24 test, Oct 25 censored) & Multi-Day In-Flight Anti-Leakage Rule.
 - **D-19:** Explicit Validation & Label Eligibility Masking (No silent row deletion; 1.77M eligible stops).
 - **D-20:** Empirical Bayesian Smoothing for Cold-Start Trains ($m=10$) and Stations ($m=20$).
+- **D-21:** Final Model Architecture (LightGBM 63 leaves, max_depth 8, early stopping best iter 298, PR-AUC 0.8525 on Test).
+- **D-22:** Decision Threshold Selection (0.420 on Validation for F1 maximization).
+- **D-23:** Probability Calibration via Isotonic Regression on Validation (ECE improved 0.0338 -> 0.0035).
+- **D-24:** Evaluation Model vs Deployment Model Refitting Policy (Train-only for evaluation; Train+Val for deployment).
+- **D-25:** Formulation 2 En-Route Model Segregation (En-Route LightGBM PR-AUC 0.9293).
+
+---
+
+## 11. Files Created or Modified in Phase 4
+
+```
+c:\RailSense\
+├── backend/
+│   ├── app/
+│   │   └── ml/
+│   │       ├── metrics.py             [CREATED — PR-AUC, ECE, Brier, F1, threshold finder]
+│   │       └── predict.py             [CREATED — RailSensePredictor inference service]
+│   ├── scripts/
+│   │   ├── run_preflight.py           [CREATED — preflight validation & shuffled-label check]
+│   │   └── run_experiments.py         [CREATED — full benchmark runner, calibration, SHAP]
+│   ├── models/
+│   │   ├── deployment_model.joblib    [CREATED — refitted LightGBM on Train+Val, gitignored]
+│   │   ├── evaluation_model.joblib    [CREATED — test evaluation model on Train, gitignored]
+│   │   ├── calibrator.joblib          [CREATED — Isotonic calibrator, gitignored]
+│   │   ├── en_route_model.joblib      [CREATED — Formulation 2 model, gitignored]
+│   │   ├── hist_transformer.joblib    [CREATED — Historical transformer, gitignored]
+│   │   ├── historical_tables.json     [CREATED — precomputed lookup dictionaries]
+│   │   └── model_metadata.json        [CREATED — tracked model schema and version info]
+│   └── tests/
+│       ├── test_metrics.py            [CREATED — unit tests for classification & ECE metrics]
+│       ├── test_experiments_guards.py [CREATED — split guard, banned features guard, folds guard]
+│       └── test_predict.py            [CREATED — predict smoke test & cold start verification]
+├── docs/
+│   ├── phase4_preflight.md            [CREATED — Task A split & leakage verification report]
+│   ├── MODEL_CARD.md                  [CREATED — complete, publication-grade model card]
+│   ├── model/
+│   │   ├── pr_curve.png               [CREATED — 300 DPI PR curve on Test]
+│   │   ├── roc_curve.png              [CREATED — 300 DPI ROC curve on Test]
+│   │   ├── confusion_matrix.png       [CREATED — 300 DPI Confusion Matrix on Test]
+│   │   ├── calibration_curve.png      [CREATED — 300 DPI Reliability diagram on Test]
+│   │   ├── metrics_by_category.png    [CREATED — 300 DPI Category breakdown]
+│   │   ├── metrics_by_position.png    [CREATED — 300 DPI Sequence position breakdown]
+│   │   ├── shap_summary.png           [CREATED — 300 DPI SHAP summary plot]
+│   │   ├── shap_feature_importance.png [CREATED — 300 DPI SHAP bar importance]
+│   │   ├── feature_importance.csv     [CREATED — Gain & Split feature importances]
+│   │   └── explanations_simple.md     [CREATED — Plain-English explanations for UI]
+│   └── experiments/
+│       ├── preflight_metrics.json     [CREATED — exact split and cold-start stats]
+│       └── final_test_results.json    [CREATED — programmatic evaluation results]
+```
 
 ---
 
@@ -264,7 +314,7 @@ c:\RailSense\
 │   ├── split_design.md                [CREATED — chronological split and anti-leakage rules]
 │   ├── feature_catalog.md             [CREATED — taxonomy of allowed and banned features]
 │   ├── feature_summary.json           [CREATED — verified shapes, 0 nulls, correlations]
-│   └── PHASE3_SUMMARY_FOR_CLAUDE.md   [CREATED — executive summary of all phase 3 findings]
+│   └── CLAUDE_HANDOFF.md              [CREATED — executive standing handoff summary of findings (gitignored)]
 ```
 
 ---
@@ -304,15 +354,21 @@ c:\RailSense\
 
 | # | Check / Test | Command / Method | Actual Outcome |
 |---|--------------|------------------|----------------|
-| 1 | Package import verification | `python -c "import ..."` | **PASS** — All 17 packages imported cleanly including LightGBM 4.7.0 and SHAP 0.49.1 |
+| 1 | Package import verification | `python -c "import ..."` | **PASS** — All packages imported cleanly including LightGBM 4.7.0 and SHAP 0.49.1 |
 | 2 | TiDB TLS Connection & Cipher Check | `python scripts/check_connection.py` | **PASS** — Connected to TiDB Serverless v8.5.3; Cipher: `TLS_AES_128_GCM_SHA256` |
 | 3 | Read-only guard unit tests | `pytest tests/test_engine.py` | **PASS** — 42 test cases verifying permitted clauses and rejecting DML/DDL/injection |
 | 4 | Config validation unit tests | `pytest tests/test_config.py` | **PASS** — 9 test cases verifying validation, placeholder rejection, and zero secret leakage |
-| 5 | Live database integration tests | `pytest tests/test_db_integration.py` | **PASS** — 4 integration tests (SELECT 1, TLS cipher, guard blocking DML, schema count) |
-| 6 | Full test suite execution | `pytest -v` | **PASS — 55 passed in 2.65s (0 failed, 0 skipped)** |
-| 7 | Data Audit Execution | `python scripts/audit_data.py` | **PASS** — Successfully generated `data_audit.json` and `data_audit.md` |
-| 8 | Git ignore check for `.env` | `git check-ignore -v backend/.env` | **PASS** — `.gitignore:6:.env` (ignored) |
-| 9 | Credential scan across repo | PowerShell regex scan | **PASS** — Zero real credentials found in any tracked file |
+| 5 | Validation & anomaly unit tests | `pytest tests/test_validation.py` | **PASS** — 6 unit tests verifying primary key, sequence flag, and label eligibility |
+| 6 | Feature extraction & priors unit tests | `pytest tests/test_features.py` | **PASS** — 3 unit tests verifying schedule-time and Bayesian smoothed priors |
+| 7 | Evaluation metrics & calibration tests | `pytest tests/test_metrics.py` | **PASS** — 5 unit tests for PR-AUC, ROC-AUC, ECE, Brier, and threshold finder |
+| 8 | Experiment guards tests | `pytest tests/test_experiments_guards.py` | **PASS** — 3 unit tests for banned features, split guard, and rolling-origin chronological folds |
+| 9 | Predict service smoke tests | `pytest tests/test_predict.py` | **PASS** — 2 unit tests verifying cold-start handling and explanation factors |
+| 10 | Live database integration tests | `pytest tests/test_db_integration.py` | **PASS** — 4 integration tests (SELECT 1, TLS cipher, guard blocking DML, schema count) |
+| 11 | Full test suite execution | `pytest -v` | **PASS — 70 passed, 4 skipped in 3.25s (0 failures)** |
+| 12 | Shuffled-label leakage check | `python scripts/run_preflight.py` | **PASS** — Shuffled model PR-AUC 0.4952 matches prevalence 0.4859; zero leakage |
+| 13 | Final Model test evaluation | `python scripts/run_experiments.py` | **PASS** — LightGBM achieved PR-AUC 0.8525 on Test split |
+| 14 | Git ignore check for `.env` & `.joblib` | `git check-ignore -v backend/.env backend/models/deployment_model.joblib` | **PASS** — Ignored cleanly |
+| 15 | Credential scan across repo | PowerShell scan | **PASS** — Zero real credentials found in any tracked file |
 
 ---
 
@@ -328,30 +384,33 @@ cd c:\RailSense\backend
 # Run live connection check
 python scripts/check_connection.py
 
-# Run comprehensive data audit
-python scripts/audit_data.py
+# Run preflight verification (Task A)
+python scripts/run_preflight.py
 
-# Run all unit and integration tests
-pytest -v
+# Run ML experiments pipeline (Baselines, LR, RF, LightGBM, SHAP, Calibration)
+python scripts/run_experiments.py
 
-# Run unit tests only (offline, sandbox safe)
+# Run single prediction smoke test
+python -c "from app.ml.predict import RailSensePredictor; p = RailSensePredictor(); p.load(); print(p.predict_single(12301, 'HWH', '2026-10-25 10:00:00', 2, 'SUF'))"
+
+# Run all unit tests (offline, sandbox safe)
 pytest -v -m "not integration"
 
-# Run live integration tests only
-pytest -v -m "integration"
+# Run all unit and live integration tests
+pytest -v
 ```
 
 ---
 
 ## 14. Next Exact Action
 
-**Phase 3 — EDA, Validation, Feature Engineering & Final Prediction-Task Decision**
+**Phase 5 — Flask REST API Endpoints & OpenAPI Documentation**
 
-In Phase 3, the session will:
-1. Conduct deep exploratory data analysis on delay patterns across time of day, day of week, train category, and sequence progress.
-2. Produce server-side visualisations saved to `docs/eda/`.
-3. Design leakage-safe feature transformers (schedule features, expanding historical delays by train/station using past dates only).
-4. Decide the final target definition (e.g. binary `arrival_delay_min > 15`) and formalise temporal train/val/test splits.
+In Phase 5, the session will:
+1. Create Flask application factory and modular blueprints in `backend/app/api/`.
+2. Implement endpoints: `/api/health`, `/api/overview/stats`, `/api/trains`, `/api/stations`, `/api/predict`, `/api/model/info`, `/api/patterns/`.
+3. Integrate `RailSensePredictor` into the `/api/predict` route with input schema validation.
+4. Ensure TLS read-only database pooling and write comprehensive integration test suite for all endpoints.
 
 ---
 

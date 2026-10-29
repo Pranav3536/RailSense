@@ -49,6 +49,9 @@ coverage.xml
 
 # Small model metadata JSON files ARE tracked (no rule to exclude them)
 
+# ---------- Handoff file (local AI agent context) ----------
+docs/CLAUDE_HANDOFF.md
+
 # ---------- Local data dumps (never commit raw data) ----------
 *.csv
 *.parquet
