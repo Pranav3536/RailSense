@@ -415,4 +415,45 @@ No test metrics are ever reported for the deployment model.
 
 **Decision:** An en-route model incorporating adjacent stop observed lag (`prev_stop_arrival_delay_min`) is trained and evaluated as a distinct secondary model (`en_route_model.joblib`, PR-AUC `0.9293`). It is never conflated with the pre-run schedule-time model.
 
+---
+
+## D-26 — Precomputed Read-Only SQLite Serving Store Architecture
+
+**Date decided:** 2026-10-29 (Phase 5)
+
+**Decision:** All request-time application queries (catalogs, routes, schedules, stop-level observed statistics, station metrics, empirical patterns) are served strictly from a precomputed local SQLite database (`backend/serving/serving.sqlite`, 39.03 MB) and static JSON analytics documents (`overview.json`, `patterns.json`, `model_lab.json`) built offline by `backend/scripts/build_serving_data.py`. Live TiDB Cloud is accessed at runtime exclusively for a bounded 3-second `SELECT 1` readiness health probe.
+
+**Rationale:**
+- TiDB Cloud table `train_records` has only a `PRIMARY KEY (id)` index; creating composite indexes or executing full-table aggregations at runtime is forbidden and would quickly exhaust connection pools and trigger slow query timeouts.
+- Precomputed SQLite indexed B-trees deliver sub-5ms response times (measured p50: 2.1ms) while keeping RAM consumption under 10 MB, well within Render's 512 MB free-tier limit.
+
+---
+
+## D-27 — Average Precision (AP) Replaces Trapezoid PR-AUC for Constant Baselines
+
+**Date decided:** 2026-10-29 (Phase 5)
+
+**Decision:** The primary precision-recall ranking metric is evaluated using `sklearn.metrics.average_precision_score` rather than composite trapezoidal `auc(recall, precision)` integration over interpolated curves.
+
+**Rationale:**
+- Calculating trapezoidal area over `precision_recall_curve` on a constant majority baseline connects $(0, 1.0)$ to $(1.0, p)$, producing an artificial diagonal triangle of area $\frac{1 + p}{2} \approx 0.7460$.
+- `average_precision_score` correctly evaluates constant predictors to exactly their positive prevalence ($p = 0.4920$), accurately demonstrating the machine learning model's true +72.40% relative lift over random/majority baseline and +4.95% over the strong train historical prior ($0.8082$).
+
+---
+
+## D-28 — Operational Threshold Policy: Balanced F1 (0.410) & High-Recall (0.455)
+
+**Date decided:** 2026-10-29 (Phase 5)
+
+**Decision:** In the REST API `/api/predict` endpoint and model metadata, the calibrated model operational threshold is formally set to `0.410` (maximizing F1 score at 0.7782, Recall 82.03%, Precision 74.02% on untouched Test partition), with an alternative threshold `0.455` for applications requiring $\ge 80\%$ recall. Calibrated probabilities reflect true historical empirical frequencies.
+
+---
+
+## D-29 — Strict Non-Causal Attribution Phrasing Across API & Documentation
+
+**Date decided:** 2026-10-29 (Phase 5)
+
+**Decision:** All API responses, factor explanations, documentation, and error messages strictly enforce non-causal language. Terms like "bottleneck", "congestion causes", "delayed because of weather" are banned. Valid phrasing: "observed delay hotspot", "associated with elevated delay", "what the model uses".
+
+
 

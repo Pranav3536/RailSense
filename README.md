@@ -1,8 +1,8 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 4 of 11 complete — ML experiments, probability calibration, SHAP explainability, and Model Card verified.**
+> **Status: Phase 5 of 11 complete — Flask REST API, precomputed SQLite serving store, OpenAPI 3.0 docs, and test suite verified.**
 
-RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, and a local NLP query interface — all behind a Flask API served to a React dashboard.
+RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 
 ---
 
@@ -121,17 +121,18 @@ pip install -r requirements.txt
 # 4. Verify TiDB Cloud connectivity & TLS encryption
 python scripts/check_connection.py
 
-# 5. Run the data audit script (generates docs/data_audit.json & docs/data_audit.md)
-python scripts/audit_data.py
+# 5. Build or refresh the precomputed serving store (SQLite & JSONs from 2.8M rows)
+python backend/scripts/build_serving_data.py
 
-# 6. Run Phase 4 ML experiment pipeline (Baselines, LR, RF, LightGBM, SHAP)
-python scripts/run_experiments.py
+# 6. Run API smoke test & latency profiler (21 endpoints)
+python backend/scripts/smoke_api.py
 
-# 7. Run real-time prediction smoke test
-python -c "from app.ml.predict import RailSensePredictor; p = RailSensePredictor(); p.load(); print(p.predict_single(12301, 'HWH', '2026-10-25 10:00:00', 2, 'SUF'))"
+# 7. Start local Flask API development server
+python backend/wsgi.py
+# Server runs at: http://localhost:5000 (Swagger UI at http://localhost:5000/api/docs)
 
-# 8. Run full test suite (70 passed, 4 integration skipped/passed)
-pytest -v
+# 8. Run full test suite (103 passed, 4 skipped in ~5s)
+pytest backend/tests -v -m "not db_live"
 ```
 
 ---

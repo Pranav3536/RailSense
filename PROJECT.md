@@ -187,23 +187,27 @@ Implemented in `backend/app/ml/features.py` using scikit-learn transformers:
 
 ---
 
-## 10. Planned API Endpoints (Phase 5)
+## 10. Implemented REST API Endpoints (Phase 5 Complete)
 
-> All URLs are tentative — to be confirmed in Phase 5.
+All endpoints implemented, verified, and documented via OpenAPI 3.0 (`docs/openapi.yaml`, `docs/openapi.json`) and Swagger UI (`/api/docs`):
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Liveness check |
-| GET | `/api/overview/stats` | Fleet-level KPIs |
-| GET | `/api/trains` | Paginated train list |
-| GET | `/api/trains/<train_number>` | Single train detail + delay history |
-| GET | `/api/stations` | Paginated station list |
-| GET | `/api/stations/<station_code>` | Single station delay stats |
-| POST | `/api/predict` | Delay prediction for a given train+station+schedule |
-| GET | `/api/model/info` | Model card metadata |
-| GET | `/api/patterns/delay-by-category` | Delay stats grouped by category |
-| GET | `/api/patterns/delay-by-hour` | Delay stats grouped by scheduled hour |
-| POST | `/api/insights/query` | NLP query → structured result |
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/` | Service landing and documentation links | Verified |
+| GET | `/api/health` | Lightweight liveness check | Verified |
+| GET | `/api/health/ready` | Readiness probe (serving store, models, TiDB ping) | Verified |
+| GET | `/api/overview` | Macro fleet-level KPIs and category distributions | Verified |
+| GET | `/api/trains` | Paginated train catalog search (`q`, `category`, `page`) | Verified |
+| GET | `/api/trains/<train_number>` | Route profile, stop-level observed delay stats, run history | Verified |
+| GET | `/api/stations` | Paginated station catalog with Wilson confidence bounds | Verified |
+| GET | `/api/stations/<station_code>` | Station delay metrics, category mix, calling trains sample | Verified |
+| GET | `/api/patterns/<kind>` | Temporal & spatial distributions (`hour`, `dow`, `category`, `position`, `hotspots`) | Verified |
+| GET | `/api/model/info` | Deployment model architecture, split boundaries, features | Verified |
+| GET | `/api/model/metrics` | Model lab benchmark, AP/ROC metrics, PR curves, importance | Verified |
+| POST | `/api/predict` | Pre-departure delay prediction with calibrated risk band | Verified |
+| GET | `/api/openapi.json` | OpenAPI 3.0 specification | Verified |
+| GET | `/api/docs` | Interactive Swagger UI documentation | Verified |
+| POST | `/api/insights/query` | Local NLP query engine (Reserved for Phase 9) | Phase 9 |
 
 ---
 

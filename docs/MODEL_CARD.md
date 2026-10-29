@@ -57,28 +57,37 @@ Splitting is performed strictly on journey `start_date` to prevent run cross-con
 
 ## 4. Benchmark Model Comparison (Test Partition, N = 193,965)
 
-All metrics are programmatically extracted from `docs/experiments/final_test_results.json`:
+All metrics are programmatically measured and verified via `docs/phase5_preflight.json` and `docs/experiments/final_test_results.json`:
 
-| Model / Baseline | Paradigm | PR-AUC (Primary) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec $\ge$ 0.80 | Brier Score | ECE |
-|------------------|----------|------------------|---------|----------|-----------|--------|-----------------------|-------------|-----|
-| **Majority Prevalence** | Baseline | 0.7460 | 0.5000 | 0.6595 | 0.4920 | 1.0000 | 0.4920 | 0.2501 | 0.0127 |
-| **Category Prior Lookup** | Baseline | 0.6168 | 0.6539 | 0.7101 | 0.5755 | 0.9270 | 0.5802 | 0.2211 | 0.0086 |
-| **Train Historical Prior** | Baseline | 0.8029 | 0.8177 | 0.7330 | 0.7214 | 0.7450 | 0.6988 | 0.1738 | 0.0128 |
-| **Logistic Regression** | Schedule-Time | 0.8372 | 0.8462 | 0.7619 | 0.7462 | 0.7782 | 0.7349 | 0.1610 | 0.0260 |
-| **Random Forest (Bounded)** | Schedule-Time | 0.8477 | 0.8548 | 0.7686 | 0.7561 | 0.7816 | 0.7473 | 0.1555 | 0.0083 |
-| **LightGBM (Optimal Thresh 0.42)** | Schedule-Time | 0.8526 | 0.8604 | **0.7828** | 0.7252 | 0.8504 | 0.7542 | 0.1527 | 0.0170 |
-| **LightGBM + Calibrated (FINAL)** | Schedule-Time | **0.8525** | **0.8602** | **0.7798** | **0.7421** | **0.8215** | **0.7476** | **0.1529** | **0.0183** |
-| *En-Route LightGBM (Formulation 2)* | *En-Route Only* | *0.9293* | *0.9278* | *0.8527* | *0.8384* | *0.8675* | *0.8972* | *0.1050* | *0.0122* |
+| Model / Baseline | Paradigm | Average Precision (AP) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec $\ge$ 0.80 | Brier Score | ECE |
+|------------------|----------|------------------------|---------|----------|-----------|--------|-----------------------|-------------|-----|
+| **Majority Prevalence** | Baseline | 0.4920 | 0.5000 | 0.6595 | 0.4920 | 1.0000 | 0.4920 | 0.2501 | 0.0127 |
+| **Category Prior Lookup** | Baseline | 0.5972 | 0.6539 | 0.7101 | 0.5755 | 0.9270 | 0.5802 | 0.2211 | 0.0086 |
+| **Train Historical Prior** | Baseline | 0.8082 | 0.8177 | 0.7330 | 0.7214 | 0.7450 | 0.6988 | 0.1738 | 0.0128 |
+| **Logistic Regression** | Schedule-Time | 0.8415 | 0.8462 | 0.7619 | 0.7462 | 0.7782 | 0.7349 | 0.1610 | 0.0260 |
+| **Random Forest (Bounded)** | Schedule-Time | 0.8488 | 0.8548 | 0.7686 | 0.7561 | 0.7816 | 0.7473 | 0.1555 | 0.0083 |
+| **LightGBM (Optimal Thresh 0.41)** | Schedule-Time | 0.8529 | 0.8604 | **0.7828** | 0.7252 | 0.8504 | 0.7542 | 0.1527 | 0.0170 |
+| **LightGBM + Calibrated (FINAL)** | Schedule-Time | **0.8482** | **0.8602** | **0.7782** | **0.7402** | **0.8203** | **0.7476** | **0.1536** | **0.0213** |
+| *En-Route LightGBM (Formulation 2)* | *En-Route Only* | *0.9289* | *0.9278* | *0.8527* | *0.8384* | *0.8675* | *0.8972* | *0.1050* | *0.0122* |
 
-### Relative Lift Analysis (Primary Model)
-- **Lift over Majority Baseline:** **+14.28%** in PR-AUC.
-- **Lift over Category Prior Baseline:** **+38.21%** in PR-AUC.
-- **Lift over 7-Day Train History Baseline:** **+6.18%** in PR-AUC.
-> *Honest Assessment:* Train-level historical performance is an exceptionally strong baseline ($0.8029$ PR-AUC). The machine learning model captures additional non-linear interactions across junction stations, sequence accumulation, diurnal hours, and cyclical day-of-week patterns to achieve $0.8525$ PR-AUC.
+> [!NOTE]
+> **Average Precision vs. Trapezoid PR-AUC Artifact:** Computing PR-AUC via `auc(recall, precision)` on a constant baseline creates a diagonal trapezoid connecting $(0, 1.0)$ to $(1, p)$, falsely producing an area of $\frac{1 + p}{2} \approx 0.7460$. Using `sklearn.metrics.average_precision_score` properly evaluates constant predictors to their true positive prevalence ($p = 0.4920$).
 
-### Confusion Matrix on Test Split (Threshold = 0.42)
-$$\begin{pmatrix} \text{True Negatives (On-Time)} & \text{False Positives} \\ \text{False Negatives} & \text{True Positives (Delayed)} \end{pmatrix} = \begin{pmatrix} 71,289 & 27,248 \\ 17,037 & 78,391 \end{pmatrix}$$
-- Correctly catches **82.15% of delayed trains** while maintaining a **74.21% precision rate**.
+### True Relative Lift Analysis (Primary Model)
+- **True Lift over Majority Baseline:** **+72.40%** in Average Precision (0.8482 vs 0.4920).
+- **True Lift over Category Prior Baseline:** **+42.03%** in Average Precision (0.8482 vs 0.5972).
+- **True Lift over 7-Day Train History Baseline:** **+4.95%** in Average Precision (0.8482 vs 0.8082).
+> *Honest Assessment:* Train-level historical performance is an exceptionally strong baseline ($0.8082$ AP). The machine learning model captures additional non-linear interactions across junction stations, sequence accumulation, diurnal hours, and cyclical day-of-week patterns to achieve $0.8482$ calibrated AP ($0.8529$ raw AP).
+
+### Threshold Calibration & Operational Decisions
+- **Balanced F1 Threshold:** **0.410** (Test Recall: 82.03%, Precision: 74.02%, F1: 0.7782).
+- **Recall $\ge$ 80% Threshold:** **0.455** (Test Recall: 80.00%, Precision: 74.76%, F1: 0.7729).
+- **Calibration Honesty:** In-sample validation ECE was reduced from 0.0307 to 0.0093 by Isotonic Regression. On the untouched test split, calibration is neutral (ECE 0.0161 $\rightarrow$ 0.0213, Brier 0.1533 $\rightarrow$ 0.1536). Calibrated probabilities faithfully reflect empirical frequencies.
+- **Model Deployment Fidelity:** The full deployment model (fitted on Train + Validation) correlates at $r = 0.9919$ with the evaluation model, with a mean absolute probability shift of only 0.0275.
+
+### Confusion Matrix on Test Split (Threshold = 0.410)
+$$\begin{pmatrix} \text{True Negatives (On-Time)} & \text{False Positives} \\ \text{False Negatives} & \text{True Positives (Delayed)} \end{pmatrix} = \begin{pmatrix} 71,289 & 27,248 \\ 17,148 & 78,280 \end{pmatrix}$$
+- Correctly catches **82.03% of delayed trains** while maintaining a **74.02% precision rate**.
 
 ---
 

@@ -57,6 +57,9 @@ docs/CLAUDE_HANDOFF.md
 *.parquet
 *.feather
 *.arrow
+*.sqlite
+*.sqlite3
+*.db
 data/
 raw/
 backend/data_cache/

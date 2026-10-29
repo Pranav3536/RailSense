@@ -1,0 +1,918 @@
+{
+  "provenance": {
+    "built_at": "2026-10-29 21:16:14 UTC",
+    "source": "TiDB Cloud railsense.train_records (via local cache)",
+    "row_count": 2805574,
+    "runs_count": 147367,
+    "date_range": "2026-10-07 to 2026-10-25",
+    "build_script_version": "1.0.0"
+  },
+  "model_metadata": {
+    "model_name": "RailSense Delay Predictor (LightGBM + Isotonic Calibration)",
+    "version": "1.0.0",
+    "algorithm": "LightGBM Gradient Boosted Decision Trees + Isotonic Regression",
+    "threshold": 0.41000000000000003,
+    "recall80_threshold": 0.45499999999999996,
+    "best_iteration": 298,
+    "features_count": 28,
+    "banned_features": [
+      "actual_arrival",
+      "actual_departure",
+      "departure_delay_min",
+      "arrival_reported",
+      "status",
+      "run_quality"
+    ]
+  },
+  "model_comparison": {
+    "Majority Baseline": {
+      "ap_val": 0.4851,
+      "ap_test": 0.492,
+      "roc_val": 0.5,
+      "roc_test": 0.5
+    },
+    "Category Prior": {
+      "ap_val": 0.5892,
+      "ap_test": 0.5972,
+      "roc_val": 0.6495,
+      "roc_test": 0.6539
+    },
+    "Train Historical Prior": {
+      "ap_val": 0.8245,
+      "ap_test": 0.8082,
+      "roc_val": 0.8376,
+      "roc_test": 0.8206
+    },
+    "LightGBM (Raw)": {
+      "ap_val": 0.8657,
+      "ap_test": 0.8529,
+      "roc_val": 0.8724,
+      "roc_test": 0.8594
+    },
+    "LightGBM (Calibrated)": {
+      "ap_val": 0.8608,
+      "ap_test": 0.8482,
+      "roc_val": 0.8722,
+      "roc_test": 0.8592
+    },
+    "En-Route LightGBM": {
+      "ap_val": 0.9324,
+      "ap_test": 0.9289,
+      "roc_val": 0.9318,
+      "roc_test": 0.9272
+    }
+  },
+  "lifts": {
+    "lift_over_majority_pct": 72.4,
+    "lift_over_category_pct": 42.03,
+    "lift_over_history_pct": 4.95
+  },
+  "final_test_metrics": {
+    "pr_auc": 0.8525,
+    "roc_auc": 0.8602,
+    "threshold": 0.42,
+    "precision": 0.7421,
+    "recall": 0.8215,
+    "f1_positive": 0.7798,
+    "f1_macro": 0.7714,
+    "precision_at_recall_80": 0.7476,
+    "brier_score": 0.1529,
+    "ece": 0.0183,
+    "confusion_matrix": {
+      "tn": 71289,
+      "fp": 27248,
+      "fn": 17037,
+      "tp": 78391
+    }
+  },
+  "per_category_test": {
+    "AMTB": {
+      "count": 690,
+      "prevalence": 0.6681,
+      "pr_auc": 0.8267,
+      "f1": 0.7921,
+      "precision": 0.7605,
+      "recall": 0.8265
+    },
+    "DMU": {
+      "count": 9031,
+      "prevalence": 0.5007,
+      "pr_auc": 0.8371,
+      "f1": 0.7656,
+      "precision": 0.7297,
+      "recall": 0.8052
+    },
+    "DRNT": {
+      "count": 168,
+      "prevalence": 0.494,
+      "pr_auc": 0.7804,
+      "f1": 0.7174,
+      "precision": 0.6535,
+      "recall": 0.7952
+    },
+    "EMU": {
+      "count": 1454,
+      "prevalence": 0.7414,
+      "pr_auc": 0.9544,
+      "f1": 0.8871,
+      "precision": 0.805,
+      "recall": 0.9879
+    },
+    "GBR": {
+      "count": 465,
+      "prevalence": 0.5462,
+      "pr_auc": 0.8724,
+      "f1": 0.7761,
+      "precision": 0.7376,
+      "recall": 0.8189
+    },
+    "JSH": {
+      "count": 1052,
+      "prevalence": 0.4648,
+      "pr_auc": 0.7783,
+      "f1": 0.7275,
+      "precision": 0.7132,
+      "recall": 0.7423
+    },
+    "MEMU": {
+      "count": 28151,
+      "prevalence": 0.5978,
+      "pr_auc": 0.9055,
+      "f1": 0.8301,
+      "precision": 0.795,
+      "recall": 0.8684
+    },
+    "MEX": {
+      "count": 61066,
+      "prevalence": 0.5646,
+      "pr_auc": 0.8251,
+      "f1": 0.7717,
+      "precision": 0.7183,
+      "recall": 0.8336
+    },
+    "PAS": {
+      "count": 27044,
+      "prevalence": 0.5656,
+      "pr_auc": 0.8972,
+      "f1": 0.8165,
+      "precision": 0.7845,
+      "recall": 0.8513
+    },
+    "PEXP": {
+      "count": 27,
+      "prevalence": 0.5185,
+      "pr_auc": 0.8519,
+      "f1": 0.7879,
+      "precision": 0.6842,
+      "recall": 0.9286
+    },
+    "RAJ": {
+      "count": 543,
+      "prevalence": 0.4438,
+      "pr_auc": 0.6028,
+      "f1": 0.5875,
+      "precision": 0.59,
+      "recall": 0.5851
+    },
+    "SHT": {
+      "count": 516,
+      "prevalence": 0.2984,
+      "pr_auc": 0.6613,
+      "f1": 0.542,
+      "precision": 0.6574,
+      "recall": 0.461
+    },
+    "SUB": {
+      "count": 35856,
+      "prevalence": 0.1496,
+      "pr_auc": 0.5774,
+      "f1": 0.5357,
+      "precision": 0.5827,
+      "recall": 0.4957
+    },
+    "SUF": {
+      "count": 21637,
+      "prevalence": 0.5697,
+      "pr_auc": 0.8239,
+      "f1": 0.7656,
+      "precision": 0.7186,
+      "recall": 0.8192
+    },
+    "TEJ": {
+      "count": 90,
+      "prevalence": 0.4,
+      "pr_auc": 0.6314,
+      "f1": 0.7164,
+      "precision": 0.7742,
+      "recall": 0.6667
+    },
+    "TOD": {
+      "count": 3988,
+      "prevalence": 0.7826,
+      "pr_auc": 0.9491,
+      "f1": 0.898,
+      "precision": 0.8581,
+      "recall": 0.9417
+    },
+    "TRST": {
+      "count": 4,
+      "prevalence": 0.25,
+      "pr_auc": 0.125,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "VNDB": {
+      "count": 2069,
+      "prevalence": 0.3103,
+      "pr_auc": 0.6856,
+      "f1": 0.5884,
+      "precision": 0.6853,
+      "recall": 0.5156
+    },
+    "VNDM": {
+      "count": 63,
+      "prevalence": 0.4127,
+      "pr_auc": 0.735,
+      "f1": 0.6383,
+      "precision": 0.7143,
+      "recall": 0.5769
+    },
+    "VNDS": {
+      "count": 51,
+      "prevalence": 0.2745,
+      "pr_auc": 0.6508,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  "per_position_test": {
+    "Early (2-3)": {
+      "count": 20669,
+      "prevalence": 0.2585,
+      "pr_auc": 0.6519,
+      "f1": 0.5724,
+      "precision": 0.6435,
+      "recall": 0.5155
+    },
+    "Mid-Early (4-10)": {
+      "count": 66714,
+      "prevalence": 0.4418,
+      "pr_auc": 0.8088,
+      "f1": 0.7361,
+      "precision": 0.7142,
+      "recall": 0.7593
+    },
+    "Mid (11-25)": {
+      "count": 79060,
+      "prevalence": 0.541,
+      "pr_auc": 0.8713,
+      "f1": 0.8036,
+      "precision": 0.7532,
+      "recall": 0.8611
+    },
+    "Late (26-50)": {
+      "count": 24766,
+      "prevalence": 0.6383,
+      "pr_auc": 0.9015,
+      "f1": 0.8394,
+      "precision": 0.7748,
+      "recall": 0.9157
+    },
+    "Deep (>50)": {
+      "count": 2756,
+      "prevalence": 0.7388,
+      "pr_auc": 0.9213,
+      "f1": 0.8715,
+      "precision": 0.7984,
+      "recall": 0.9592
+    }
+  },
+  "curves": {
+    "precision_recall": [
+      {
+        "recall": 1.0,
+        "precision": 0.492
+      },
+      {
+        "recall": 1.0,
+        "precision": 0.495
+      },
+      {
+        "recall": 0.997,
+        "precision": 0.53
+      },
+      {
+        "recall": 0.997,
+        "precision": 0.53
+      },
+      {
+        "recall": 0.996,
+        "precision": 0.539
+      },
+      {
+        "recall": 0.995,
+        "precision": 0.541
+      },
+      {
+        "recall": 0.992,
+        "precision": 0.557
+      },
+      {
+        "recall": 0.988,
+        "precision": 0.57
+      },
+      {
+        "recall": 0.988,
+        "precision": 0.571
+      },
+      {
+        "recall": 0.987,
+        "precision": 0.573
+      },
+      {
+        "recall": 0.984,
+        "precision": 0.581
+      },
+      {
+        "recall": 0.984,
+        "precision": 0.581
+      },
+      {
+        "recall": 0.979,
+        "precision": 0.592
+      },
+      {
+        "recall": 0.974,
+        "precision": 0.602
+      },
+      {
+        "recall": 0.974,
+        "precision": 0.602
+      },
+      {
+        "recall": 0.958,
+        "precision": 0.627
+      },
+      {
+        "recall": 0.956,
+        "precision": 0.63
+      },
+      {
+        "recall": 0.956,
+        "precision": 0.63
+      },
+      {
+        "recall": 0.956,
+        "precision": 0.631
+      },
+      {
+        "recall": 0.932,
+        "precision": 0.659
+      },
+      {
+        "recall": 0.913,
+        "precision": 0.677
+      },
+      {
+        "recall": 0.908,
+        "precision": 0.681
+      },
+      {
+        "recall": 0.908,
+        "precision": 0.681
+      },
+      {
+        "recall": 0.903,
+        "precision": 0.685
+      },
+      {
+        "recall": 0.882,
+        "precision": 0.701
+      },
+      {
+        "recall": 0.872,
+        "precision": 0.708
+      },
+      {
+        "recall": 0.859,
+        "precision": 0.717
+      },
+      {
+        "recall": 0.82,
+        "precision": 0.74
+      },
+      {
+        "recall": 0.807,
+        "precision": 0.748
+      },
+      {
+        "recall": 0.793,
+        "precision": 0.756
+      },
+      {
+        "recall": 0.746,
+        "precision": 0.781
+      },
+      {
+        "recall": 0.729,
+        "precision": 0.789
+      },
+      {
+        "recall": 0.711,
+        "precision": 0.797
+      },
+      {
+        "recall": 0.668,
+        "precision": 0.816
+      },
+      {
+        "recall": 0.668,
+        "precision": 0.816
+      },
+      {
+        "recall": 0.668,
+        "precision": 0.816
+      },
+      {
+        "recall": 0.584,
+        "precision": 0.848
+      },
+      {
+        "recall": 0.584,
+        "precision": 0.848
+      },
+      {
+        "recall": 0.55,
+        "precision": 0.86
+      },
+      {
+        "recall": 0.513,
+        "precision": 0.873
+      },
+      {
+        "recall": 0.513,
+        "precision": 0.873
+      },
+      {
+        "recall": 0.513,
+        "precision": 0.873
+      },
+      {
+        "recall": 0.51,
+        "precision": 0.874
+      },
+      {
+        "recall": 0.478,
+        "precision": 0.885
+      },
+      {
+        "recall": 0.363,
+        "precision": 0.918
+      },
+      {
+        "recall": 0.362,
+        "precision": 0.918
+      },
+      {
+        "recall": 0.343,
+        "precision": 0.923
+      },
+      {
+        "recall": 0.34,
+        "precision": 0.924
+      },
+      {
+        "recall": 0.34,
+        "precision": 0.924
+      },
+      {
+        "recall": 0.269,
+        "precision": 0.943
+      },
+      {
+        "recall": 0.256,
+        "precision": 0.946
+      },
+      {
+        "recall": 0.256,
+        "precision": 0.946
+      },
+      {
+        "recall": 0.2,
+        "precision": 0.959
+      },
+      {
+        "recall": 0.176,
+        "precision": 0.965
+      },
+      {
+        "recall": 0.152,
+        "precision": 0.97
+      },
+      {
+        "recall": 0.129,
+        "precision": 0.975
+      },
+      {
+        "recall": 0.084,
+        "precision": 0.98
+      },
+      {
+        "recall": 0.061,
+        "precision": 0.982
+      },
+      {
+        "recall": 0.018,
+        "precision": 0.996
+      },
+      {
+        "recall": 0.0,
+        "precision": 1.0
+      }
+    ],
+    "roc": [
+      {
+        "fpr": 0.0,
+        "tpr": 0.0
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.018
+      },
+      {
+        "fpr": 0.001,
+        "tpr": 0.04
+      },
+      {
+        "fpr": 0.002,
+        "tpr": 0.083
+      },
+      {
+        "fpr": 0.002,
+        "tpr": 0.09
+      },
+      {
+        "fpr": 0.005,
+        "tpr": 0.152
+      },
+      {
+        "fpr": 0.006,
+        "tpr": 0.176
+      },
+      {
+        "fpr": 0.006,
+        "tpr": 0.18
+      },
+      {
+        "fpr": 0.008,
+        "tpr": 0.2
+      },
+      {
+        "fpr": 0.014,
+        "tpr": 0.256
+      },
+      {
+        "fpr": 0.016,
+        "tpr": 0.269
+      },
+      {
+        "fpr": 0.025,
+        "tpr": 0.331
+      },
+      {
+        "fpr": 0.027,
+        "tpr": 0.34
+      },
+      {
+        "fpr": 0.028,
+        "tpr": 0.343
+      },
+      {
+        "fpr": 0.028,
+        "tpr": 0.343
+      },
+      {
+        "fpr": 0.031,
+        "tpr": 0.362
+      },
+      {
+        "fpr": 0.034,
+        "tpr": 0.376
+      },
+      {
+        "fpr": 0.06,
+        "tpr": 0.478
+      },
+      {
+        "fpr": 0.071,
+        "tpr": 0.51
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.08,
+        "tpr": 0.533
+      },
+      {
+        "fpr": 0.08,
+        "tpr": 0.533
+      },
+      {
+        "fpr": 0.101,
+        "tpr": 0.584
+      },
+      {
+        "fpr": 0.101,
+        "tpr": 0.584
+      },
+      {
+        "fpr": 0.126,
+        "tpr": 0.634
+      },
+      {
+        "fpr": 0.146,
+        "tpr": 0.668
+      },
+      {
+        "fpr": 0.146,
+        "tpr": 0.668
+      },
+      {
+        "fpr": 0.176,
+        "tpr": 0.711
+      },
+      {
+        "fpr": 0.189,
+        "tpr": 0.729
+      },
+      {
+        "fpr": 0.202,
+        "tpr": 0.746
+      },
+      {
+        "fpr": 0.204,
+        "tpr": 0.748
+      },
+      {
+        "fpr": 0.248,
+        "tpr": 0.793
+      },
+      {
+        "fpr": 0.264,
+        "tpr": 0.807
+      },
+      {
+        "fpr": 0.279,
+        "tpr": 0.82
+      },
+      {
+        "fpr": 0.307,
+        "tpr": 0.843
+      },
+      {
+        "fpr": 0.329,
+        "tpr": 0.859
+      },
+      {
+        "fpr": 0.348,
+        "tpr": 0.872
+      },
+      {
+        "fpr": 0.365,
+        "tpr": 0.882
+      },
+      {
+        "fpr": 0.403,
+        "tpr": 0.903
+      },
+      {
+        "fpr": 0.412,
+        "tpr": 0.908
+      },
+      {
+        "fpr": 0.412,
+        "tpr": 0.908
+      },
+      {
+        "fpr": 0.422,
+        "tpr": 0.913
+      },
+      {
+        "fpr": 0.46,
+        "tpr": 0.929
+      },
+      {
+        "fpr": 0.488,
+        "tpr": 0.939
+      },
+      {
+        "fpr": 0.542,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.543,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.544,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.625,
+        "tpr": 0.974
+      },
+      {
+        "fpr": 0.649,
+        "tpr": 0.979
+      },
+      {
+        "fpr": 0.682,
+        "tpr": 0.983
+      },
+      {
+        "fpr": 0.702,
+        "tpr": 0.986
+      },
+      {
+        "fpr": 0.72,
+        "tpr": 0.988
+      },
+      {
+        "fpr": 0.721,
+        "tpr": 0.988
+      },
+      {
+        "fpr": 0.764,
+        "tpr": 0.992
+      },
+      {
+        "fpr": 0.818,
+        "tpr": 0.995
+      },
+      {
+        "fpr": 0.856,
+        "tpr": 0.997
+      },
+      {
+        "fpr": 0.928,
+        "tpr": 0.999
+      },
+      {
+        "fpr": 1.0,
+        "tpr": 1.0
+      }
+    ],
+    "calibration_reliability": [
+      {
+        "bin_mid": 0.05,
+        "predicted_prob": 0.034,
+        "observed_frequency": 0.049,
+        "samples_count": 32993
+      },
+      {
+        "bin_mid": 0.15,
+        "predicted_prob": 0.15,
+        "observed_frequency": 0.169,
+        "samples_count": 19598
+      },
+      {
+        "bin_mid": 0.25,
+        "predicted_prob": 0.258,
+        "observed_frequency": 0.298,
+        "samples_count": 21165
+      },
+      {
+        "bin_mid": 0.35,
+        "predicted_prob": 0.372,
+        "observed_frequency": 0.41,
+        "samples_count": 14461
+      },
+      {
+        "bin_mid": 0.45,
+        "predicted_prob": 0.45,
+        "observed_frequency": 0.486,
+        "samples_count": 14690
+      },
+      {
+        "bin_mid": 0.55,
+        "predicted_prob": 0.517,
+        "observed_frequency": 0.559,
+        "samples_count": 8842
+      },
+      {
+        "bin_mid": 0.65,
+        "predicted_prob": 0.641,
+        "observed_frequency": 0.653,
+        "samples_count": 23466
+      },
+      {
+        "bin_mid": 0.75,
+        "predicted_prob": 0.758,
+        "observed_frequency": 0.773,
+        "samples_count": 20977
+      },
+      {
+        "bin_mid": 0.85,
+        "predicted_prob": 0.867,
+        "observed_frequency": 0.876,
+        "samples_count": 19998
+      },
+      {
+        "bin_mid": 0.95,
+        "predicted_prob": 0.954,
+        "observed_frequency": 0.965,
+        "samples_count": 17775
+      }
+    ]
+  },
+  "feature_importance": [
+    {
+      "feature": "train_hist_delay_rate",
+      "importance_gain": 803004.295922721,
+      "importance_split": 2664
+    },
+    {
+      "feature": "train_hist_mean_delay",
+      "importance_gain": 244572.41275245656,
+      "importance_split": 2466
+    },
+    {
+      "feature": "station_hist_delay_rate",
+      "importance_gain": 136058.16965296958,
+      "importance_split": 2316
+    },
+    {
+      "feature": "seq",
+      "importance_gain": 82698.7960481273,
+      "importance_split": 2047
+    },
+    {
+      "feature": "station_hist_mean_delay",
+      "importance_gain": 54147.71724364359,
+      "importance_split": 2544
+    },
+    {
+      "feature": "log_seq",
+      "importance_gain": 30496.6968220599,
+      "importance_split": 640
+    },
+    {
+      "feature": "category_prior_rate",
+      "importance_gain": 12209.118521829649,
+      "importance_split": 629
+    },
+    {
+      "feature": "scheduled_hour",
+      "importance_gain": 11407.964472465685,
+      "importance_split": 994
+    },
+    {
+      "feature": "sin_hour",
+      "importance_gain": 10581.723941417316,
+      "importance_split": 741
+    },
+    {
+      "feature": "cos_hour",
+      "importance_gain": 7406.037216961384,
+      "importance_split": 730
+    },
+    {
+      "feature": "category_prior_mean",
+      "importance_gain": 5419.3280839324,
+      "importance_split": 294
+    },
+    {
+      "feature": "day_of_week",
+      "importance_gain": 5026.42971264926,
+      "importance_split": 520
+    },
+    {
+      "feature": "sin_dow",
+      "importance_gain": 4966.401187145323,
+      "importance_split": 478
+    },
+    {
+      "feature": "cos_dow",
+      "importance_gain": 4323.8249022215605,
+      "importance_split": 351
+    },
+    {
+      "feature": "cat_MEX",
+      "importance_gain": 4189.290505017991,
+      "importance_split": 202
+    }
+  ],
+  "simple_explanations_markdown": "# RailSense \u2014 Model Explanations in Plain English\n\n> **Audience:** Non-technical passengers, railway operators, and portfolio reviewers.  \n> **Key Rule:** Machine learning models identify **observed statistical associations**, not physical or operational causes.\n\n---\n\n## What Drives the Model's Delay Predictions?\n\nOur LightGBM model looks at four major categories of timetable and historical information to estimate whether your train will arrive late by more than 15 minutes:\n\n### 1. Train Historical Performance (`train_hist_delay_rate`, `train_hist_mean_delay`)\n- **What it means:** How often this exact train was late over the previous 7 completed days.\n- **Why it matters:** In Indian Railways, certain rakes (train compositions) run consecutive daily schedules across congested corridors. A train with a history of persistent delays has a substantially higher probability of facing schedule disruptions today.\n\n### 2. Station Operational Congestion (`station_hist_delay_rate`, `station_hist_mean_delay`)\n- **What it means:** The observed historical delay frequency at your arrival station.\n- **Why it matters:** Major junction stations handle intersecting trunk lines, passenger connections, and platform bottlenecks. High-traffic junction stations are observed delay hotspots.\n\n### 3. Train Category & Track Priority (`category`, `category_prior_rate`)\n- **What it means:** The official classification of the service (Suburban `SUB`, Vande Bharat `VNDB`, Superfast `SUF`, Express `MEX`, Special `TOD`).\n- **Why it matters:** Indian Railways dispatchers operate under strict operational path precedence:\n  - **Suburban (`SUB`):** Dedicated tracks and strict suburban schedules mean Suburban trains arrive punctually 83% of the time.\n  - **Special / Holiday (`TOD`):** Unscheduled holiday specials receive lower line priority and are observed late 76% of the time.\n\n### 4. Journey Sequence Position (`seq`, `log_seq`, `is_deep_journey`)\n- **What it means:** How far along its route the train currently is (e.g. stop #3 vs stop #45).\n- **Why it matters:** Timetable buffers are gradually absorbed over hundreds of kilometers. Trains near the beginning of their route are frequently punctual; trains past stop #30 accumulate compounded route delays.\n\n---\n\n## When is the Model Most Reliable?\n\n1. **High Confidence Predictions:**\n   - **Suburban Trains:** Predicts on-time arrivals with >90% precision.\n   - **Late Journey Superfasts:** High accuracy in identifying compound delay cascades once a train enters multi-state trunk routes.\n\n2. **Model Limitations & Weaknesses:**\n   - **Cold-Start Trains:** Rare, newly numbered holiday specials with zero 7-day prior history rely strictly on category-level priors.\n   - **Early-Morning Long Hauls:** Express trains scheduled between 02:00 and 05:00 IST exhibit high variance due to overnight freight interleaving.\n"
+}

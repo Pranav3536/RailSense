@@ -1,0 +1,2049 @@
+{
+  "provenance": {
+    "built_at": "2026-10-29 21:16:14 UTC",
+    "source": "TiDB Cloud railsense.train_records (via local cache)",
+    "row_count": 2805574,
+    "runs_count": 147367,
+    "date_range": "2026-10-07 to 2026-10-25",
+    "build_script_version": "1.0.0"
+  },
+  "definition": "Observed delay patterns reflect historical associations in the 19-day observed window. High delay rates indicate observed delay hotspots and platform bottlenecks, not physical causation.",
+  "by_hour": [
+    {
+      "hour": 0,
+      "stops_count": 39906,
+      "delayed_rate": 57.7,
+      "mean_delay_min": 49.08
+    },
+    {
+      "hour": 1,
+      "stops_count": 33417,
+      "delayed_rate": 60.57,
+      "mean_delay_min": 52.99
+    },
+    {
+      "hour": 2,
+      "stops_count": 33340,
+      "delayed_rate": 62.21,
+      "mean_delay_min": 56.74
+    },
+    {
+      "hour": 3,
+      "stops_count": 37071,
+      "delayed_rate": 56.45,
+      "mean_delay_min": 50.42
+    },
+    {
+      "hour": 4,
+      "stops_count": 50636,
+      "delayed_rate": 47.19,
+      "mean_delay_min": 41.58
+    },
+    {
+      "hour": 5,
+      "stops_count": 73244,
+      "delayed_rate": 41.78,
+      "mean_delay_min": 33.37
+    },
+    {
+      "hour": 6,
+      "stops_count": 91762,
+      "delayed_rate": 42.16,
+      "mean_delay_min": 30.77
+    },
+    {
+      "hour": 7,
+      "stops_count": 107943,
+      "delayed_rate": 44.43,
+      "mean_delay_min": 29.88
+    },
+    {
+      "hour": 8,
+      "stops_count": 108445,
+      "delayed_rate": 46.8,
+      "mean_delay_min": 31.1
+    },
+    {
+      "hour": 9,
+      "stops_count": 99283,
+      "delayed_rate": 47.89,
+      "mean_delay_min": 33.05
+    },
+    {
+      "hour": 10,
+      "stops_count": 88365,
+      "delayed_rate": 50.29,
+      "mean_delay_min": 36.47
+    },
+    {
+      "hour": 11,
+      "stops_count": 76290,
+      "delayed_rate": 50.96,
+      "mean_delay_min": 37.67
+    },
+    {
+      "hour": 12,
+      "stops_count": 68041,
+      "delayed_rate": 49.15,
+      "mean_delay_min": 39.22
+    },
+    {
+      "hour": 13,
+      "stops_count": 63944,
+      "delayed_rate": 49.04,
+      "mean_delay_min": 39.29
+    },
+    {
+      "hour": 14,
+      "stops_count": 66573,
+      "delayed_rate": 49.64,
+      "mean_delay_min": 39.45
+    },
+    {
+      "hour": 15,
+      "stops_count": 76106,
+      "delayed_rate": 49.59,
+      "mean_delay_min": 39.1
+    },
+    {
+      "hour": 16,
+      "stops_count": 82291,
+      "delayed_rate": 48.42,
+      "mean_delay_min": 38.81
+    },
+    {
+      "hour": 17,
+      "stops_count": 88379,
+      "delayed_rate": 48.76,
+      "mean_delay_min": 37.32
+    },
+    {
+      "hour": 18,
+      "stops_count": 101443,
+      "delayed_rate": 50.44,
+      "mean_delay_min": 36.96
+    },
+    {
+      "hour": 19,
+      "stops_count": 101988,
+      "delayed_rate": 54.57,
+      "mean_delay_min": 40.88
+    },
+    {
+      "hour": 20,
+      "stops_count": 90696,
+      "delayed_rate": 54.57,
+      "mean_delay_min": 42.6
+    },
+    {
+      "hour": 21,
+      "stops_count": 79138,
+      "delayed_rate": 52.96,
+      "mean_delay_min": 42.02
+    },
+    {
+      "hour": 22,
+      "stops_count": 64044,
+      "delayed_rate": 52.46,
+      "mean_delay_min": 43.63
+    },
+    {
+      "hour": 23,
+      "stops_count": 50723,
+      "delayed_rate": 53.06,
+      "mean_delay_min": 30.4
+    }
+  ],
+  "by_day_of_week": [
+    {
+      "day_of_week": "Monday",
+      "stops_count": 204875,
+      "delayed_rate": 49.61,
+      "mean_delay_min": 38.43
+    },
+    {
+      "day_of_week": "Tuesday",
+      "stops_count": 202913,
+      "delayed_rate": 48.41,
+      "mean_delay_min": 36.27
+    },
+    {
+      "day_of_week": "Wednesday",
+      "stops_count": 212368,
+      "delayed_rate": 49.62,
+      "mean_delay_min": 37.15
+    },
+    {
+      "day_of_week": "Thursday",
+      "stops_count": 288063,
+      "delayed_rate": 49.64,
+      "mean_delay_min": 37.3
+    },
+    {
+      "day_of_week": "Friday",
+      "stops_count": 300846,
+      "delayed_rate": 50.98,
+      "mean_delay_min": 38.6
+    },
+    {
+      "day_of_week": "Saturday",
+      "stops_count": 297236,
+      "delayed_rate": 51.03,
+      "mean_delay_min": 39.45
+    },
+    {
+      "day_of_week": "Sunday",
+      "stops_count": 266767,
+      "delayed_rate": 49.36,
+      "mean_delay_min": 38.82
+    }
+  ],
+  "by_position": [
+    {
+      "position_bucket": "Early (2-3)",
+      "stops_count": 185293,
+      "delayed_rate": 26.31,
+      "mean_delay_min": 18.3
+    },
+    {
+      "position_bucket": "Mid-Early (4-10)",
+      "stops_count": 597242,
+      "delayed_rate": 44.32,
+      "mean_delay_min": 28.09
+    },
+    {
+      "position_bucket": "Mid (11-25)",
+      "stops_count": 719558,
+      "delayed_rate": 54.48,
+      "mean_delay_min": 40.66
+    },
+    {
+      "position_bucket": "Late (26-50)",
+      "stops_count": 238778,
+      "delayed_rate": 64.76,
+      "mean_delay_min": 61.67
+    },
+    {
+      "position_bucket": "Deep (>50)",
+      "stops_count": 32197,
+      "delayed_rate": 77.25,
+      "mean_delay_min": 105.74
+    }
+  ],
+  "hotspots": {
+    "stations": {
+      "min_support_threshold": 100,
+      "top_hotspots": [
+        {
+          "station_code": "BTL",
+          "stops_count": 191,
+          "delayed_count": 191,
+          "mean_delay": 171.61,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.03,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "PJB",
+          "stops_count": 188,
+          "delayed_count": 188,
+          "mean_delay": 175.07,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.0,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "SBD",
+          "stops_count": 255,
+          "delayed_count": 254,
+          "mean_delay": 117.76,
+          "delayed_rate": 99.61,
+          "wilson_lower": 97.81,
+          "wilson_upper": 99.93
+        },
+        {
+          "station_code": "DDCE",
+          "stops_count": 242,
+          "delayed_count": 241,
+          "mean_delay": 122.72,
+          "delayed_rate": 99.59,
+          "wilson_lower": 97.7,
+          "wilson_upper": 99.93
+        },
+        {
+          "station_code": "BMB",
+          "stops_count": 371,
+          "delayed_count": 368,
+          "mean_delay": 130.83,
+          "delayed_rate": 99.19,
+          "wilson_lower": 97.65,
+          "wilson_upper": 99.72
+        },
+        {
+          "station_code": "WDG",
+          "stops_count": 141,
+          "delayed_count": 141,
+          "mean_delay": 136.6,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.35,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "DEMU",
+          "stops_count": 139,
+          "delayed_count": 139,
+          "mean_delay": 142.34,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.31,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "RCGT",
+          "stops_count": 138,
+          "delayed_count": 138,
+          "mean_delay": 139.3,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.29,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "NVA",
+          "stops_count": 136,
+          "delayed_count": 136,
+          "mean_delay": 133.76,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.25,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "BELD",
+          "stops_count": 135,
+          "delayed_count": 135,
+          "mean_delay": 170.47,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.23,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "CTQ",
+          "stops_count": 134,
+          "delayed_count": 134,
+          "mean_delay": 134.88,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.21,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "PMS",
+          "stops_count": 253,
+          "delayed_count": 251,
+          "mean_delay": 115.06,
+          "delayed_rate": 99.21,
+          "wilson_lower": 97.16,
+          "wilson_upper": 99.78
+        },
+        {
+          "station_code": "DKS",
+          "stops_count": 190,
+          "delayed_count": 189,
+          "mean_delay": 172.0,
+          "delayed_rate": 99.47,
+          "wilson_lower": 97.08,
+          "wilson_upper": 99.91
+        },
+        {
+          "station_code": "JDI",
+          "stops_count": 127,
+          "delayed_count": 127,
+          "mean_delay": 128.15,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.06,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "BUU",
+          "stops_count": 127,
+          "delayed_count": 127,
+          "mean_delay": 124.21,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.06,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "KIS",
+          "stops_count": 185,
+          "delayed_count": 184,
+          "mean_delay": 64.34,
+          "delayed_rate": 99.46,
+          "wilson_lower": 97.0,
+          "wilson_upper": 99.9
+        },
+        {
+          "station_code": "GPH",
+          "stops_count": 175,
+          "delayed_count": 174,
+          "mean_delay": 119.4,
+          "delayed_rate": 99.43,
+          "wilson_lower": 96.83,
+          "wilson_upper": 99.9
+        },
+        {
+          "station_code": "BHTN",
+          "stops_count": 172,
+          "delayed_count": 171,
+          "mean_delay": 143.81,
+          "delayed_rate": 99.42,
+          "wilson_lower": 96.78,
+          "wilson_upper": 99.9
+        },
+        {
+          "station_code": "BAKL",
+          "stops_count": 251,
+          "delayed_count": 248,
+          "mean_delay": 120.67,
+          "delayed_rate": 98.8,
+          "wilson_lower": 96.55,
+          "wilson_upper": 99.59
+        },
+        {
+          "station_code": "MKD",
+          "stops_count": 105,
+          "delayed_count": 105,
+          "mean_delay": 175.78,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.47,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "GJ",
+          "stops_count": 105,
+          "delayed_count": 105,
+          "mean_delay": 181.91,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.47,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "KWN",
+          "stops_count": 104,
+          "delayed_count": 104,
+          "mean_delay": 183.05,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.44,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "TKYR",
+          "stops_count": 104,
+          "delayed_count": 104,
+          "mean_delay": 176.59,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.44,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "MNU",
+          "stops_count": 103,
+          "delayed_count": 103,
+          "mean_delay": 179.37,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.4,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "MOU",
+          "stops_count": 239,
+          "delayed_count": 236,
+          "mean_delay": 138.0,
+          "delayed_rate": 98.74,
+          "wilson_lower": 96.38,
+          "wilson_upper": 99.57
+        },
+        {
+          "station_code": "GPC",
+          "stops_count": 101,
+          "delayed_count": 101,
+          "mean_delay": 144.87,
+          "delayed_rate": 100.0,
+          "wilson_lower": 96.34,
+          "wilson_upper": 100.0
+        },
+        {
+          "station_code": "HDS",
+          "stops_count": 148,
+          "delayed_count": 147,
+          "mean_delay": 76.04,
+          "delayed_rate": 99.32,
+          "wilson_lower": 96.27,
+          "wilson_upper": 99.88
+        },
+        {
+          "station_code": "BYY",
+          "stops_count": 148,
+          "delayed_count": 147,
+          "mean_delay": 68.24,
+          "delayed_rate": 99.32,
+          "wilson_lower": 96.27,
+          "wilson_upper": 99.88
+        },
+        {
+          "station_code": "DNL",
+          "stops_count": 188,
+          "delayed_count": 186,
+          "mean_delay": 168.91,
+          "delayed_rate": 98.94,
+          "wilson_lower": 96.2,
+          "wilson_upper": 99.71
+        },
+        {
+          "station_code": "JEN",
+          "stops_count": 185,
+          "delayed_count": 183,
+          "mean_delay": 74.3,
+          "delayed_rate": 98.92,
+          "wilson_lower": 96.14,
+          "wilson_upper": 99.7
+        },
+        {
+          "station_code": "AJU",
+          "stops_count": 141,
+          "delayed_count": 140,
+          "mean_delay": 138.01,
+          "delayed_rate": 99.29,
+          "wilson_lower": 96.09,
+          "wilson_upper": 99.87
+        },
+        {
+          "station_code": "MUA",
+          "stops_count": 253,
+          "delayed_count": 249,
+          "mean_delay": 123.88,
+          "delayed_rate": 98.42,
+          "wilson_lower": 96.01,
+          "wilson_upper": 99.38
+        },
+        {
+          "station_code": "HNDR",
+          "stops_count": 138,
+          "delayed_count": 137,
+          "mean_delay": 129.28,
+          "delayed_rate": 99.28,
+          "wilson_lower": 96.01,
+          "wilson_upper": 99.87
+        },
+        {
+          "station_code": "SKT",
+          "stops_count": 321,
+          "delayed_count": 315,
+          "mean_delay": 144.46,
+          "delayed_rate": 98.13,
+          "wilson_lower": 95.98,
+          "wilson_upper": 99.14
+        },
+        {
+          "station_code": "KOLE",
+          "stops_count": 135,
+          "delayed_count": 134,
+          "mean_delay": 130.3,
+          "delayed_rate": 99.26,
+          "wilson_lower": 95.92,
+          "wilson_upper": 99.87
+        },
+        {
+          "station_code": "SKS",
+          "stops_count": 244,
+          "delayed_count": 240,
+          "mean_delay": 187.02,
+          "delayed_rate": 98.36,
+          "wilson_lower": 95.86,
+          "wilson_upper": 99.36
+        },
+        {
+          "station_code": "JTR",
+          "stops_count": 243,
+          "delayed_count": 239,
+          "mean_delay": 128.57,
+          "delayed_rate": 98.35,
+          "wilson_lower": 95.84,
+          "wilson_upper": 99.36
+        },
+        {
+          "station_code": "BPH",
+          "stops_count": 241,
+          "delayed_count": 237,
+          "mean_delay": 160.9,
+          "delayed_rate": 98.34,
+          "wilson_lower": 95.81,
+          "wilson_upper": 99.35
+        },
+        {
+          "station_code": "GMIA",
+          "stops_count": 131,
+          "delayed_count": 130,
+          "mean_delay": 110.53,
+          "delayed_rate": 99.24,
+          "wilson_lower": 95.8,
+          "wilson_upper": 99.87
+        },
+        {
+          "station_code": "DGG",
+          "stops_count": 478,
+          "delayed_count": 466,
+          "mean_delay": 192.77,
+          "delayed_rate": 97.49,
+          "wilson_lower": 95.66,
+          "wilson_upper": 98.56
+        },
+        {
+          "station_code": "PUS",
+          "stops_count": 124,
+          "delayed_count": 123,
+          "mean_delay": 114.19,
+          "delayed_rate": 99.19,
+          "wilson_lower": 95.57,
+          "wilson_upper": 99.86
+        },
+        {
+          "station_code": "MUP",
+          "stops_count": 252,
+          "delayed_count": 247,
+          "mean_delay": 114.75,
+          "delayed_rate": 98.02,
+          "wilson_lower": 95.44,
+          "wilson_upper": 99.15
+        },
+        {
+          "station_code": "MGME",
+          "stops_count": 219,
+          "delayed_count": 215,
+          "mean_delay": 110.07,
+          "delayed_rate": 98.17,
+          "wilson_lower": 95.4,
+          "wilson_upper": 99.29
+        },
+        {
+          "station_code": "GUH",
+          "stops_count": 187,
+          "delayed_count": 184,
+          "mean_delay": 118.67,
+          "delayed_rate": 98.4,
+          "wilson_lower": 95.39,
+          "wilson_upper": 99.45
+        },
+        {
+          "station_code": "RJN",
+          "stops_count": 607,
+          "delayed_count": 588,
+          "mean_delay": 166.25,
+          "delayed_rate": 96.87,
+          "wilson_lower": 95.16,
+          "wilson_upper": 97.99
+        },
+        {
+          "station_code": "BRMO",
+          "stops_count": 113,
+          "delayed_count": 112,
+          "mean_delay": 117.65,
+          "delayed_rate": 99.12,
+          "wilson_lower": 95.16,
+          "wilson_upper": 99.84
+        },
+        {
+          "station_code": "KLRE",
+          "stops_count": 312,
+          "delayed_count": 304,
+          "mean_delay": 100.61,
+          "delayed_rate": 97.44,
+          "wilson_lower": 95.02,
+          "wilson_upper": 98.7
+        },
+        {
+          "station_code": "SCKR",
+          "stops_count": 230,
+          "delayed_count": 225,
+          "mean_delay": 123.38,
+          "delayed_rate": 97.83,
+          "wilson_lower": 95.01,
+          "wilson_upper": 99.07
+        },
+        {
+          "station_code": "WSA",
+          "stops_count": 172,
+          "delayed_count": 169,
+          "mean_delay": 164.36,
+          "delayed_rate": 98.26,
+          "wilson_lower": 95.0,
+          "wilson_upper": 99.41
+        },
+        {
+          "station_code": "BNE",
+          "stops_count": 172,
+          "delayed_count": 169,
+          "mean_delay": 136.21,
+          "delayed_rate": 98.26,
+          "wilson_lower": 95.0,
+          "wilson_upper": 99.41
+        }
+      ],
+      "top_punctual": [
+        {
+          "station_code": "VLCY",
+          "stops_count": 1653,
+          "delayed_count": 1,
+          "mean_delay": 1.97,
+          "delayed_rate": 0.06,
+          "wilson_lower": 0.01,
+          "wilson_upper": 0.34
+        },
+        {
+          "station_code": "MTMY",
+          "stops_count": 1652,
+          "delayed_count": 2,
+          "mean_delay": 3.08,
+          "delayed_rate": 0.12,
+          "wilson_lower": 0.03,
+          "wilson_upper": 0.44
+        },
+        {
+          "station_code": "MCPK",
+          "stops_count": 1651,
+          "delayed_count": 2,
+          "mean_delay": 2.72,
+          "delayed_rate": 0.12,
+          "wilson_lower": 0.03,
+          "wilson_upper": 0.44
+        },
+        {
+          "station_code": "STMM",
+          "stops_count": 827,
+          "delayed_count": 0,
+          "mean_delay": -2.32,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 0.46
+        },
+        {
+          "station_code": "CG",
+          "stops_count": 536,
+          "delayed_count": 0,
+          "mean_delay": -0.06,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 0.71
+        },
+        {
+          "station_code": "MKK",
+          "stops_count": 3352,
+          "delayed_count": 32,
+          "mean_delay": 3.57,
+          "delayed_rate": 0.95,
+          "wilson_lower": 0.68,
+          "wilson_upper": 1.34
+        },
+        {
+          "station_code": "TLX",
+          "stops_count": 822,
+          "delayed_count": 5,
+          "mean_delay": 4.97,
+          "delayed_rate": 0.61,
+          "wilson_lower": 0.26,
+          "wilson_upper": 1.42
+        },
+        {
+          "station_code": "PV",
+          "stops_count": 3365,
+          "delayed_count": 38,
+          "mean_delay": 3.66,
+          "delayed_rate": 1.13,
+          "wilson_lower": 0.82,
+          "wilson_upper": 1.55
+        },
+        {
+          "station_code": "SPR",
+          "stops_count": 3727,
+          "delayed_count": 47,
+          "mean_delay": 4.59,
+          "delayed_rate": 1.26,
+          "wilson_lower": 0.95,
+          "wilson_upper": 1.67
+        },
+        {
+          "station_code": "STM",
+          "stops_count": 3396,
+          "delayed_count": 43,
+          "mean_delay": 3.62,
+          "delayed_rate": 1.27,
+          "wilson_lower": 0.94,
+          "wilson_upper": 1.7
+        },
+        {
+          "station_code": "LKPR",
+          "stops_count": 799,
+          "delayed_count": 7,
+          "mean_delay": 1.92,
+          "delayed_rate": 0.88,
+          "wilson_lower": 0.43,
+          "wilson_upper": 1.8
+        },
+        {
+          "station_code": "BRP",
+          "stops_count": 2348,
+          "delayed_count": 31,
+          "mean_delay": 3.94,
+          "delayed_rate": 1.32,
+          "wilson_lower": 0.93,
+          "wilson_upper": 1.87
+        },
+        {
+          "station_code": "PTD",
+          "stops_count": 288,
+          "delayed_count": 1,
+          "mean_delay": 1.6,
+          "delayed_rate": 0.35,
+          "wilson_lower": 0.06,
+          "wilson_upper": 1.94
+        },
+        {
+          "station_code": "HNB",
+          "stops_count": 441,
+          "delayed_count": 3,
+          "mean_delay": 1.51,
+          "delayed_rate": 0.68,
+          "wilson_lower": 0.23,
+          "wilson_upper": 1.98
+        },
+        {
+          "station_code": "MSB",
+          "stops_count": 3146,
+          "delayed_count": 48,
+          "mean_delay": 1.49,
+          "delayed_rate": 1.53,
+          "wilson_lower": 1.15,
+          "wilson_upper": 2.02
+        },
+        {
+          "station_code": "BLN",
+          "stops_count": 2643,
+          "delayed_count": 44,
+          "mean_delay": 4.39,
+          "delayed_rate": 1.66,
+          "wilson_lower": 1.24,
+          "wilson_upper": 2.23
+        },
+        {
+          "station_code": "NAI",
+          "stops_count": 741,
+          "delayed_count": 9,
+          "mean_delay": 5.73,
+          "delayed_rate": 1.21,
+          "wilson_lower": 0.64,
+          "wilson_upper": 2.29
+        },
+        {
+          "station_code": "SPS",
+          "stops_count": 241,
+          "delayed_count": 1,
+          "mean_delay": 2.78,
+          "delayed_rate": 0.41,
+          "wilson_lower": 0.07,
+          "wilson_upper": 2.31
+        },
+        {
+          "station_code": "DH",
+          "stops_count": 556,
+          "delayed_count": 6,
+          "mean_delay": 1.88,
+          "delayed_rate": 1.08,
+          "wilson_lower": 0.5,
+          "wilson_upper": 2.33
+        },
+        {
+          "station_code": "GOF",
+          "stops_count": 942,
+          "delayed_count": 14,
+          "mean_delay": 5.63,
+          "delayed_rate": 1.49,
+          "wilson_lower": 0.89,
+          "wilson_upper": 2.48
+        },
+        {
+          "station_code": "CBY",
+          "stops_count": 144,
+          "delayed_count": 0,
+          "mean_delay": -14.17,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.6
+        },
+        {
+          "station_code": "CHT",
+          "stops_count": 1002,
+          "delayed_count": 17,
+          "mean_delay": 5.48,
+          "delayed_rate": 1.7,
+          "wilson_lower": 1.06,
+          "wilson_upper": 2.7
+        },
+        {
+          "station_code": "KBGB",
+          "stops_count": 474,
+          "delayed_count": 6,
+          "mean_delay": 2.13,
+          "delayed_rate": 1.27,
+          "wilson_lower": 0.58,
+          "wilson_upper": 2.73
+        },
+        {
+          "station_code": "LOV",
+          "stops_count": 198,
+          "delayed_count": 1,
+          "mean_delay": 0.12,
+          "delayed_rate": 0.51,
+          "wilson_lower": 0.09,
+          "wilson_upper": 2.8
+        },
+        {
+          "station_code": "ASV",
+          "stops_count": 126,
+          "delayed_count": 0,
+          "mean_delay": -12.56,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.96
+        },
+        {
+          "station_code": "KXT",
+          "stops_count": 186,
+          "delayed_count": 1,
+          "mean_delay": -0.03,
+          "delayed_rate": 0.54,
+          "wilson_lower": 0.09,
+          "wilson_upper": 2.98
+        },
+        {
+          "station_code": "WEL",
+          "stops_count": 175,
+          "delayed_count": 1,
+          "mean_delay": 1.49,
+          "delayed_rate": 0.57,
+          "wilson_lower": 0.1,
+          "wilson_upper": 3.17
+        },
+        {
+          "station_code": "PRES",
+          "stops_count": 274,
+          "delayed_count": 3,
+          "mean_delay": 0.96,
+          "delayed_rate": 1.09,
+          "wilson_lower": 0.37,
+          "wilson_upper": 3.17
+        },
+        {
+          "station_code": "MPK",
+          "stops_count": 3458,
+          "delayed_count": 91,
+          "mean_delay": 4.42,
+          "delayed_rate": 2.63,
+          "wilson_lower": 2.15,
+          "wilson_upper": 3.22
+        },
+        {
+          "station_code": "AVK",
+          "stops_count": 172,
+          "delayed_count": 1,
+          "mean_delay": 0.29,
+          "delayed_rate": 0.58,
+          "wilson_lower": 0.1,
+          "wilson_upper": 3.22
+        },
+        {
+          "station_code": "HMT",
+          "stops_count": 251,
+          "delayed_count": 3,
+          "mean_delay": -10.96,
+          "delayed_rate": 1.2,
+          "wilson_lower": 0.41,
+          "wilson_upper": 3.45
+        },
+        {
+          "station_code": "MASS",
+          "stops_count": 1806,
+          "delayed_count": 48,
+          "mean_delay": 1.57,
+          "delayed_rate": 2.66,
+          "wilson_lower": 2.01,
+          "wilson_upper": 3.51
+        },
+        {
+          "station_code": "BCF",
+          "stops_count": 245,
+          "delayed_count": 3,
+          "mean_delay": 3.02,
+          "delayed_rate": 1.22,
+          "wilson_lower": 0.42,
+          "wilson_upper": 3.54
+        },
+        {
+          "station_code": "KWDP",
+          "stops_count": 498,
+          "delayed_count": 10,
+          "mean_delay": 6.37,
+          "delayed_rate": 2.01,
+          "wilson_lower": 1.09,
+          "wilson_upper": 3.66
+        },
+        {
+          "station_code": "BNJ",
+          "stops_count": 1014,
+          "delayed_count": 26,
+          "mean_delay": 1.58,
+          "delayed_rate": 2.56,
+          "wilson_lower": 1.76,
+          "wilson_upper": 3.73
+        },
+        {
+          "station_code": "NMKA",
+          "stops_count": 260,
+          "delayed_count": 4,
+          "mean_delay": 2.94,
+          "delayed_rate": 1.54,
+          "wilson_lower": 0.6,
+          "wilson_upper": 3.89
+        },
+        {
+          "station_code": "KLYM",
+          "stops_count": 254,
+          "delayed_count": 4,
+          "mean_delay": -0.04,
+          "delayed_rate": 1.57,
+          "wilson_lower": 0.61,
+          "wilson_upper": 3.98
+        },
+        {
+          "station_code": "HYG",
+          "stops_count": 677,
+          "delayed_count": 17,
+          "mean_delay": 2.57,
+          "delayed_rate": 2.51,
+          "wilson_lower": 1.57,
+          "wilson_upper": 3.98
+        },
+        {
+          "station_code": "NGX",
+          "stops_count": 247,
+          "delayed_count": 4,
+          "mean_delay": 3.1,
+          "delayed_rate": 1.62,
+          "wilson_lower": 0.63,
+          "wilson_upper": 4.09
+        },
+        {
+          "station_code": "DPDP",
+          "stops_count": 939,
+          "delayed_count": 28,
+          "mean_delay": 7.45,
+          "delayed_rate": 2.98,
+          "wilson_lower": 2.07,
+          "wilson_upper": 4.28
+        },
+        {
+          "station_code": "MTP",
+          "stops_count": 127,
+          "delayed_count": 1,
+          "mean_delay": -3.37,
+          "delayed_rate": 0.79,
+          "wilson_lower": 0.14,
+          "wilson_upper": 4.33
+        },
+        {
+          "station_code": "MPN",
+          "stops_count": 718,
+          "delayed_count": 21,
+          "mean_delay": 5.26,
+          "delayed_rate": 2.92,
+          "wilson_lower": 1.92,
+          "wilson_upper": 4.43
+        },
+        {
+          "station_code": "STB",
+          "stops_count": 429,
+          "delayed_count": 11,
+          "mean_delay": 2.2,
+          "delayed_rate": 2.56,
+          "wilson_lower": 1.44,
+          "wilson_upper": 4.53
+        },
+        {
+          "station_code": "TCN",
+          "stops_count": 116,
+          "delayed_count": 1,
+          "mean_delay": -4.08,
+          "delayed_rate": 0.86,
+          "wilson_lower": 0.15,
+          "wilson_upper": 4.72
+        },
+        {
+          "station_code": "AKRA",
+          "stops_count": 793,
+          "delayed_count": 27,
+          "mean_delay": 6.92,
+          "delayed_rate": 3.4,
+          "wilson_lower": 2.35,
+          "wilson_upper": 4.91
+        },
+        {
+          "station_code": "ONR",
+          "stops_count": 109,
+          "delayed_count": 1,
+          "mean_delay": -4.6,
+          "delayed_rate": 0.92,
+          "wilson_lower": 0.16,
+          "wilson_upper": 5.01
+        },
+        {
+          "station_code": "FLU",
+          "stops_count": 746,
+          "delayed_count": 26,
+          "mean_delay": 4.99,
+          "delayed_rate": 3.49,
+          "wilson_lower": 2.39,
+          "wilson_upper": 5.06
+        },
+        {
+          "station_code": "KRUR",
+          "stops_count": 140,
+          "delayed_count": 2,
+          "mean_delay": 5.59,
+          "delayed_rate": 1.43,
+          "wilson_lower": 0.39,
+          "wilson_upper": 5.06
+        },
+        {
+          "station_code": "ARPR",
+          "stops_count": 106,
+          "delayed_count": 1,
+          "mean_delay": -1.91,
+          "delayed_rate": 0.94,
+          "wilson_lower": 0.17,
+          "wilson_upper": 5.15
+        },
+        {
+          "station_code": "BGNA",
+          "stops_count": 249,
+          "delayed_count": 6,
+          "mean_delay": 2.62,
+          "delayed_rate": 2.41,
+          "wilson_lower": 1.11,
+          "wilson_upper": 5.16
+        }
+      ]
+    },
+    "trains": {
+      "min_support_threshold": 50,
+      "top_hotspots": [
+        {
+          "train_number": "17479",
+          "stops_count": 675,
+          "delayed_count": 674,
+          "mean_delay": 125.05,
+          "delayed_rate": 99.85,
+          "wilson_lower": 99.17,
+          "wilson_upper": 99.97
+        },
+        {
+          "train_number": "58205",
+          "stops_count": 623,
+          "delayed_count": 622,
+          "mean_delay": 210.32,
+          "delayed_rate": 99.84,
+          "wilson_lower": 99.1,
+          "wilson_upper": 99.97
+        },
+        {
+          "train_number": "54411",
+          "stops_count": 386,
+          "delayed_count": 386,
+          "mean_delay": 192.8,
+          "delayed_rate": 100.0,
+          "wilson_lower": 99.01,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "12834",
+          "stops_count": 877,
+          "delayed_count": 874,
+          "mean_delay": 271.92,
+          "delayed_rate": 99.66,
+          "wilson_lower": 99.0,
+          "wilson_upper": 99.88
+        },
+        {
+          "train_number": "64465",
+          "stops_count": 375,
+          "delayed_count": 375,
+          "mean_delay": 109.25,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.99,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "64557",
+          "stops_count": 351,
+          "delayed_count": 351,
+          "mean_delay": 145.3,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.92,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "12130",
+          "stops_count": 514,
+          "delayed_count": 513,
+          "mean_delay": 660.16,
+          "delayed_rate": 99.81,
+          "wilson_lower": 98.91,
+          "wilson_upper": 99.97
+        },
+        {
+          "train_number": "55061",
+          "stops_count": 641,
+          "delayed_count": 639,
+          "mean_delay": 150.45,
+          "delayed_rate": 99.69,
+          "wilson_lower": 98.87,
+          "wilson_upper": 99.91
+        },
+        {
+          "train_number": "14681",
+          "stops_count": 334,
+          "delayed_count": 334,
+          "mean_delay": 303.57,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.86,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68706",
+          "stops_count": 325,
+          "delayed_count": 325,
+          "mean_delay": 102.13,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.83,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "55132",
+          "stops_count": 595,
+          "delayed_count": 593,
+          "mean_delay": 224.41,
+          "delayed_rate": 99.66,
+          "wilson_lower": 98.78,
+          "wilson_upper": 99.91
+        },
+        {
+          "train_number": "68715",
+          "stops_count": 292,
+          "delayed_count": 292,
+          "mean_delay": 219.6,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.7,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68742",
+          "stops_count": 290,
+          "delayed_count": 290,
+          "mean_delay": 209.88,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.69,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "54076",
+          "stops_count": 424,
+          "delayed_count": 423,
+          "mean_delay": 173.92,
+          "delayed_rate": 99.76,
+          "wilson_lower": 98.68,
+          "wilson_upper": 99.96
+        },
+        {
+          "train_number": "68804",
+          "stops_count": 284,
+          "delayed_count": 284,
+          "mean_delay": 146.51,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.67,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68723",
+          "stops_count": 285,
+          "delayed_count": 285,
+          "mean_delay": 237.95,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.67,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68713",
+          "stops_count": 280,
+          "delayed_count": 280,
+          "mean_delay": 200.2,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.65,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68743",
+          "stops_count": 280,
+          "delayed_count": 280,
+          "mean_delay": 169.96,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.65,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "63295",
+          "stops_count": 416,
+          "delayed_count": 415,
+          "mean_delay": 113.01,
+          "delayed_rate": 99.76,
+          "wilson_lower": 98.65,
+          "wilson_upper": 99.96
+        },
+        {
+          "train_number": "68815",
+          "stops_count": 273,
+          "delayed_count": 273,
+          "mean_delay": 201.47,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.61,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68816",
+          "stops_count": 271,
+          "delayed_count": 271,
+          "mean_delay": 227.23,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.6,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "64931",
+          "stops_count": 263,
+          "delayed_count": 263,
+          "mean_delay": 120.82,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.56,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "64102",
+          "stops_count": 261,
+          "delayed_count": 261,
+          "mean_delay": 155.0,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.55,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "63230",
+          "stops_count": 260,
+          "delayed_count": 260,
+          "mean_delay": 213.54,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.54,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "53612",
+          "stops_count": 378,
+          "delayed_count": 377,
+          "mean_delay": 157.73,
+          "delayed_rate": 99.74,
+          "wilson_lower": 98.52,
+          "wilson_upper": 99.95
+        },
+        {
+          "train_number": "51886",
+          "stops_count": 251,
+          "delayed_count": 251,
+          "mean_delay": 148.65,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.49,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68716",
+          "stops_count": 251,
+          "delayed_count": 251,
+          "mean_delay": 308.53,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.49,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68730",
+          "stops_count": 233,
+          "delayed_count": 233,
+          "mean_delay": 238.73,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.38,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "18109",
+          "stops_count": 444,
+          "delayed_count": 442,
+          "mean_delay": 266.09,
+          "delayed_rate": 99.55,
+          "wilson_lower": 98.37,
+          "wilson_upper": 99.88
+        },
+        {
+          "train_number": "74024",
+          "stops_count": 228,
+          "delayed_count": 228,
+          "mean_delay": 107.24,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.34,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "04051",
+          "stops_count": 225,
+          "delayed_count": 225,
+          "mean_delay": 539.58,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.32,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68737",
+          "stops_count": 222,
+          "delayed_count": 222,
+          "mean_delay": 203.62,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.3,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "68738",
+          "stops_count": 220,
+          "delayed_count": 220,
+          "mean_delay": 170.42,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.28,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "64454",
+          "stops_count": 326,
+          "delayed_count": 325,
+          "mean_delay": 186.75,
+          "delayed_rate": 99.69,
+          "wilson_lower": 98.28,
+          "wilson_upper": 99.95
+        },
+        {
+          "train_number": "64453",
+          "stops_count": 215,
+          "delayed_count": 215,
+          "mean_delay": 234.31,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.24,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "22647",
+          "stops_count": 205,
+          "delayed_count": 205,
+          "mean_delay": 188.54,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.16,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "04097",
+          "stops_count": 301,
+          "delayed_count": 300,
+          "mean_delay": 401.18,
+          "delayed_rate": 99.67,
+          "wilson_lower": 98.14,
+          "wilson_upper": 99.94
+        },
+        {
+          "train_number": "63255",
+          "stops_count": 203,
+          "delayed_count": 203,
+          "mean_delay": 112.71,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.14,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "54417",
+          "stops_count": 202,
+          "delayed_count": 202,
+          "mean_delay": 131.53,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.13,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "74002",
+          "stops_count": 201,
+          "delayed_count": 201,
+          "mean_delay": 113.54,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.12,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "22840",
+          "stops_count": 198,
+          "delayed_count": 198,
+          "mean_delay": 165.03,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.1,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "54035",
+          "stops_count": 457,
+          "delayed_count": 454,
+          "mean_delay": 88.79,
+          "delayed_rate": 99.34,
+          "wilson_lower": 98.09,
+          "wilson_upper": 99.78
+        },
+        {
+          "train_number": "61619",
+          "stops_count": 195,
+          "delayed_count": 195,
+          "mean_delay": 142.04,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.07,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "63231",
+          "stops_count": 447,
+          "delayed_count": 444,
+          "mean_delay": 139.04,
+          "delayed_rate": 99.33,
+          "wilson_lower": 98.05,
+          "wilson_upper": 99.77
+        },
+        {
+          "train_number": "54420",
+          "stops_count": 188,
+          "delayed_count": 188,
+          "mean_delay": 147.23,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.0,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "55073",
+          "stops_count": 188,
+          "delayed_count": 188,
+          "mean_delay": 205.51,
+          "delayed_rate": 100.0,
+          "wilson_lower": 98.0,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "53348",
+          "stops_count": 636,
+          "delayed_count": 630,
+          "mean_delay": 126.45,
+          "delayed_rate": 99.06,
+          "wilson_lower": 97.96,
+          "wilson_upper": 99.57
+        },
+        {
+          "train_number": "12860",
+          "stops_count": 427,
+          "delayed_count": 424,
+          "mean_delay": 292.44,
+          "delayed_rate": 99.3,
+          "wilson_lower": 97.95,
+          "wilson_upper": 99.76
+        },
+        {
+          "train_number": "68411",
+          "stops_count": 182,
+          "delayed_count": 182,
+          "mean_delay": 118.6,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.93,
+          "wilson_upper": 100.0
+        },
+        {
+          "train_number": "01144",
+          "stops_count": 181,
+          "delayed_count": 181,
+          "mean_delay": 489.82,
+          "delayed_rate": 100.0,
+          "wilson_lower": 97.92,
+          "wilson_upper": 100.0
+        }
+      ],
+      "top_punctual": [
+        {
+          "train_number": "63176",
+          "stops_count": 458,
+          "delayed_count": 0,
+          "mean_delay": -0.52,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 0.83
+        },
+        {
+          "train_number": "31768",
+          "stops_count": 343,
+          "delayed_count": 0,
+          "mean_delay": 2.67,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.11
+        },
+        {
+          "train_number": "66308",
+          "stops_count": 275,
+          "delayed_count": 0,
+          "mean_delay": 1.78,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.38
+        },
+        {
+          "train_number": "37750",
+          "stops_count": 243,
+          "delayed_count": 0,
+          "mean_delay": 3.93,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.56
+        },
+        {
+          "train_number": "37746",
+          "stops_count": 232,
+          "delayed_count": 0,
+          "mean_delay": 1.04,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.63
+        },
+        {
+          "train_number": "37320",
+          "stops_count": 226,
+          "delayed_count": 0,
+          "mean_delay": 0.44,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.67
+        },
+        {
+          "train_number": "37340",
+          "stops_count": 225,
+          "delayed_count": 0,
+          "mean_delay": 1.56,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.68
+        },
+        {
+          "train_number": "31773",
+          "stops_count": 332,
+          "delayed_count": 1,
+          "mean_delay": 3.77,
+          "delayed_rate": 0.3,
+          "wilson_lower": 0.05,
+          "wilson_upper": 1.69
+        },
+        {
+          "train_number": "37358",
+          "stops_count": 222,
+          "delayed_count": 0,
+          "mean_delay": 3.0,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.7
+        },
+        {
+          "train_number": "37336",
+          "stops_count": 219,
+          "delayed_count": 0,
+          "mean_delay": 1.8,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.72
+        },
+        {
+          "train_number": "37326",
+          "stops_count": 219,
+          "delayed_count": 0,
+          "mean_delay": 3.71,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.72
+        },
+        {
+          "train_number": "37334",
+          "stops_count": 218,
+          "delayed_count": 0,
+          "mean_delay": 2.42,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.73
+        },
+        {
+          "train_number": "37351",
+          "stops_count": 217,
+          "delayed_count": 0,
+          "mean_delay": 5.18,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.74
+        },
+        {
+          "train_number": "40702",
+          "stops_count": 214,
+          "delayed_count": 0,
+          "mean_delay": 4.45,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.76
+        },
+        {
+          "train_number": "37228",
+          "stops_count": 214,
+          "delayed_count": 0,
+          "mean_delay": 6.41,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.76
+        },
+        {
+          "train_number": "33824",
+          "stops_count": 213,
+          "delayed_count": 0,
+          "mean_delay": 4.97,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.77
+        },
+        {
+          "train_number": "37216",
+          "stops_count": 212,
+          "delayed_count": 0,
+          "mean_delay": 5.09,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.78
+        },
+        {
+          "train_number": "33830",
+          "stops_count": 211,
+          "delayed_count": 0,
+          "mean_delay": 5.07,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.79
+        },
+        {
+          "train_number": "37758",
+          "stops_count": 210,
+          "delayed_count": 0,
+          "mean_delay": 1.46,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.8
+        },
+        {
+          "train_number": "33820",
+          "stops_count": 209,
+          "delayed_count": 0,
+          "mean_delay": 4.82,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.8
+        },
+        {
+          "train_number": "33819",
+          "stops_count": 210,
+          "delayed_count": 0,
+          "mean_delay": 1.86,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.8
+        },
+        {
+          "train_number": "31813",
+          "stops_count": 209,
+          "delayed_count": 0,
+          "mean_delay": 3.65,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.8
+        },
+        {
+          "train_number": "37332",
+          "stops_count": 208,
+          "delayed_count": 0,
+          "mean_delay": 2.0,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.81
+        },
+        {
+          "train_number": "76819",
+          "stops_count": 204,
+          "delayed_count": 0,
+          "mean_delay": 3.67,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.85
+        },
+        {
+          "train_number": "33812",
+          "stops_count": 200,
+          "delayed_count": 0,
+          "mean_delay": 1.33,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.88
+        },
+        {
+          "train_number": "33762",
+          "stops_count": 197,
+          "delayed_count": 0,
+          "mean_delay": 4.96,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 1.91
+        },
+        {
+          "train_number": "31616",
+          "stops_count": 285,
+          "delayed_count": 1,
+          "mean_delay": 6.53,
+          "delayed_rate": 0.35,
+          "wilson_lower": 0.06,
+          "wilson_upper": 1.96
+        },
+        {
+          "train_number": "37304",
+          "stops_count": 184,
+          "delayed_count": 0,
+          "mean_delay": 2.68,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.05
+        },
+        {
+          "train_number": "31331",
+          "stops_count": 183,
+          "delayed_count": 0,
+          "mean_delay": 2.9,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.06
+        },
+        {
+          "train_number": "33518",
+          "stops_count": 182,
+          "delayed_count": 0,
+          "mean_delay": 2.47,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.07
+        },
+        {
+          "train_number": "31313",
+          "stops_count": 181,
+          "delayed_count": 0,
+          "mean_delay": 2.65,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.08
+        },
+        {
+          "train_number": "31317",
+          "stops_count": 180,
+          "delayed_count": 0,
+          "mean_delay": 2.07,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.09
+        },
+        {
+          "train_number": "33522",
+          "stops_count": 180,
+          "delayed_count": 0,
+          "mean_delay": 3.52,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.09
+        },
+        {
+          "train_number": "31329",
+          "stops_count": 179,
+          "delayed_count": 0,
+          "mean_delay": 1.98,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.1
+        },
+        {
+          "train_number": "40546",
+          "stops_count": 178,
+          "delayed_count": 0,
+          "mean_delay": 4.54,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.11
+        },
+        {
+          "train_number": "33520",
+          "stops_count": 178,
+          "delayed_count": 0,
+          "mean_delay": 2.06,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.11
+        },
+        {
+          "train_number": "33528",
+          "stops_count": 178,
+          "delayed_count": 0,
+          "mean_delay": 2.35,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.11
+        },
+        {
+          "train_number": "53005",
+          "stops_count": 178,
+          "delayed_count": 0,
+          "mean_delay": 2.73,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.11
+        },
+        {
+          "train_number": "53017",
+          "stops_count": 177,
+          "delayed_count": 0,
+          "mean_delay": 2.34,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.12
+        },
+        {
+          "train_number": "40516",
+          "stops_count": 177,
+          "delayed_count": 0,
+          "mean_delay": 2.46,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.12
+        },
+        {
+          "train_number": "40510",
+          "stops_count": 176,
+          "delayed_count": 0,
+          "mean_delay": 2.78,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.14
+        },
+        {
+          "train_number": "34795",
+          "stops_count": 175,
+          "delayed_count": 0,
+          "mean_delay": 1.21,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.15
+        },
+        {
+          "train_number": "34791",
+          "stops_count": 175,
+          "delayed_count": 0,
+          "mean_delay": 2.26,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.15
+        },
+        {
+          "train_number": "33514",
+          "stops_count": 174,
+          "delayed_count": 0,
+          "mean_delay": 2.94,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.16
+        },
+        {
+          "train_number": "31861",
+          "stops_count": 252,
+          "delayed_count": 1,
+          "mean_delay": 4.06,
+          "delayed_rate": 0.4,
+          "wilson_lower": 0.07,
+          "wilson_upper": 2.21
+        },
+        {
+          "train_number": "40512",
+          "stops_count": 170,
+          "delayed_count": 0,
+          "mean_delay": 3.24,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.21
+        },
+        {
+          "train_number": "33682",
+          "stops_count": 168,
+          "delayed_count": 0,
+          "mean_delay": 1.86,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.24
+        },
+        {
+          "train_number": "33538",
+          "stops_count": 168,
+          "delayed_count": 0,
+          "mean_delay": 4.0,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.24
+        },
+        {
+          "train_number": "40505",
+          "stops_count": 168,
+          "delayed_count": 0,
+          "mean_delay": 1.65,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.24
+        },
+        {
+          "train_number": "53009",
+          "stops_count": 167,
+          "delayed_count": 0,
+          "mean_delay": 3.13,
+          "delayed_rate": 0.0,
+          "wilson_lower": 0.0,
+          "wilson_upper": 2.25
+        }
+      ]
+    }
+  }
+}

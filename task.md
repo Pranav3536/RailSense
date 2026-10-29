@@ -230,6 +230,53 @@ See `DECISIONS.md` for full rationale.
 - **D-23:** Probability Calibration via Isotonic Regression on Validation (ECE improved 0.0338 -> 0.0035).
 - **D-24:** Evaluation Model vs Deployment Model Refitting Policy (Train-only for evaluation; Train+Val for deployment).
 - **D-25:** Formulation 2 En-Route Model Segregation (En-Route LightGBM PR-AUC 0.9293).
+- **D-26:** Precomputed Read-Only SQLite Serving Store Architecture (`backend/serving/serving.sqlite`, 39.03 MB; zero runtime aggregate queries on TiDB Cloud).
+- **D-27:** Average Precision (AP) Replaces Trapezoid PR-AUC for Constant Baselines (`average_precision_score` eliminates 0.7460 artifact down to true 0.4920 prevalence).
+- **D-28:** Operational Decision Thresholds: Balanced F1 Threshold (0.410) and High-Recall Threshold (0.455).
+- **D-29:** Strict Non-Causal Attribution Phrasing Across API & Documentation ("observed delay hotspot", "associated with", "what the model uses").
+
+---
+
+## 11. Files Created or Modified in Phase 5
+
+```
+c:\RailSense\
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py                [UPDATED — Flask app factory, security headers, in-memory rate limiter, uniform errors]
+│   │   ├── serving_client.py          [CREATED — thread-safe read-only SQLite client & static JSON loader]
+│   │   └── api/
+│   │       ├── __init__.py            [CREATED — modular API blueprint package under /api]
+│   │       ├── health.py              [CREATED — /api/health and /api/health/ready probes]
+│   │       ├── overview.py            [CREATED — /api/overview macro statistics]
+│   │       ├── trains.py              [CREATED — /api/trains and /api/trains/<train_number>]
+│   │       ├── stations.py            [CREATED — /api/stations and /api/stations/<station_code>]
+│   │       ├── patterns.py            [CREATED — /api/patterns/<kind> temporal & spatial distributions]
+│   │       ├── model.py               [CREATED — /api/model/info and /api/model/metrics]
+│   │       ├── predict.py             [CREATED — /api/predict pre-departure inference with risk bands & factors]
+│   │       └── docs.py                [CREATED — /api/docs Swagger UI and /api/openapi.json]
+│   ├── serving/
+│   │   ├── serving.sqlite             [CREATED — 39.03 MB indexed read-only SQLite serving store]
+│   │   ├── overview.json              [CREATED — macro dataset summary and category breakdown]
+│   │   ├── patterns.json              [CREATED — precomputed delay patterns by hour, dow, position, hotspots]
+│   │   └── model_lab.json             [CREATED — benchmark curves, feature importances, plain-English explanations]
+│   ├── scripts/
+│   │   ├── run_phase5_preflight.py    [CREATED — AP recomputation, threshold tuning, calibration audit]
+│   │   ├── build_serving_data.py      [CREATED — offline builder for SQLite and analytics JSONs from 2.8M rows]
+│   │   └── smoke_api.py               [CREATED — 21-endpoint latency profiler & status verifier]
+│   ├── tests/
+│   │   ├── test_api_routes.py         [CREATED — 31 unit tests covering all routes, pagination, errors, headers, rate limit]
+│   │   └── test_api_integration.py    [CREATED — end-to-end integration and < 300MB process memory budget audit]
+│   └── wsgi.py                        [CREATED — WSGI entrypoint for production and development servers]
+├── docs/
+│   ├── phase5_preflight.md            [CREATED — preflight audit of AP, threshold honesty, calibration ECE]
+│   ├── phase5_preflight.json          [CREATED — programmatic recomputed metrics and threshold data]
+│   ├── serving_design.md              [CREATED — SQLite schema, index rationale, performance benchmarks]
+│   ├── openapi.yaml                   [CREATED — OpenAPI 3.0.3 specification in YAML]
+│   ├── openapi.json                   [CREATED — OpenAPI 3.0.3 specification in JSON]
+│   ├── API.md                         [CREATED — comprehensive REST API reference with PowerShell examples]
+│   └── MODEL_CARD.md                  [UPDATED — recomputed honest AP metrics, operational thresholds, lifts]
+```
 
 ---
 
@@ -364,53 +411,53 @@ c:\RailSense\
 | 8 | Experiment guards tests | `pytest tests/test_experiments_guards.py` | **PASS** — 3 unit tests for banned features, split guard, and rolling-origin chronological folds |
 | 9 | Predict service smoke tests | `pytest tests/test_predict.py` | **PASS** — 2 unit tests verifying cold-start handling and explanation factors |
 | 10 | Live database integration tests | `pytest tests/test_db_integration.py` | **PASS** — 4 integration tests (SELECT 1, TLS cipher, guard blocking DML, schema count) |
-| 11 | Full test suite execution | `pytest -v` | **PASS — 70 passed, 4 skipped in 3.25s (0 failures)** |
-| 12 | Shuffled-label leakage check | `python scripts/run_preflight.py` | **PASS** — Shuffled model PR-AUC 0.4952 matches prevalence 0.4859; zero leakage |
-| 13 | Final Model test evaluation | `python scripts/run_experiments.py` | **PASS** — LightGBM achieved PR-AUC 0.8525 on Test split |
-| 14 | Git ignore check for `.env` & `.joblib` | `git check-ignore -v backend/.env backend/models/deployment_model.joblib` | **PASS** — Ignored cleanly |
-| 15 | Credential scan across repo | PowerShell scan | **PASS** — Zero real credentials found in any tracked file |
+| 11 | Phase 5 REST API route unit tests | `pytest tests/test_api_routes.py` | **PASS** — 31 unit tests covering all routes, pagination, 400/404/405/422/429 errors, CORS, security headers |
+| 12 | End-to-end API integration & memory | `pytest tests/test_api_integration.py` | **PASS** — Full query lifecycles verified; Traced memory peak 8.92 MB (well below 300 MB limit) |
+| 13 | Full test suite execution | `pytest backend/tests -v -m "not db_live"` | **PASS — 103 passed, 4 skipped in 5.00s (0 failures)** |
+| 14 | API Smoke test & latency profiler | `python backend/scripts/smoke_api.py` | **PASS** — 21 endpoints tested; Mean latency: 4.57 ms, Peak: 22.24 ms |
+| 15 | Git ignore check for `.env` & `.sqlite` | `git check-ignore -v backend/.env backend/serving/serving.sqlite` | **PASS** — Ignored cleanly |
+| 16 | Credential scan across repo | PowerShell scan | **PASS** — Zero real credentials found in any tracked file |
 
 ---
 
 ## 13. Commands to Run, Test, and Resume the Project
 
-All commands run from `c:\RailSense\backend\` with the virtual environment activated:
+All commands run from `c:\RailSense\` with the virtual environment activated:
 
 ```powershell
 # Activate Python environment
-cd c:\RailSense\backend
-.\.venv\Scripts\Activate.ps1
+cd c:\RailSense
+.\backend\.venv\Scripts\Activate.ps1
 
-# Run live connection check
-python scripts/check_connection.py
+# Build or refresh the precomputed serving store (SQLite & JSONs from 2.8M rows)
+python backend/scripts/build_serving_data.py
 
-# Run preflight verification (Task A)
-python scripts/run_preflight.py
+# Run API Smoke Test & Latency Profiler (all 21 endpoints)
+python backend/scripts/smoke_api.py
 
-# Run ML experiments pipeline (Baselines, LR, RF, LightGBM, SHAP, Calibration)
-python scripts/run_experiments.py
+# Start local Flask API development server
+python backend/wsgi.py
+# Server runs at: http://localhost:5000 (Interactive docs: http://localhost:5000/api/docs)
 
-# Run single prediction smoke test
-python -c "from app.ml.predict import RailSensePredictor; p = RailSensePredictor(); p.load(); print(p.predict_single(12301, 'HWH', '2026-10-25 10:00:00', 2, 'SUF'))"
+# Run full automated test suite (offline / sandbox safe)
+pytest backend/tests -v -m "not db_live"
 
-# Run all unit tests (offline, sandbox safe)
-pytest -v -m "not integration"
-
-# Run all unit and live integration tests
-pytest -v
+# Run integration tests specifically
+pytest backend/tests/test_api_integration.py -v
 ```
 
 ---
 
 ## 14. Next Exact Action
 
-**Phase 5 — Flask REST API Endpoints & OpenAPI Documentation**
+**Phase 6 — React + Vite + Tailwind CSS Frontend Foundation**
 
-In Phase 5, the session will:
-1. Create Flask application factory and modular blueprints in `backend/app/api/`.
-2. Implement endpoints: `/api/health`, `/api/overview/stats`, `/api/trains`, `/api/stations`, `/api/predict`, `/api/model/info`, `/api/patterns/`.
-3. Integrate `RailSensePredictor` into the `/api/predict` route with input schema validation.
-4. Ensure TLS read-only database pooling and write comprehensive integration test suite for all endpoints.
+In Phase 6, the session will:
+1. Initialize the React + Vite frontend application in `c:\RailSense\frontend\` using plain JavaScript (JSX) (Decision D-11).
+2. Configure Tailwind CSS with the Indian Railways custom palette (Deep Navy `#0A192F`, Railway Crimson `#D9383A`, Signal Green `#2ECC71`, Amber `#F39C12`).
+3. Set up React Router and the 6 core tab navigation shell (Overview, Train Explorer, Delay Prediction, Model Lab, Delay Patterns, Smart Insights).
+4. Implement API client (`src/lib/api.js`) pointing to `http://localhost:5000/api` (or environment variable `VITE_API_BASE_URL`).
+5. Build Tab 1: Overview Dashboard with Recharts and summary cards.
 
 ---
 
