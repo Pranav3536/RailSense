@@ -18,6 +18,11 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-08 | Phased delivery gated by verification | Phase 1 |
 | D-09 | Honest UI — no fabricated statistics or unverified claims | Phase 1 |
 | D-10 | Monorepo layout (backend + frontend + docs + notebooks) | Phase 1 |
+| D-11 | Frontend uses plain JavaScript (JSX), NOT TypeScript | Phase 2 |
+| D-12 | Read-only query guard for all DB access | Phase 2 |
+| D-13 | TLS with certificate verification always ON | Phase 2 |
+| D-14 | Run defined as (train_number, start_date) | Phase 2 |
+| D-15 | Deterministic 100k-row sampling for delay consistency check | Phase 2 |
 
 ---
 
@@ -193,3 +198,93 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 - Frontend and backend have separate dependency trees (`requirements.txt` vs `package.json`) — managed by being in separate subdirectories.
 
 **Alternative considered:** Separate frontend and backend repos — rejected as unnecessary complexity for a solo portfolio project.
+
+
+---
+
+## D-11 — Frontend Uses Plain JavaScript (JSX), NOT TypeScript
+
+**Date decided:** 2026-10-29 (Phase 2)
+
+**Decision:** The React frontend is written entirely in plain JavaScript with JSX. TypeScript is explicitly NOT used and will not be added.
+
+**Rationale:**
+- RailSense is an end-to-end Data Science / ML / NLP project. Python, Flask, scikit-learn, and local NLP are the core technical contributions. React is the presentation layer only.
+- TypeScript adds non-trivial setup overhead (tsconfig, type definitions for every library, type errors during rapid iteration) with limited benefit for a solo DS portfolio project where the frontend is display-only.
+- Plain JSX is idiomatic React, fully supported by Vite, and easier to understand for a reviewer who is evaluating DS/ML skills rather than frontend engineering depth.
+- Keeps the project scope focused on the data science deliverables.
+
+**Trade-offs:**
+- No compile-time type safety in the frontend. Acceptable because: (a) React is not the core value of the project; (b) prop-types or JSDoc comments can partially substitute; (c) the frontend makes simple API calls and renders data — type errors are unlikely to be the failure mode.
+- A TypeScript migration is removed from the "future improvements" list.
+
+**Alternative considered:** TypeScript (previously planned, marked "decided in Phase 6") — REJECTED. This is a final decision; do not re-open in later phases.
+
+---
+
+## D-12 — Read-Only Query Guard for All DB Access
+
+**Date decided:** 2026-10-29 (Phase 2)
+
+**Decision:** All database queries in the application go through a read-only guard function that whitelists only `SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN`, and `WITH … SELECT` statements. It rejects multi-statement inputs (semicolons), DDL/DML, comment-based bypass attempts, and empty queries.
+
+**Rationale:**
+- The TiDB database contains production-like data that must never be modified by application code.
+- Even without a separate read-only DB user, a software guard provides defence-in-depth.
+- Prevents accidental writes during development or testing.
+- Demonstrates secure query handling practice relevant to DS engineering roles.
+
+**Trade-offs:**
+- Regex-based guards are not a substitute for a dedicated read-only DB user (which should be set up if possible). The guard is a defence-in-depth layer, not the only control.
+- The guard adds a small overhead per query (negligible).
+
+---
+
+## D-13 — TLS With Certificate Verification Always ON
+
+**Date decided:** 2026-10-29 (Phase 2)
+
+**Decision:** All connections to TiDB Cloud use TLS with certificate verification enabled. `verify_mode=CERT_REQUIRED` is always set. Certificate verification is NEVER disabled, not even in development.
+
+**Rationale:**
+- TiDB Cloud is a remote hosted database; all traffic crosses the public internet.
+- Disabling certificate verification (`ssl_verify_cert=False`) exposes the connection to man-in-the-middle attacks.
+- Disabling verification is a common but dangerous shortcut — demonstrating it is always ON is a positive signal in a portfolio project.
+- Uses the system trust store or `certifi` bundle by default; `TIDB_CA_PATH` can override for a specific CA cert.
+
+**Trade-offs:**
+- If the CA cert is not trusted by the system, the connection will fail (intentionally). The resolution is to configure `TIDB_CA_PATH`, not to disable verification.
+
+---
+
+## D-14 — Run Defined as (train_number, start_date)
+
+**Date decided:** 2026-10-29 (Phase 2)
+
+**Decision:** A "run" (one complete train journey) is defined as the combination of `(train_number, start_date)`. This is the unit for grouping station-level rows into journey-level analyses.
+
+**Rationale:**
+- The data has one row per (train, station) observation within a journey.
+- `(train_number, start_date)` is the natural primary grouping: the same physical train makes the same route every day; `start_date` distinguishes journeys across days.
+- This definition is used for: run-level statistics, leakage-safe train-grouped splits, and sequential analysis of delay propagation along a route.
+
+**Trade-offs:**
+- If a train has multiple runs per day (unlikely for Indian Railways mainline trains but possible for short-haul services), this definition would conflate them. Will be checked in Phase 3 by examining whether any (train_number, start_date, station_code) has multiple rows.
+
+---
+
+## D-15 — Deterministic 100k-Row Sampling for Delay Consistency Check
+
+**Date decided:** 2026-10-29 (Phase 2)
+
+**Decision:** The audit check that compares stored `arrival_delay_min`/`departure_delay_min` to the value recomputed from timestamps uses a deterministic sample of 100,000 rows, selected by `ORDER BY id LIMIT 100000` (the first 100k by primary key).
+
+**Rationale:**
+- A full-table computation on ~2.8M rows with DATEDIFF arithmetic is expensive on a free-tier TiDB cluster and would risk timeouts or excessive usage.
+- 100k rows is large enough to detect systematic mismatches (midnight rollover, timezone offset, rounding) while being query-safe.
+- Using `ORDER BY id` makes the sample deterministic and reproducible across audit runs.
+- The sampling method and size are documented in the audit output so readers know the scope.
+
+**Trade-offs:**
+- The sample covers only ~3.6% of rows; edge cases in the tail may be missed. This is acceptable for an audit / EDA purpose; a full check can be done in Phase 3 if needed.
+- Using the first 100k by id may not be representative of the full distribution if data was loaded in non-random order. The limitation is noted in the audit output.

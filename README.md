@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 1 of 11 complete — foundation only. No application feature is built yet.**
+> **Status: Phase 2 of 11 complete — TiDB connectivity layer & comprehensive data audit verified.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, and a local NLP query interface — all behind a Flask API served to a React dashboard.
 
@@ -59,6 +59,8 @@ React + Vite Frontend (Vercel)
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
 - **Charts:** Recharts
+- **Language:** Plain JavaScript (JSX) — TypeScript is NOT used (final decision)
+- **Routing:** React Router
 - **Hosting:** Vercel (free tier)
 
 ---
@@ -99,7 +101,7 @@ railsense/
 
 ---
 
-## Setup (Phase 2 onward)
+## Setup & Verification
 
 ```powershell
 # 1. Clone the repository
@@ -108,21 +110,22 @@ cd railsense
 
 # 2. Create your local environment file
 Copy-Item .env.example backend/.env
-# Then edit backend/.env and fill in TIDB_USER and TIDB_PASSWORD
+# Edit backend/.env and fill in TIDB_USER and TIDB_PASSWORD (keep private!)
 
 # 3. Set up Python environment (from backend/)
 cd backend
-python -m venv venv
-.\venv\Scripts\Activate.ps1      # Windows
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1      # Windows
 pip install -r requirements.txt
 
-# 4. Run the Flask API (Phase 5+)
-# flask --app app run --port 5000
+# 4. Verify TiDB Cloud connectivity & TLS encryption
+python scripts/check_connection.py
 
-# 5. Frontend (Phase 6+)
-# cd ../frontend
-# npm install
-# npm run dev
+# 5. Run the data audit script (generates docs/data_audit.json & docs/data_audit.md)
+python scripts/audit_data.py
+
+# 6. Run test suite
+pytest -v
 ```
 
 ---

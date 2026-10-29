@@ -38,72 +38,77 @@ Indian Railways operates thousands of trains per day across a vast network. Dela
 
 ---
 
-## 3. Dataset Description & Caveats
+## 3. Dataset Description & Verified Findings (Phase 2)
 
 **Source:** https://huggingface.co/datasets/pjay-in/indian-railways-delays  
 **Badge label:** "Observed Railway Dataset"  
 **Loaded into:** TiDB Cloud, database `railsense`, table `train_records`
 
-### Owner-Reported Statistics (to be verified in Phase 2)
-- Rows: ~2,805,574
-- Distinct `train_number`: ~10,743
-- Distinct `train_name`: ~6,816
-- Distinct `station_code`: ~8,584
-- `start_date` range: 2026-10-07 to 2026-10-25 (~19 days)
+### Verified Statistics (Audited in Phase 2)
+- Total Rows: **2,805,574** (exact match with owner report)
+- Distinct `train_number`: **10,743** (exact match)
+- Distinct `train_name`: **6,816** (exact match)
+- Distinct `station_code`: **8,584** (exact match)
+- Total Runs `(train_number, start_date)`: **147,367**
+- `start_date` range: **2026-10-07 to 2026-10-25** (exactly 19 calendar days)
+- Duplicate IDs: **0** (Primary key unique)
+- Duplicate `(train_number, start_date, seq)`: **0** (Strict sequence integrity)
+- Duplicate `(train_number, start_date, station_code)`: **22,064** (Valid circular/loop routes visiting same station twice)
+- Negative arrival delays: **8.56%** of non-null observations (Early arrivals; valid, never clipped)
+- Overall Arrival Delay Mean: **38.22 min**, Median: **17.0 min**
+- Candidate Target (`arrival_delay_min > 15`): **49.92%** positive class balance
 
-### Important Caveats
+### Important Caveats & Provenance
 1. **Not multi-year historical data** — The narrow 19-day window severely limits temporal ML evaluation.
-2. **Dates are in 2026** — Appears to be synthetic or generated data (or timezone artefact). Must be verified.
-3. **Not a live feed** — Data is static; the platform is analytical, not operational.
-4. **Missing values in actuals** — `actual_arrival`, `actual_departure`, and both delay columns contain NULLs.
+2. **Dates are in 2026** — Prospective/synthetic calendar dates. Data serves as an observed benchmark.
+3. **Not a live feed** — Data is static; the platform is analytical and predictive, not operational tracking.
+4. **Missing values in actuals** — `actual_arrival` (36.77%), `actual_departure` (36.69%), and delay columns contain NULLs.
 5. **Negative delays are valid** — Early arrivals/departures; they must never be clipped to zero.
 6. **One row = one train+station observation**, not a full journey.
-7. **Provenance unconfirmed** — Until Phase 2 verification, do not claim this represents real operational data.
 
 ---
 
-## 4. Database Schema (Flagged Unverified)
+## 4. Database Schema (Verified via INFORMATION_SCHEMA in Phase 2)
 
-> ⚠️ The schema below is OWNER-REPORTED. It will be verified in Phase 2 using `INFORMATION_SCHEMA.COLUMNS` queries. Do not treat any type or constraint as confirmed until then.
+**Table:** `railsense.train_records` (Engine: InnoDB / TiDB Serverless, Primary Index on `id`)
 
-**Table:** `railsense.train_records`
-
-| Column | Reported Type | Nullable | Notes |
-|--------|--------------|----------|-------|
-| `id` | INT | NO (PK) | Auto-increment |
-| `train_number` | VARCHAR or INT | ? | ~10,743 distinct |
-| `train_name` | VARCHAR | ? | ~6,816 distinct |
-| `category` | VARCHAR | ? | e.g. Express, Mail, Superfast |
-| `start_date` | DATE or DATETIME | ? | Journey start date (IST) |
-| `status` | VARCHAR | ? | Run status string |
-| `seq` | INT | ? | Station sequence in this run |
-| `station_code` | VARCHAR | ? | ~8,584 distinct |
-| `scheduled_arrival` | DATETIME | ? | IST; may be NULL for first stop |
-| `scheduled_departure` | DATETIME | ? | IST; may be NULL for last stop |
-| `actual_arrival` | DATETIME | YES | IST; NULL = not reported |
-| `actual_departure` | DATETIME | YES | IST; NULL = not reported |
-| `arrival_reported` | TINYINT/BOOL | ? | Whether arrival was reported |
-| `departure_reported` | TINYINT/BOOL | ? | Whether departure was reported |
-| `arrival_delay_min` | FLOAT or INT | YES | Minutes late; negatives valid |
-| `departure_delay_min` | FLOAT or INT | YES | Minutes late; negatives valid |
-| `run_quality` | VARCHAR or FLOAT | ? | Quality label/score — meaning TBD |
+| Column | Measured SQL Type | Nullable | Null % | Notes / Semantics |
+|--------|-------------------|----------|--------|-------------------|
+| `id` | `bigint(20)` | `NO` | 0.00% | Primary key, auto-increment |
+| `train_number` | `varchar(20)` | `YES` | 0.00% | Train number (100% numeric format, length 4–5) |
+| `train_name` | `varchar(150)` | `YES` | 0.00% | Commercial train name |
+| `category` | `varchar(50)` | `YES` | 0.00% | Service class (MEX, SUB, MEMU, PAS, SUF, etc.) |
+| `start_date` | `date` | `YES` | 0.00% | Origin start date (2026-10-07 to 2026-10-25) |
+| `status` | `varchar(30)` | `YES` | 0.00% | Run operational status |
+| `seq` | `smallint(6)` | `YES` | 0.00% | Stop sequence index in journey (1 to 194) |
+| `station_code` | `varchar(20)` | `YES` | 0.00% | IRCTC station code (length 2–6 alphanumeric) |
+| `scheduled_arrival` | `datetime` | `YES` | 5.29% | Scheduled arrival (IST); naturally NULL at origin (`seq=1`) |
+| `scheduled_departure` | `datetime` | `YES` | 5.29% | Scheduled departure (IST); naturally NULL at terminus |
+| `actual_arrival` | `datetime` | `YES` | 36.77% | Observed arrival (IST); NULL when unobserved |
+| `actual_departure` | `datetime` | `YES` | 36.69% | Observed departure (IST); NULL when unobserved |
+| `arrival_reported` | `tinyint(1)` | `YES` | 0.79% | Arrival reporting flag (1=reported, 0=not) |
+| `departure_reported` | `tinyint(1)` | `YES` | 0.79% | Departure reporting flag (1=reported, 0=not) |
+| `arrival_delay_min` | `int(11)` | `YES` | 36.78% | Arrival delay in minutes (negatives valid, range -2850 to 3690) |
+| `departure_delay_min` | `int(11)` | `YES` | 36.70% | Departure delay in minutes (negatives valid) |
+| `run_quality` | `float` | `YES` | 0.00% | Quality metric (0.0 to 1.0) |
 
 ---
 
-## 5. Data Audit & Cleaning Plan
+## 5. Phase 2 Data Audit Outcomes & Quality Verification
 
-To be executed in Phase 2 (connectivity) and Phase 3 (EDA):
+Full execution artifacts are recorded in `docs/data_audit.json` and `docs/data_audit.md`.
 
-1. **Schema verification** — `INFORMATION_SCHEMA.COLUMNS` for types, nullability, defaults.
-2. **Row count and distinct counts** — Verify owner-reported figures.
-3. **Missing value rates** — Per column, absolute and percentage.
-4. **Delay distribution** — Histograms of `arrival_delay_min` and `departure_delay_min`, including negatives.
-5. **Outlier analysis** — Extreme delay values; flag for review, do NOT auto-drop.
-6. **Date range verification** — Min/max of `start_date`, `scheduled_arrival`, etc.
-7. **Consistency checks** — `actual_arrival >= scheduled_arrival - large_buffer` etc.; cross-check `arrival_delay_min` vs computed difference.
-8. **Category distribution** — Value counts for `category`, `status`, `run_quality`.
-9. **Train-level statistics** — Delay by `train_number`, `category`, `station_code`.
-10. **Sequence integrity** — Check `seq` ordering within (`train_number`, `start_date`) groups.
+1. **Schema & Indexes:** Verified 17 columns and 1 existing primary key index (`id`).
+2. **Volume Match:** 100% exact match on total rows (2,805,574), distinct trains (10,743), names (6,816), stations (8,584), and 19-day date window.
+3. **Delay Consistency:** 100,000-row deterministic sample (`ORDER BY id LIMIT 100000`) confirmed a 100.0% exact match between stored `arrival_delay_min` and `(actual_arrival - scheduled_arrival)`.
+4. **UI Claims Comparison:**
+   - Owner UI Claim "41.8% delayed > 15 min": **MISMATCH**. Real measured percentage is **49.92%** on all non-null rows (and 49.91% on reported-only rows). The classification problem is nearly 50/50 balanced!
+   - Owner UI Claim "26.4 min average delay": **MISMATCH**. Real measured mean delay is **38.22 min** (median: 17.0 min).
+5. **Validity & Integrity:**
+   - Sequence uniqueness: 0 duplicate `(train_number, start_date, seq)` records.
+   - Timetable integrity: 0 occurrences of `scheduled_departure < scheduled_arrival`.
+   - Formats: 0 non-numeric train numbers, 0 non-alphanumeric station codes.
+6. **Label Availability:** Origin stops (`seq=1`) naturally lack arrival delay (trains depart, not arrive); terminus stops naturally lack departure delay. Origin stops must be treated carefully in Phase 3.
 
 ---
 
@@ -264,4 +269,4 @@ See `task.md` Section 2 for the full colour palette, watermark spec, sidebar lay
 - Regression model for delay magnitude (not just binary classification).
 - spaCy NER for richer entity extraction.
 - User-facing export (CSV/PDF of analytics).
-- TypeScript migration for the frontend.
+- ~~TypeScript migration~~ — Frontend uses plain JavaScript (JSX); TypeScript is NOT used (final decision, Phase 2).
