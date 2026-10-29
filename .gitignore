@@ -1,0 +1,82 @@
+# =============================================================================
+# RailSense — .gitignore
+# =============================================================================
+
+# ---------- Environment / Secrets (NEVER commit) ----------
+.env
+.env.*
+!.env.example
+
+# TLS / certificate files
+*.pem
+*.crt
+*.key
+*.ca-bundle
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env_local/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ---------- Model binaries (too large for git) ----------
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.onnx
+
+# Small model metadata JSON files ARE tracked (no rule to exclude them)
+
+# ---------- Local data dumps (never commit raw data) ----------
+*.csv
+*.parquet
+*.feather
+*.arrow
+data/
+raw/
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+*.ipynb_metadata/
+
+# ---------- Node / Frontend ----------
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+.pnp
+.pnp.js
+
+# ---------- Build / IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.log
+tmp/
+temp/

@@ -1,0 +1,43 @@
+# =============================================================================
+# RailSense — Backend Python Requirements
+# =============================================================================
+# Versions are intentionally UNPINNED in this file.
+# They will be pinned (requirements-lock.txt or requirements.txt frozen)
+# in Phase 2 after installation is verified in the target environment.
+# =============================================================================
+
+# --- Web framework ---
+flask
+flask-cors
+
+# --- Database ---
+sqlalchemy
+pymysql
+cryptography          # required for PyMySQL TLS/SSL support
+
+# --- Configuration ---
+python-dotenv
+
+# --- Data processing ---
+pandas
+numpy
+
+# --- Machine Learning ---
+scikit-learn
+lightgbm              # install may be skipped if platform incompatible; verify in Phase 2
+joblib                # model serialisation (binaries are gitignored)
+
+# --- Visualisation (server-side EDA plots) ---
+matplotlib
+seaborn
+
+# --- NLP / fuzzy matching ---
+rapidfuzz
+# spacy is optional — install only if needed in Phase 9; omitted here to keep
+# the environment lean. Add "spacy" and a model download step if adopted.
+
+# --- Explainability ---
+shap                  # optional; install may be skipped if incompatible; verify in Phase 2
+
+# --- Testing ---
+pytest
