@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 2 of 11 complete — TiDB connectivity layer & comprehensive data audit verified.**
+> **Status: Phase 3 of 11 complete — Data validation, EDA, leakage-safe feature engineering & prediction task definition verified.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, and a local NLP query interface — all behind a Flask API served to a React dashboard.
 
@@ -160,13 +160,14 @@ Key variables:
 
 ---
 
-## Model Limitations
+## Model Formulation & Split Design (Phase 3 Verified)
 
-> **No model has been trained yet.** This section will be filled in Phase 4.
+> **No model has been trained yet.** Training and evaluation occur in Phase 4.
 
-- Prediction target TBD (candidate: `arrival_delay_min > 15`).
-- Features TBD pending Phase 3 EDA.
-- Evaluation strategy: temporal or train-grouped split (not random row split) due to correlated rows within a journey and the narrow 19-day window.
+- **Primary Target:** Schedule-Time (Pre-Run) Binary Delay Prediction: `is_delayed = 1` if `arrival_delay_min > 15`, else `0` (49.92% base rate on eligible stops).
+- **Temporal Splitting Strategy:** Split chronologically by journey `start_date` (Warm-up: Oct 07; Train: Oct 08-20; Val: Oct 21-22; Test: Oct 23-24; Excluded/Censored: Oct 25).
+- **Anti-Leakage Protocol:** Multi-day journey stops (23.33% of stops occur on subsequent calendar days) are filtered out of historical aggregates via $\text{actual\_arrival} < \text{cutoff\_date}$.
+- **Features:** Scikit-learn pipeline in `backend/app/ml/features.py` (schedule-time cyclical features + Bayesian smoothed rolling priors).
 - Model card (`MODEL_CARD.md`) will be created in Phase 4.
 
 ---

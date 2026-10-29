@@ -19,6 +19,7 @@ python-dotenv==1.2.4
 # --- Data processing ---
 pandas==2.3.3
 numpy==2.2.6
+pyarrow==25.0.1
 
 # --- Machine Learning ---
 scikit-learn==1.7.2

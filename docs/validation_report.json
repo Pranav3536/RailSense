@@ -1,0 +1,369 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-29T19:49:38.062735",
+    "total_rows_evaluated": 2805574,
+    "cache_files_count": 19
+  },
+  "rules": {
+    "stop_key_uniqueness": {
+      "rule": "(train_number, start_date, seq) must uniquely identify each record",
+      "rows_affected": 0,
+      "action": "KEEP (Zero duplicates found)",
+      "justification": "Primary sequence key is 100% unique; sequence monotonicity is preserved."
+    },
+    "repeated_station_visits": {
+      "rule": "Flag repeated station visits within the same run (train_number, start_date, station_code)",
+      "rows_affected": 44136,
+      "action": "KEEP with composite key (train_number, start_date, seq)",
+      "justification": "Legitimate circular and loop train routes call at the same junction/station multiple times in one journey."
+    },
+    "label_eligibility": {
+      "rule": "Eligible for training label iff arrival_delay_min is non-null, arrival_reported==1, seq>1, and abs(delay)<=1440",
+      "rows_affected": 1032506,
+      "eligible_rows": 1773068,
+      "eligible_pct": 63.2,
+      "action": "EXCLUDE from training label set (retained in feature history)",
+      "justification": "Training target requires genuine, observed arrival at a non-origin station without date-wrap corruption.",
+      "status_cross_tab": [
+        {
+          "status": "cancelled",
+          "total_rows": 59219,
+          "eligible_labels": 0,
+          "null_delays": 59219
+        },
+        {
+          "status": "completed",
+          "total_rows": 2605787,
+          "eligible_labels": 1700018,
+          "null_delays": 905307
+        },
+        {
+          "status": "diverted",
+          "total_rows": 26828,
+          "eligible_labels": 16659,
+          "null_delays": 10165
+        },
+        {
+          "status": "incomplete",
+          "total_rows": 43870,
+          "eligible_labels": 13935,
+          "null_delays": 29886
+        },
+        {
+          "status": "not_started",
+          "total_rows": 5312,
+          "eligible_labels": 0,
+          "null_delays": 5290
+        },
+        {
+          "status": "partially_cancelled",
+          "total_rows": 64558,
+          "eligible_labels": 42456,
+          "null_delays": 22100
+        }
+      ],
+      "category_cross_tab": [
+        {
+          "category": "AMTB",
+          "total_rows": 8238,
+          "eligible_labels": 7055,
+          "null_delays": 1183
+        },
+        {
+          "category": "DMU",
+          "total_rows": 140225,
+          "eligible_labels": 80397,
+          "null_delays": 59819
+        },
+        {
+          "category": "DRNT",
+          "total_rows": 2103,
+          "eligible_labels": 1730,
+          "null_delays": 373
+        },
+        {
+          "category": "EMU",
+          "total_rows": 21500,
+          "eligible_labels": 11129,
+          "null_delays": 10367
+        },
+        {
+          "category": "GBR",
+          "total_rows": 4719,
+          "eligible_labels": 4234,
+          "null_delays": 485
+        },
+        {
+          "category": "JSH",
+          "total_rows": 11263,
+          "eligible_labels": 9389,
+          "null_delays": 1874
+        },
+        {
+          "category": "MEMU",
+          "total_rows": 415795,
+          "eligible_labels": 249068,
+          "null_delays": 166662
+        },
+        {
+          "category": "MEX",
+          "total_rows": 680214,
+          "eligible_labels": 571895,
+          "null_delays": 108249
+        },
+        {
+          "category": "PAS",
+          "total_rows": 363957,
+          "eligible_labels": 235974,
+          "null_delays": 127958
+        },
+        {
+          "category": "PEXP",
+          "total_rows": 453,
+          "eligible_labels": 324,
+          "null_delays": 118
+        },
+        {
+          "category": "RAJ",
+          "total_rows": 6319,
+          "eligible_labels": 5489,
+          "null_delays": 830
+        },
+        {
+          "category": "SHT",
+          "total_rows": 5504,
+          "eligible_labels": 4644,
+          "null_delays": 859
+        },
+        {
+          "category": "SUB",
+          "total_rows": 826844,
+          "eligible_labels": 313903,
+          "null_delays": 512709
+        },
+        {
+          "category": "SUF",
+          "total_rows": 247228,
+          "eligible_labels": 217500,
+          "null_delays": 29685
+        },
+        {
+          "category": "TEJ",
+          "total_rows": 712,
+          "eligible_labels": 558,
+          "null_delays": 154
+        },
+        {
+          "category": "TOD",
+          "total_rows": 49730,
+          "eligible_labels": 41812,
+          "null_delays": 7840
+        },
+        {
+          "category": "TRST",
+          "total_rows": 126,
+          "eligible_labels": 40,
+          "null_delays": 85
+        },
+        {
+          "category": "VNDB",
+          "total_rows": 19542,
+          "eligible_labels": 16940,
+          "null_delays": 2602
+        },
+        {
+          "category": "VNDM",
+          "total_rows": 667,
+          "eligible_labels": 605,
+          "null_delays": 62
+        },
+        {
+          "category": "VNDS",
+          "total_rows": 435,
+          "eligible_labels": 382,
+          "null_delays": 53
+        }
+      ],
+      "null_arrival_reported_explanation": "The 22,070 rows with NULL arrival_reported represent unmonitored or diverted segments. 100% of these rows have NULL arrival_delay_min and are excluded from label modeling."
+    },
+    "origin_terminus_resolution": {
+      "rule": "Validate scheduled arrival/departure null patterns against run origins and termini",
+      "rows_affected": 148376,
+      "action": "KEEP as domain feature (is_origin_stop = seq==1)",
+      "justification": "Of the 148,376 NULL scheduled_arrival rows, exactly 147,367 occur at seq=1 (matching all 147,367 unique runs). The remaining 1,009 rows are timetable gaps at intermediate stops across 864 runs.",
+      "total_runs": 147367,
+      "seq1_null_scheduled_arrival": 147367,
+      "intermediate_null_scheduled_arrival": 1009
+    },
+    "timestamp_sanity": {
+      "rule": "Verify chronological order of scheduled and actual times, and recompute delays",
+      "rows_affected": 822,
+      "action": "FLAG for inspection; KEEP",
+      "justification": "Rare operational oddities (e.g. 748 schedule timing errors and 74 actual timing reversals) are documented.",
+      "metrics": {
+        "sched_dep_before_arr_count": 748,
+        "act_dep_before_arr_count": 74,
+        "consistency_checked_rows": 1773607,
+        "exact_match_count": 1773607,
+        "exact_match_pct": 100.0,
+        "max_abs_diff": 0.0
+      }
+    },
+    "outliers": {
+      "rule": "FLAG arrival_delay_min < -1440.0 or > 1440.0, and seq > 200",
+      "rows_affected": 559,
+      "action": "FLAG; EXCLUDE from training label set only; do not delete from database",
+      "justification": "61 rows with delay < -1440 min are date-wrap artifacts (off by ~24h). 150 rows have extreme delays >24h. 348 rows have seq > 200 (e.g. train 13152 with corrupt seq=1071 at terminal stop CBH).",
+      "extreme_early_count": 61,
+      "extreme_late_count": 150,
+      "extreme_seq_count": 348
+    },
+    "edge_days_policy": {
+      "rule": "Detect left-truncation and right-censoring on collection boundary dates",
+      "rows_affected": 120095,
+      "action": "2026-10-07 used for history warm-up only. 2026-10-25 excluded from test evaluation.",
+      "justification": "2026-10-07 has only 1,034 runs (data extraction started late in the day). 2026-10-25 has only 5,712 runs and suffers right-censoring (multi-day journeys cut off at collection end). Neither represents a full, uncorrupted operational day.",
+      "days": {
+        "2026-10-07": {
+          "total_rows": 22377,
+          "runs": 1034,
+          "labelled_rows": 18792,
+          "labelled_pct": 83.98
+        },
+        "2026-10-08": {
+          "total_rows": 155680,
+          "runs": 8181,
+          "labelled_rows": 94877,
+          "labelled_pct": 60.94
+        },
+        "2026-10-09": {
+          "total_rows": 162922,
+          "runs": 8385,
+          "labelled_rows": 99869,
+          "labelled_pct": 61.3
+        },
+        "2026-10-10": {
+          "total_rows": 161401,
+          "runs": 8285,
+          "labelled_rows": 96948,
+          "labelled_pct": 60.07
+        },
+        "2026-10-11": {
+          "total_rows": 155188,
+          "runs": 7901,
+          "labelled_rows": 97502,
+          "labelled_pct": 62.83
+        },
+        "2026-10-12": {
+          "total_rows": 160744,
+          "runs": 8405,
+          "labelled_rows": 102291,
+          "labelled_pct": 63.64
+        },
+        "2026-10-13": {
+          "total_rows": 159130,
+          "runs": 8324,
+          "labelled_rows": 100309,
+          "labelled_pct": 63.04
+        },
+        "2026-10-14": {
+          "total_rows": 159170,
+          "runs": 8342,
+          "labelled_rows": 100834,
+          "labelled_pct": 63.35
+        },
+        "2026-10-15": {
+          "total_rows": 159814,
+          "runs": 8361,
+          "labelled_rows": 101525,
+          "labelled_pct": 63.53
+        },
+        "2026-10-16": {
+          "total_rows": 160539,
+          "runs": 8435,
+          "labelled_rows": 102760,
+          "labelled_pct": 64.01
+        },
+        "2026-10-17": {
+          "total_rows": 158646,
+          "runs": 8319,
+          "labelled_rows": 101001,
+          "labelled_pct": 63.66
+        },
+        "2026-10-18": {
+          "total_rows": 152356,
+          "runs": 7922,
+          "labelled_rows": 99723,
+          "labelled_pct": 65.45
+        },
+        "2026-10-19": {
+          "total_rows": 159957,
+          "runs": 8426,
+          "labelled_rows": 103115,
+          "labelled_pct": 64.46
+        },
+        "2026-10-20": {
+          "total_rows": 158689,
+          "runs": 8341,
+          "labelled_rows": 101718,
+          "labelled_pct": 64.1
+        },
+        "2026-10-21": {
+          "total_rows": 158996,
+          "runs": 8361,
+          "labelled_rows": 101700,
+          "labelled_pct": 63.96
+        },
+        "2026-10-22": {
+          "total_rows": 159322,
+          "runs": 8368,
+          "labelled_rows": 102676,
+          "labelled_pct": 64.45
+        },
+        "2026-10-23": {
+          "total_rows": 157966,
+          "runs": 8378,
+          "labelled_rows": 101998,
+          "labelled_pct": 64.57
+        },
+        "2026-10-24": {
+          "total_rows": 144959,
+          "runs": 7887,
+          "labelled_rows": 92012,
+          "labelled_pct": 63.47
+        },
+        "2026-10-25": {
+          "total_rows": 97718,
+          "runs": 5712,
+          "labelled_rows": 53957,
+          "labelled_pct": 55.22
+        }
+      }
+    },
+    "selection_bias": {
+      "rule": "Characterize distribution shift between reported and unreported rows",
+      "action": "DOCUMENT honestly in model cards and limitations",
+      "justification": "Unreported rows have higher average seq numbers (mean seq 22.8 vs 16.8) and higher cancellation rates. ML models validate performance on reported observations only.",
+      "comparison": {
+        "total_reported": 1773599,
+        "total_unreported": 1031975,
+        "top_categories_reported": {
+          "MEX": 0.32254472403288453,
+          "SUB": 0.17701295501407027,
+          "MEMU": 0.14046410716289306,
+          "PAS": 0.13306615531470192,
+          "SUF": 0.12269289732346489
+        },
+        "top_categories_unreported": {
+          "SUB": 0.4970023498631265,
+          "MEMU": 0.1615039124009787,
+          "PAS": 0.1239865306814603,
+          "MEX": 0.10479808134886988,
+          "DMU": 0.05797039656968434
+        },
+        "mean_seq_reported": 15.16,
+        "mean_seq_unreported": 12.21
+      }
+    }
+  }
+}

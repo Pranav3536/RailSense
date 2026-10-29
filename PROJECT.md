@@ -112,62 +112,51 @@ Full execution artifacts are recorded in `docs/data_audit.json` and `docs/data_a
 
 ---
 
-## 6. Target Definition
+## 6. Target Definition (Finalized in Phase 3)
 
-**Candidate target:** `arrival_delay_min > 15` → binary label `is_significantly_delayed` (1 = late by more than 15 min, 0 = on time or less than 15 min late).
+**Formulation:** Schedule-Time (Pre-Run) Binary Delay Prediction:
+$$\text{is\_delayed} = \mathbb{I}(\text{arrival\_delay\_min} > 15)$$
 
-> **TBD pending Phase 3 EDA.** The threshold (15 minutes) and the choice of `arrival_delay_min` vs `departure_delay_min` will be confirmed only after examining:
-> - The delay distribution (percentiles, skew, class balance at different thresholds).
-> - NULL rate in the target column (rows with NULL target must be excluded or imputed deliberately).
-> - Whether the problem is better framed as regression or classification.
-
----
-
-## 7. Feature Engineering (TBD — Phase 3)
-
-> All features below are CANDIDATES. Final set determined after EDA and leakage review.
-
-### Leakage-Prevention Rules (non-negotiable)
-- **NEVER use `actual_arrival`, `actual_departure` as features** — they are the result of the event being predicted.
-- **NEVER use `arrival_delay_min` or `departure_delay_min` directly as features** — they are or derive from the label.
-- **NEVER use `run_quality`** as a feature if it is computed from the same journey's outcomes.
-- Historical aggregates (e.g., average delay for this train over prior dates) must be computed using only data from **earlier** dates, not the current row's date.
-- Preprocessing (scalers, encoders) must be fitted on training data only and applied to validation/test data.
-
-### Candidate Feature Groups
-| Group | Candidate Features | Leakage Risk |
-|-------|--------------------|--------------|
-| Schedule | `scheduled_arrival` hour, `scheduled_departure` hour, day of week, weekend flag | None |
-| Journey position | `seq` (station sequence number), is_first_stop, is_last_stop | None |
-| Train identity | `train_number` (encoded), `category` (encoded) | None |
-| Route | `station_code` (encoded or embedded) | None |
-| Historical aggregates | Mean/median delay for this `train_number` on prior dates | Must use prior-date-only data |
-| Historical aggregates | Mean delay at this `station_code` on prior dates | Must use prior-date-only data |
-| Lag features | Delay at previous station in this run (TBD — careful with ordering) | Moderate — assess carefully |
+- **Primary Target:** Binary indicator where `is_delayed = 1` if `arrival_delay_min > 15`, else `0`.
+- **Target Eligibility Masking:** Evaluated on rows where `arrival_delay_min IS NOT NULL`, `arrival_reported == 1`, `seq > 1` (origin stops excluded from arrival), and $|\text{arrival\_delay\_min}| \le 1440$ min (filters 211 date-wrap anomalies).
+- **Class Balance:** Exactly **49.92%** delayed > 15 min on eligible records.
+- **Negative Delay Handling:** Valid operational early arrivals are preserved and assigned to class `0` (never clipped).
 
 ---
 
-## 8. ML Experiment Plan
+## 7. Feature Engineering & Anti-Leakage Protocol (Finalized in Phase 3)
+
+Implemented in `backend/app/ml/features.py` using scikit-learn transformers:
+- **Schedule-Time Features:** `scheduled_hour`, `sin_hour`, `cos_hour`, `day_of_week`, `sin_dow`, `cos_dow`, `is_weekend`, `is_night`, `seq`, `log_seq`, `is_origin_adjacent`, `is_deep_journey`, and one-hot train categories.
+- **Historical Rolling Priors:** Trailing historical aggregates smoothed with empirical Bayesian shrinkage: `train_hist_delay_rate`, `train_hist_mean_delay`, `station_hist_delay_rate`, `station_hist_mean_delay`, `category_prior_rate`, `category_prior_mean`.
+- **Anti-Leakage Rule:** To eliminate multi-day journey lookahead (23.33% of stops occur on subsequent days), historical aggregates strictly enforce $\text{actual\_arrival} < \text{split\_cutoff\_date}$.
+- **Banned Columns:** `actual_arrival`, `actual_departure`, `departure_delay_min`, `arrival_reported`, `departure_reported`, `status`, `run_quality`.
+
+---
+
+## 8. ML Experiment Plan & Split Strategy (Finalized in Phase 3)
 
 ### Evaluation Strategy
-- **Do NOT use random row splits.** Rows within the same train run are correlated.
-- **Preferred: temporal split** — Train on earlier dates, validate/test on later dates.
-- **Alternative: train-grouped split** — Hold out entire train numbers.
-- The final strategy will be decided in Phase 3 based on data distribution.
+- **Strict Temporal Split by `start_date`:**
+  - **Warm-Up:** `2026-10-07` (1,034 runs, 18k stops) — used strictly for rolling lag calculation.
+  - **Train Split:** `2026-10-08` to `2026-10-20` (13 days, ~1.3M labelled stops).
+  - **Validation Split:** `2026-10-21` to `2026-10-22` (2 days, 204,308 stops).
+  - **Test Split:** `2026-10-23` to `2026-10-24` (2 days, 193,965 stops).
+  - **Excluded / Censored:** `2026-10-25` (right-censored collection cut-off).
+- Zero run overlap across splits.
+- Cross-validation: Expanding-window rolling-origin temporal CV across train splits.
 
-### Experiment Progression
+### Experiment Progression (Phase 4)
 | Step | Model | Purpose |
 |------|-------|---------|
-| 1 | Majority-class / prior probability baseline | Sanity check; all metrics must beat this |
-| 2 | Logistic Regression | Interpretable linear baseline |
-| 3 | Random Forest | Non-linear; built-in feature importance |
-| 4 | LightGBM | High-performance; target for production if compatible |
+| 1 | Global Majority & Category-Prior Lookup | Sanity check baselines; all ML models must beat these |
+| 2 | Logistic Regression (L2) | Interpretable linear baseline |
+| 3 | Random Forest | Non-linear ensemble; tree feature importance |
+| 4 | LightGBM | High-performance gradient boosted decision trees |
 
-### Metrics
-- **Primary:** F1-score (macro or positive-class, TBD based on class balance)
-- **Secondary:** Precision, Recall, PR-AUC (average precision), Confusion Matrix
-- **Why not just Accuracy:** Class imbalance expected; accuracy is misleading.
-- **SHAP:** Feature attribution for the best model (Phase 4).
+### Fixed Metrics for Phase 4
+- **Primary Selection Metric:** PR-AUC (Average Precision)
+- **Secondary Metrics:** ROC-AUC, F1-Score (Macro & Positive), Precision @ Recall $\ge$ 0.80, Brier Score / Calibration Error.
 
 ### Model Artefacts
 - Model binaries (`.joblib`) → gitignored; stored in `backend/models/`

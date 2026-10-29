@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED_LEAKAGE_SAFE",
+  "feature_count": 28,
+  "feature_names": [
+    "scheduled_hour",
+    "sin_hour",
+    "cos_hour",
+    "day_of_week",
+    "sin_dow",
+    "cos_dow",
+    "is_weekend",
+    "is_night",
+    "seq",
+    "log_seq",
+    "is_origin_adjacent",
+    "is_deep_journey",
+    "cat_SUB",
+    "cat_MEX",
+    "cat_SUF",
+    "cat_PAS",
+    "cat_MEMU",
+    "cat_DMU",
+    "cat_VNDB",
+    "cat_SHT",
+    "cat_TOD",
+    "cat_OTHER",
+    "category_prior_rate",
+    "category_prior_mean",
+    "train_hist_delay_rate",
+    "train_hist_mean_delay",
+    "station_hist_delay_rate",
+    "station_hist_mean_delay"
+  ],
+  "partitions": {
+    "train_sample": {
+      "rows": 62688,
+      "delayed_rate": 0.5075133996937213,
+      "mean_delay_min": 39.47190856933594,
+      "null_values": 0
+    },
+    "validation": {
+      "rows": 204308,
+      "delayed_rate": 0.48506666405622884,
+      "mean_delay_min": 35.7175178527832,
+      "null_values": 0
+    },
+    "test": {
+      "rows": 193965,
+      "delayed_rate": 0.4919856675173356,
+      "mean_delay_min": 34.335086822509766,
+      "null_values": 0
+    }
+  },
+  "target_correlations": {
+    "train_hist_delay_rate": 0.5831385791268815,
+    "station_hist_delay_rate": 0.4972511292960293,
+    "station_hist_mean_delay": 0.3838499537905462,
+    "train_hist_mean_delay": 0.35736018818485904,
+    "category_prior_rate": 0.3148210158853313,
+    "cat_SUB": -0.2997486193964368,
+    "category_prior_mean": 0.23986756583274635,
+    "log_seq": 0.22913752443242566,
+    "seq": 0.20506904479610658,
+    "is_origin_adjacent": -0.16233883347240646,
+    "is_deep_journey": 0.14742257388866448,
+    "cat_MEX": 0.09850321122479959,
+    "cat_TOD": 0.07627909789752367,
+    "cat_MEMU": 0.07358053929069777,
+    "cat_SUF": 0.055866829224469984,
+    "cat_VNDB": -0.04599878725412269,
+    "sin_hour": -0.045020327230400246,
+    "cos_hour": 0.03882905338706266,
+    "cat_PAS": 0.03714811381991134,
+    "cat_OTHER": 0.02546877044104902,
+    "scheduled_hour": 0.024511443446187657,
+    "is_night": 0.020283795141641164,
+    "cos_dow": -0.013258678360981655,
+    "day_of_week": 0.0130785893582056,
+    "cat_SHT": -0.011676216817733264,
+    "sin_dow": -0.011189934730589747,
+    "is_weekend": 0.0077344705601688395,
+    "cat_DMU": 0.0036692528796711593
+  },
+  "historical_prior_stats": {
+    "global_delay_rate": 0.5031762802701172,
+    "global_mean_delay": 38.7648811340332,
+    "trains_tracked": 10568,
+    "stations_tracked": 6491,
+    "categories_tracked": 20
+  }
+}

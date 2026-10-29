@@ -174,13 +174,13 @@ Credentials are passed ONLY via environment variables (`backend/.env`). They mus
 
 ---
 
-## 8. Pending Tasks (Phase 3+)
+## 8. Pending Tasks (Phase 4+)
 
-- **Phase 3:** Exploratory Data Analysis (EDA) scripts and plots in `docs/eda/`
-- **Phase 3:** Deep dive into delay propagation across stops in sequence
-- **Phase 3:** Finalise prediction target formulation (binary >15 min vs multi-class vs regression)
-- **Phase 3:** Finalise feature set and temporal validation split strategy (Days 1-14 train, 15-16 val, 17-19 test)
-- **Phase 4:** ML model training (Baseline → Logistic Regression → Random Forest → LightGBM)
+- **Phase 3 (COMPLETE):** Exploratory Data Analysis (EDA) scripts and plots in `docs/eda/`
+- **Phase 3 (COMPLETE):** Deep dive into delay propagation across stops in sequence
+- **Phase 3 (COMPLETE):** Finalise prediction target formulation (binary >15 min vs multi-class vs regression)
+- **Phase 3 (COMPLETE):** Finalise feature set and temporal validation split strategy (Days 1-14 train, 15-16 val, 17-19 test)
+- **Phase 4 (NEXT):** ML model training (Baseline → Logistic Regression → Random Forest → LightGBM)
 - **Phase 4:** Model evaluation, SHAP explainability, and `MODEL_CARD.md`
 - **Phase 5:** Flask REST API endpoints and swagger/OpenAPI docs
 - **Phases 6–11:** React UI, QA, deployment
@@ -191,10 +191,13 @@ Credentials are passed ONLY via environment variables (`backend/.env`). They mus
 
 | Issue | Status | Resolution / Notes |
 |-------|--------|-------------------|
-| Data window is only 19 calendar days | Manageable constraint | Limits multi-month seasonality. Evaluation must use temporal train/val/test splits within the 19 days. |
+| Data window is only 19 calendar days | Manageable constraint | Limits multi-month seasonality. Evaluation uses temporal train/val/test splits within the 19 days. |
 | Dates are in October 2026 | Documented caveat | Prospective/synthetic timestamps; dataset is an observed research benchmark. |
-| Owner UI Claims mismatch real data | Resolved / Documented | Audit proved Delayed > 15m is **49.92%** (not 41.8%), and Avg Delay is **38.22 min** (not 26.4 min). Real numbers must be shown in UI. |
-| Origin stops (`seq=1`) have NULL arrival delay | Expected domain behavior | Trains depart from origin; they do not arrive. Exclude origin stops from arrival delay ML tasks. |
+| Owner UI Claims mismatch real data | Resolved / Documented | Audit proved Delayed > 15m is **49.92%** (not 41.8%), and Avg Delay is **38.22 min** (not 26.4 min). Real numbers used. |
+| Origin stops (`seq=1`) have NULL arrival delay | Resolved | Exactly 147,367 NULL arrivals correspond to `seq=1` origin stops (1-to-1 match with runs). Excluded from arrival delay tasks. |
+| Intermediate timetable gaps | Resolved | 1,009 NULL scheduled arrival intermediate stops identified across 864 runs. |
+| Extreme delay date-wrap outliers | Resolved | 61 rows < -1440m and 150 rows > 1440m masked out of label set (0.012%). |
+| In-flight journey leakage trap | Resolved | 23.33% of stops occur after start_date; anti-leakage rule strictly requires `actual_arrival < cutoff_date`. |
 | Circular routes visit same station twice | Expected domain behavior | 22,064 records have duplicate `(train, date, station)` but sequence `seq` is unique. Use `seq` for uniqueness. |
 
 ---
@@ -217,6 +220,52 @@ See `DECISIONS.md` for full rationale.
 - **D-13:** TLS with certificate verification always ON (`certifi` CA bundle).
 - **D-14:** Run defined as `(train_number, start_date)`.
 - **D-15:** Deterministic 100k-row sampling (`ORDER BY id LIMIT 100000`) for consistency verification.
+- **D-16:** Local Parquet Extraction Cache for EDA & ML Modeling (`backend/data_cache/`, gitignored).
+- **D-17:** Schedule-Time Binary Classification Target at >15 Min Threshold (`arrival_delay_min > 15`).
+- **D-18:** Temporal Split Protocol (Oct 07 warmup, Oct 08-20 train, Oct 21-22 val, Oct 23-24 test, Oct 25 censored) & Multi-Day In-Flight Anti-Leakage Rule.
+- **D-19:** Explicit Validation & Label Eligibility Masking (No silent row deletion; 1.77M eligible stops).
+- **D-20:** Empirical Bayesian Smoothing for Cold-Start Trains ($m=10$) and Stations ($m=20$).
+
+---
+
+## 11. Files Created or Modified in Phase 3
+
+```
+c:\RailSense\
+├── backend/
+│   ├── app/
+│   │   └── ml/
+│   │       ├── __init__.py            [CREATED]
+│   │       ├── validation.py          [CREATED — validation rules and eligibility masks]
+│   │       └── features.py            [CREATED — schedule-time & Bayesian prior transformers]
+│   ├── scripts/
+│   │   ├── extract_data.py            [CREATED — extracts 2.8M rows to 19 daily parquet files]
+│   │   ├── run_validation.py          [CREATED — validation runner generating json & md reports]
+│   │   ├── run_eda.py                 [CREATED — generates 8 publication plots & eda_report.md]
+│   │   └── build_features.py          [CREATED — builds train/val/test matrices & feature summary]
+│   └── tests/
+│       ├── test_validation.py         [CREATED — 6 unit tests for validation & anomaly flags]
+│       └── test_features.py           [CREATED — 3 unit tests for feature extraction & smoothing]
+├── docs/
+│   ├── validation_report.json         [CREATED — complete validation metrics]
+│   ├── validation_report.md           [CREATED — detailed validation documentation]
+│   ├── eda/
+│   │   ├── 01_delay_distribution.png  [CREATED — 300 DPI distribution chart]
+│   │   ├── 02_delay_by_hour_and_dow.png [CREATED — 300 DPI temporal trends]
+│   │   ├── 03_delay_by_category.png   [CREATED — 300 DPI category disparity chart]
+│   │   ├── 04_delay_by_sequence_position.png [CREATED — 300 DPI seq delay accumulation]
+│   │   ├── 05_station_delay_hotspots.png [CREATED — 300 DPI station hotspot & punctual rankings]
+│   │   ├── 06_train_persistence.png   [CREATED — 300 DPI day-to-day lag correlation]
+│   │   ├── 07_within_run_propagation.png [CREATED — 300 DPI en-route propagation lift]
+│   │   ├── 08_label_missingness.png   [CREATED — 300 DPI reporting missingness]
+│   │   └── eda_stats.json             [CREATED — numerical backing statistics]
+│   ├── eda_report.md                  [CREATED — full EDA report with numbers and caveats]
+│   ├── task_definition.md             [CREATED — formal schedule-time prediction specification]
+│   ├── split_design.md                [CREATED — chronological split and anti-leakage rules]
+│   ├── feature_catalog.md             [CREATED — taxonomy of allowed and banned features]
+│   ├── feature_summary.json           [CREATED — verified shapes, 0 nulls, correlations]
+│   └── PHASE3_SUMMARY_FOR_CLAUDE.md   [CREATED — executive summary of all phase 3 findings]
+```
 
 ---
 

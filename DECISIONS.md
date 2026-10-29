@@ -20,9 +20,14 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-10 | Monorepo layout (backend + frontend + docs + notebooks) | Phase 1 |
 | D-11 | Frontend uses plain JavaScript (JSX), NOT TypeScript | Phase 2 |
 | D-12 | Read-only query guard for all DB access | Phase 2 |
-| D-13 | TLS with certificate verification always ON | Phase 2 |
+| D-13 | TLS With Certificate Verification Always ON | Phase 2 |
 | D-14 | Run defined as (train_number, start_date) | Phase 2 |
-| D-15 | Deterministic 100k-row sampling for delay consistency check | Phase 2 |
+| D-15 | Deterministic 100k-Row Sampling for Delay Consistency Check | Phase 2 |
+| D-16 | Local Parquet Extraction Cache for EDA & ML Modeling | Phase 3 |
+| D-17 | Schedule-Time Binary Classification Target at >15 Min Threshold | Phase 3 |
+| D-18 | Temporal Split Protocol & Multi-Day In-Flight Anti-Leakage Rule | Phase 3 |
+| D-19 | Explicit Validation & Label Eligibility Masking (No Silent Row Deletion) | Phase 3 |
+| D-20 | Empirical Bayesian Smoothing for Cold-Start Trains and Stations | Phase 3 |
 
 ---
 
@@ -288,3 +293,63 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 **Trade-offs:**
 - The sample covers only ~3.6% of rows; edge cases in the tail may be missed. This is acceptable for an audit / EDA purpose; a full check can be done in Phase 3 if needed.
 - Using the first 100k by id may not be representative of the full distribution if data was loaded in non-random order. The limitation is noted in the audit output.
+
+---
+
+## D-16 — Local Parquet Extraction Cache for EDA & ML Modeling
+
+**Date decided:** 2026-10-29 (Phase 3)
+
+**Decision:** Read-only full extraction of all 2,805,574 rows from TiDB Cloud partitioned into 19 daily parquet files (`backend/data_cache/train_records_{date}.parquet`, Snappy-compressed, ~44.6 MB total) strictly git-ignored. All downstream EDA, feature computation, and model training iterate over local parquet files without burdening TiDB Cloud.
+
+**Rationale:**
+- Repeated full-table scans across 2.8M rows risk hitting TiDB Cloud free-tier query/RU quota limits and incurring latency.
+- Columnar parquet reads are orders of magnitude faster (seconds vs minutes) and memory-bounded.
+- TiDB remains the authoritative primary database of record.
+
+---
+
+## D-17 — Schedule-Time Binary Classification Target at >15 Min Threshold
+
+**Date decided:** 2026-10-29 (Phase 3)
+
+**Decision:** The primary machine learning target is binary delay classification: $\text{is\_delayed} = 1$ if $\text{arrival\_delay\_min} > 15$, else $0$. Models operate in a **Schedule-Time (Pre-Run)** setting, using only scheduled timetable attributes and strictly historical rolling priors.
+
+**Rationale:**
+- 15 minutes aligns with Indian Railways punctuality tolerance thresholds.
+- Pre-run prediction offers maximum utility for passengers planning trips prior to departure.
+- En-route prediction is strictly segregated as an optional secondary task.
+
+---
+
+## D-18 — Temporal Split Protocol & Multi-Day In-Flight Anti-Leakage Rule
+
+**Date decided:** 2026-10-29 (Phase 3)
+
+**Decision:** Splitting is performed chronologically on journey `start_date`:
+- Warm-up: `2026-10-07` (1 day, 18k labelled rows; historical warm-up only)
+- Train: `2026-10-08` to `2026-10-20` (13 days, ~1.3M labelled rows)
+- Validation: `2026-10-21` to `2026-10-22` (2 days, ~204k labelled rows)
+- Test: `2026-10-23` to `2026-10-24` (2 days, ~194k labelled rows)
+- Excluded: `2026-10-25` (right-censored collection cut-off).
+To prevent multi-day journey leakage (where 23.3% of stops occur on subsequent calendar days), historical feature aggregations strictly enforce $\text{actual\_arrival} < \text{cutoff\_date}$.
+
+---
+
+## D-19 — Explicit Validation & Label Eligibility Masking (No Silent Row Deletion)
+
+**Date decided:** 2026-10-29 (Phase 3)
+
+**Decision:** Data validation rules mask rows for evaluation without deleting them from the database:
+- Eligible label mask: `arrival_delay_min IS NOT NULL`, `arrival_reported == 1`, `seq > 1` (origin stops cannot have arrival), and $|\text{arrival\_delay\_min}| \le 1440$ min (filters 211 corrupt date-wrap / 24h+ anomalies).
+- Negative delays are valid operational early arrivals and are never clipped.
+- Duplicate stop keys `(train_number, start_date, seq)` are 0; circular repeated stations `(train_number, start_date, station_code)` (22,064 rows) are preserved.
+
+---
+
+## D-20 — Empirical Bayesian Smoothing for Cold-Start Trains and Stations
+
+**Date decided:** 2026-10-29 (Phase 3)
+
+**Decision:** Unseen or low-support trains in validation/test splits are smoothed via Laplace/Bayesian shrinkage: train priors shrink toward category priors with weight $m=10$; station priors shrink toward global priors with weight $m=20$. Zero test rows are dropped due to missing prior history.
+
