@@ -36,7 +36,7 @@ export function CardHeader({ children, className = '', ...props }) {
 
 export function CardTitle({ children, className = '', as: Component = 'h3', ...props }) {
   return (
-    <Component className={`text-base font-semibold text-slate-900 ${className}`} {...props}>
+    <Component className={`text-lg font-semibold text-slate-900 ${className}`} {...props}>
       {children}
     </Component>
   );
@@ -44,7 +44,7 @@ export function CardTitle({ children, className = '', as: Component = 'h3', ...p
 
 export function CardDescription({ children, className = '', ...props }) {
   return (
-    <p className={`text-xs text-slate-500 mt-0.5 ${className}`} {...props}>
+    <p className={`text-sm text-slate-500 mt-1 ${className}`} {...props}>
       {children}
     </p>
   );

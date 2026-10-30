@@ -26,9 +26,9 @@ export function StatCard({
 
   return (
     <Card className={`relative overflow-hidden ${className}`} {...props}>
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-semibold tracking-wide text-slate-500 truncate">
             {label}
           </span>
           {definition && (
@@ -38,37 +38,37 @@ export function StatCard({
           )}
         </div>
         {Icon && (
-          <div className="p-2 rounded-lg bg-slate-50 border border-slate-100 text-slate-600 flex-shrink-0">
-            <Icon size={16} aria-hidden="true" />
+          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 flex-shrink-0">
+            <Icon size={20} aria-hidden="true" />
           </div>
         )}
       </div>
 
-      <div className="mt-3">
+      <div className="mt-4">
         {loading ? (
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-28" />
-            <Skeleton className="h-4 w-16" />
+          <div className="space-y-2.5">
+            <Skeleton className="h-10 w-36" />
+            <Skeleton className="h-5 w-20" />
           </div>
         ) : error ? (
-          <div className="flex items-center gap-2 py-2 text-red-600 text-xs">
-            <AlertTriangle size={16} className="flex-shrink-0" />
+          <div className="flex items-center gap-2 py-2 text-red-600 text-sm">
+            <AlertTriangle size={18} className="flex-shrink-0" />
             <span className="truncate">{typeof error === 'string' ? error : 'Failed to load metric'}</span>
           </div>
         ) : (
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className={`text-2xl font-bold tracking-tight ${isValueEmpty ? 'text-slate-400 font-normal text-lg' : 'text-slate-900'}`}>
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className={`text-4xl font-bold tracking-tight tabular-nums ${isValueEmpty ? 'text-slate-400 font-normal text-xl' : 'text-slate-900'}`}>
               {isValueEmpty ? 'Not available' : value}
             </span>
             {unit && !isValueEmpty && (
-              <span className="text-xs font-medium text-slate-500">{unit}</span>
+              <span className="text-sm font-medium text-slate-500">{unit}</span>
             )}
           </div>
         )}
       </div>
 
       {delta && !loading && !error && (
-        <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-sm">
           {delta}
         </div>
       )}

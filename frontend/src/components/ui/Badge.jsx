@@ -30,9 +30,9 @@ const VARIANTS = {
 };
 
 const SIZES = {
-  sm: 'text-xs px-2 py-0.5',
-  md: 'text-xs px-2.5 py-1',
-  lg: 'text-sm px-3 py-1.5'
+  sm: 'text-xs px-2.5 py-1 min-h-[26px]',
+  md: 'text-sm px-3.5 py-1.5 min-h-[32px]',
+  lg: 'text-base px-4 py-2 min-h-[38px]'
 };
 
 /**
@@ -42,23 +42,23 @@ const SIZES = {
 export function Badge({
   children,
   variant = 'neutral',
-  size = 'sm',
+  size = 'md',
   dot = false,
   pulse = false,
   className = '',
   ...props
 }) {
   const currentVariant = VARIANTS[variant] || VARIANTS.neutral;
-  const currentSize = SIZES[size] || SIZES.sm;
+  const currentSize = SIZES[size] || SIZES.md;
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-medium rounded-full border ${currentVariant.badge} ${currentSize} ${className}`}
+      className={`inline-flex items-center gap-2 font-medium rounded-full border ${currentVariant.badge} ${currentSize} ${className}`}
       {...props}
     >
       {dot && (
         <span
-          className={`w-1.5 h-1.5 rounded-full ${currentVariant.dot} ${pulse ? 'animate-pulse' : ''}`}
+          className={`w-2 h-2 rounded-full ${currentVariant.dot} ${pulse ? 'animate-pulse' : ''}`}
           aria-hidden="true"
         />
       )}

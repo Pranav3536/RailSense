@@ -32,9 +32,9 @@ export function ModelLabPage() {
 
       <Card className="border-blue-100 bg-gradient-to-br from-white to-blue-50/20">
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
-              <FlaskConical size={20} />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
+              <FlaskConical size={24} />
             </div>
             <div>
               <CardTitle>Phase 8 Milestone: Model Evaluation Lab</CardTitle>
@@ -47,40 +47,40 @@ export function ModelLabPage() {
 
         <CardContent className="space-y-6">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3.5">
               Planned Evaluation Tools
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-3">
               {plannedFeatures.map((feat) => (
-                <li key={feat} className="flex items-start gap-2.5 text-xs text-slate-700">
-                  <CheckCircle2 size={15} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                <li key={feat} className="flex items-start gap-3 text-sm text-slate-700">
+                  <CheckCircle2 size={18} className="text-blue-500 flex-shrink-0 mt-0.5" />
                   <span>{feat}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="pt-4 border-t border-slate-100">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
-              <Server size={14} />
+          <div className="pt-5 border-t border-slate-100">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3.5 flex items-center gap-2">
+              <Server size={18} />
               Backend Benchmark Endpoints (Measured in Phase 4)
             </h4>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {plannedEndpoints.map((ep) => (
-                <div key={ep.path} className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs">
-                  <div className="flex items-center gap-2 mb-1">
+                <div key={ep.path} className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                  <div className="flex items-center gap-2.5 mb-1.5">
                     <span className="font-mono font-bold text-blue-600">{ep.method}</span>
-                    <span className="font-mono text-slate-800">{ep.path}</span>
+                    <span className="font-mono text-slate-800 font-medium">{ep.path}</span>
                   </div>
-                  <p className="text-slate-500 text-[11px]">{ep.desc}</p>
+                  <p className="text-slate-500 text-xs leading-relaxed">{ep.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-amber-50/60 border border-amber-200/80 text-amber-900 text-xs flex items-start gap-2">
+          <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 text-amber-950 text-sm flex items-start gap-3">
             <span className="font-semibold flex-shrink-0">Integrity Note:</span>
-            <span>
+            <span className="leading-relaxed">
               All evaluation metrics will load directly from the measured test-set results JSON generated during Phase 4.
               No static claims or fabricated benchmark rows exist in the client.
             </span>

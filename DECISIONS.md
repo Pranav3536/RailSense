@@ -40,6 +40,7 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-30 | Fixed UI Design System Palette & Surface Architecture | Phase 6 |
 | D-31 | Phase 6 Honest Placeholder Architecture & Zero Synthetic Claims | Phase 6 |
 | D-32 | Client-Side In-Flight Request Deduplication & TTL Caching | Phase 6 |
+| D-33 | Global UI Scale-Up (112.5% Root, Typography Tokens & Chart Theme) | Phase 6.1 |
 
 ---
 
@@ -485,6 +486,20 @@ No test metrics are ever reported for the deployment model.
 **Date decided:** 2026-10-30 (Phase 6)
 
 **Decision:** The frontend API fetch wrapper (`src/api/client.js`) implements an in-flight Promise map (`inFlightRequests`) to deduplicate simultaneous identical GET requests (mitigating React 18 StrictMode double-invocations), combined with configurable in-memory TTL caching. This protects the backend from superfluous requests and strictly respects the 120 req/min rate limit.
+
+---
+
+## D-33 — Global UI Scale-Up (112.5% Root, Typography Tokens & Recharts Theme)
+
+**Date decided:** 2026-10-30 (Phase 6.1)
+
+**Decision:** In response to owner feedback that UI text and controls appeared too small, the application is scaled up by +12.5% across all components:
+1. Root font-size is raised to `112.5%` (18px base) in `src/index.css` (with 106.25% / 17px fallback on phones under 400px width).
+2. The typography scale is standardized with strict minimum text thresholds: no meaningful text renders below `text-sm` (15.75px effective size); `text-xs` (13.5px) is restricted to decorative chips/mono tags.
+3. Desktop navigation sidebar is widened to `w-72` (288px) on desktop and `w-80` (320px) on xl screens; nav items are minimum 48px tall with 22px icons.
+4. All interactive buttons, triggers, and links enforce a minimum 44×44px hit area.
+5. Recharts default constants (`CHART_THEME`) are established in `src/components/charts/chartTheme.js` enforcing 14px axis ticks, tooltips, and legends with a 360px standard container height.
+
 
 
 

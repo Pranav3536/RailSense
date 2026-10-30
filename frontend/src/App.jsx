@@ -17,8 +17,8 @@ const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
 function PageFallback() {
   return (
     <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-      <Spinner size={28} />
-      <span className="text-xs text-slate-500 font-medium">Loading view...</span>
+      <Spinner size={32} />
+      <span className="text-sm text-slate-500 font-medium">Loading view...</span>
     </div>
   );
 }

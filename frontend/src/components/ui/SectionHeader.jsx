@@ -14,12 +14,12 @@ export function SectionHeader({
   return (
     <Component className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 ${className}`} {...props}>
       <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h2>
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h2>
           {badge}
         </div>
         {subtitle && (
-          <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{subtitle}</p>
+          <p className="text-sm text-slate-500 mt-1 leading-relaxed">{subtitle}</p>
         )}
       </div>
       {action && (

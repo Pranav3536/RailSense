@@ -89,13 +89,13 @@ function DatabaseStatusCard() {
 
   return (
     <div
-      className="p-3 rounded-lg bg-navy-800/80 border border-slate-700/60 text-xs shadow-inner"
+      className="p-3.5 rounded-xl bg-navy-800/90 border border-slate-700/80 shadow-inner"
       aria-live="polite"
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-1.5">
-          <StatusIcon size={13} className={statusConfig.color} aria-hidden="true" />
-          <span className="font-semibold text-slate-200">
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <div className="flex items-center gap-2 min-w-0">
+          <StatusIcon size={16} className={`${statusConfig.color} flex-shrink-0`} aria-hidden="true" />
+          <span className="font-semibold text-slate-200 text-sm truncate">
             {statusConfig.title}
           </span>
         </div>
@@ -103,15 +103,15 @@ function DatabaseStatusCard() {
           type="button"
           onClick={handleRefresh}
           disabled={isChecking}
-          className="text-slate-400 hover:text-white p-1 rounded hover:bg-slate-700/50 transition-colors disabled:opacity-50"
+          className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/60 transition-colors disabled:opacity-50 flex-shrink-0"
           aria-label="Refresh database status"
           title="Refresh connection status"
         >
-          <RefreshCw size={12} className={isChecking ? 'animate-spin' : ''} />
+          <RefreshCw size={15} className={isChecking ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-400 truncate font-mono">
+      <p className="text-xs text-slate-400 truncate font-mono">
         {statusConfig.desc}
       </p>
     </div>
@@ -125,34 +125,34 @@ function DatabaseStatusCard() {
 export function Sidebar({ onNavigate, className = '' }) {
   return (
     <aside
-      className={`w-64 bg-navy-900 border-r border-slate-800 flex flex-col h-full text-slate-100 ${className}`}
+      className={`w-72 xl:w-80 bg-navy-900 border-r border-slate-800 flex flex-col h-full text-slate-100 ${className}`}
       aria-label="Primary Navigation"
     >
-      {/* Brand & Dataset Header */}
-      <div className="p-5 border-b border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <TrainFront size={20} aria-hidden="true" />
+      {/* Brand & Dataset Header (Fixed Top) */}
+      <div className="p-5 border-b border-slate-800 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 flex-shrink-0">
+            <TrainFront size={24} aria-hidden="true" />
           </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight text-white leading-none">
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold tracking-tight text-white leading-none truncate">
               {APP_CONFIG.name}
             </h1>
-            <span className="text-[10px] text-blue-400 font-mono tracking-tight inline-block mt-1">
+            <span className="text-xs text-blue-300 font-mono tracking-tight inline-block mt-1.5 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700/60">
               {APP_CONFIG.versionPill}
             </span>
           </div>
         </div>
 
         {/* Dataset Pill */}
-        <div className="mt-3 inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-slate-300 border border-slate-700">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-          <span>{APP_CONFIG.datasetBadge}</span>
+        <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-medium bg-slate-800/90 text-slate-300 border border-slate-700">
+          <span className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" />
+          <span className="truncate">{APP_CONFIG.datasetBadge}</span>
         </div>
       </div>
 
-      {/* Nav Items List */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      {/* Nav Items List (Middle Scrollable) */}
+      <nav className="flex-1 px-3.5 py-4 space-y-1.5 overflow-y-auto">
         {NAV_ITEMS.map((item) => {
           const Icon = ICON_MAP[item.iconName] || LayoutDashboard;
 
@@ -162,62 +162,65 @@ export function Sidebar({ onNavigate, className = '' }) {
               to={item.path}
               onClick={onNavigate}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                `min-h-[48px] flex items-center gap-3.5 px-4 py-3 rounded-xl text-base font-medium transition-all ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-sm font-semibold'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                 }`
               }
             >
-              <Icon size={16} aria-hidden="true" className="flex-shrink-0" />
+              <Icon size={22} aria-hidden="true" className="flex-shrink-0" />
               <span className="truncate">{item.label}</span>
             </NavLink>
           );
         })}
       </nav>
 
-      {/* Truthful Status Card */}
-      <div className="p-3 border-t border-slate-800">
-        <DatabaseStatusCard />
-      </div>
+      {/* Pinned Footer (Database Status + Creator Cards) */}
+      <div className="flex-shrink-0 border-t border-slate-800 bg-navy-950/40">
+        {/* Truthful Status Card */}
+        <div className="p-3.5">
+          <DatabaseStatusCard />
+        </div>
 
-      {/* Creator & Maintainer Card */}
-      <div className="p-4 border-t border-slate-800 bg-navy-950/60">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-blue-400 flex-shrink-0">
-              {CREATOR_CONFIG.initials}
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-slate-200 truncate">
+        {/* Creator & Maintainer Card */}
+        <div className="p-4 border-t border-slate-800/80 bg-navy-950/80">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-sm font-bold text-blue-400 flex-shrink-0">
                 {CREATOR_CONFIG.initials}
-              </p>
-              <p className="text-[10px] text-slate-400 truncate">
-                {CREATOR_CONFIG.role}
-              </p>
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-200 truncate">
+                  {CREATOR_CONFIG.initials}
+                </p>
+                <p className="text-xs text-slate-400 truncate">
+                  {CREATOR_CONFIG.role}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <a
-              href={CREATOR_CONFIG.githubUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-              aria-label="GitHub Profile"
-              title="GitHub Profile"
-            >
-              <Github size={14} />
-            </a>
-            <a
-              href={CREATOR_CONFIG.tidbCloudUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-              aria-label="TiDB Cloud"
-              title="TiDB Cloud"
-            >
-              <Database size={14} />
-            </a>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <a
+                href={CREATOR_CONFIG.githubUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-slate-800/90 rounded-xl transition-colors"
+                aria-label="GitHub Profile"
+                title="GitHub Profile"
+              >
+                <Github size={18} />
+              </a>
+              <a
+                href={CREATOR_CONFIG.tidbCloudUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-slate-800/90 rounded-xl transition-colors"
+                aria-label="TiDB Cloud"
+                title="TiDB Cloud"
+              >
+                <Database size={18} />
+              </a>
+            </div>
           </div>
         </div>
       </div>

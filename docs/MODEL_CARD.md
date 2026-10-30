@@ -64,10 +64,10 @@ All metrics are programmatically measured and verified via `docs/phase5_prefligh
 | **Majority Prevalence** | Baseline | 0.4920 | 0.5000 | 0.6595 | 0.4920 | 1.0000 | 0.4920 | 0.2501 | 0.0127 |
 | **Category Prior Lookup** | Baseline | 0.5972 | 0.6539 | 0.7101 | 0.5755 | 0.9270 | 0.5802 | 0.2211 | 0.0086 |
 | **Train Historical Prior** | Baseline | 0.8082 | 0.8177 | 0.7330 | 0.7214 | 0.7450 | 0.6988 | 0.1738 | 0.0128 |
-| **Logistic Regression** | Schedule-Time | 0.8415 | 0.8462 | 0.7619 | 0.7462 | 0.7782 | 0.7349 | 0.1610 | 0.0260 |
-| **Random Forest (Bounded)** | Schedule-Time | 0.8488 | 0.8548 | 0.7686 | 0.7561 | 0.7816 | 0.7473 | 0.1555 | 0.0083 |
-| **LightGBM (Optimal Thresh 0.41)** | Schedule-Time | 0.8529 | 0.8604 | **0.7828** | 0.7252 | 0.8504 | 0.7542 | 0.1527 | 0.0170 |
-| **LightGBM + Calibrated (FINAL)** | Schedule-Time | **0.8482** | **0.8602** | **0.7782** | **0.7402** | **0.8203** | **0.7476** | **0.1536** | **0.0213** |
+| **Logistic Regression** | Schedule-Time | 0.8372 | 0.8462 | 0.7619 | 0.7462 | 0.7782 | 0.7349 | 0.1610 | 0.0260 |
+| **Random Forest (Bounded)** | Schedule-Time | 0.8477 | 0.8548 | 0.7686 | 0.7561 | 0.7816 | 0.7473 | 0.1555 | 0.0083 |
+| **LightGBM (Raw, Thresh 0.42)** | Schedule-Time | 0.8529 | 0.8604 | **0.7828** | 0.7252 | 0.8504 | 0.7542 | 0.1527 | 0.0170 |
+| **LightGBM + Calibrated (FINAL, Thresh 0.41)** | Schedule-Time | **0.8482** | **0.8602** | **0.7782** | **0.7402** | **0.8203** | **0.7476** | **0.1536** | **0.0213** |
 | *En-Route LightGBM (Formulation 2)* | *En-Route Only* | *0.9289* | *0.9278* | *0.8527* | *0.8384* | *0.8675* | *0.8972* | *0.1050* | *0.0122* |
 
 > [!NOTE]

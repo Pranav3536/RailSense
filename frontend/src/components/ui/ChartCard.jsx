@@ -3,11 +3,12 @@ import { Skeleton } from './Skeleton';
 import { ErrorState } from './ErrorState';
 import { EmptyState } from './EmptyState';
 import { DefinitionNote } from './DefinitionNote';
+import { CHART_THEME } from '../charts/chartTheme';
 
 /**
  * ChartCard Component
  * Consistent container for Recharts and analytical data visualizations
- * with accessibility fallbacks and uniform states.
+ * with accessibility fallbacks, standardized heights, and uniform states.
  */
 export function ChartCard({
   title,
@@ -22,7 +23,7 @@ export function ChartCard({
   onRetry,
   children,
   accessibleDescription,
-  height = 'h-64',
+  height = 'h-80 sm:h-96',
   className = '',
   ...props
 }) {
@@ -75,7 +76,10 @@ export function ChartCard({
             />
           </div>
         ) : (
-          <div className={`w-full ${height} relative`}>
+          <div
+            className={`w-full ${height} relative`}
+            style={{ minHeight: `${CHART_THEME.heights.standard}px` }}
+          >
             {accessibleDescription && (
               <div className="sr-only">
                 {accessibleDescription}

@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
  * Accessible loading indicator.
  */
 export function Spinner({
-  size = 20,
+  size = 24,
   className = '',
   label = 'Loading...',
   color = 'text-blue-600',

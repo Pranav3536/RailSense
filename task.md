@@ -457,13 +457,20 @@ pytest backend/tests/test_api_integration.py -v
 - Truthful database status card polling `/api/health/ready` with 4 verified states (`checking`, `connected`, `db_unavailable`, `unreachable`).
 - Resilient API client with in-flight Promise deduplication and GET TTL caching.
 - 6 honest placeholder tabs clearly labeled "Planned in Phase N" listing verified backend API endpoint contracts.
-- Frontend test suite (Vitest + Testing Library): 28 tests passing across 5 files, 0 lint warnings, production bundle built cleanly (197.4 kB).
-- Backend pytest suite intact: 103 passed, 4 skipped.
+
+**Phase 6.1 Status: COMPLETE (Verified UI Scale-Up)**
+- Raised root font-size knob from 16px (100%) to 18px (112.5%) in `src/index.css` (106.25% / 17px under 400px width). Proportional +12.5% scale applied globally.
+- Standardized typography scale: page title `text-3xl` (33.75px), section title `text-xl` (22.5px), card title `text-lg` (20.25px), body `text-base` (18px), caption/stat label `text-sm` (15.75px), stat value `text-4xl` (40.5px). Minimum text threshold: no meaningful text below `text-sm`.
+- Widened desktop sidebar to `w-72` (288px) and `xl:w-80` (320px); nav items minimum 48px tall with 22px icons; brand and pills enlarged; footer pinned with zero clipping at 1280x720 and 1366x768.
+- Minimum 44x44px touch targets enforced on all buttons, triggers, and icon controls.
+- Recharts centralized theme constants (`src/components/charts/chartTheme.js`) established with 14px ticks/tooltips/legends and 360px standard container height.
+- Frontend test suite (Vitest + Testing Library): **30 passed across 5 files (0 failures)**, ESLint: **0 errors, 0 warnings**, production bundle: 198 kB.
+- Backend pytest suite intact: **103 passed, 4 skipped**.
 
 **Next Milestone: Phase 7 — Overview Dashboard & Train Explorer Tabs**
 In Phase 7, the session will:
 1. Connect Tab 1 (Overview Dashboard) to `GET /api/overview` and `GET /api/health/ready`.
-2. Build fleet-level KPI stat cards, macro delay distribution histogram, category breakdown chart, and daily delay trendline using Recharts.
+2. Build fleet-level KPI stat cards, macro delay distribution histogram, category breakdown chart, and daily delay trendline using Recharts and `CHART_THEME`.
 3. Connect Tab 2 (Train Explorer) to `GET /api/trains` and `GET /api/trains/<train_number>`.
 4. Build train search autocomplete, route canonical stop timeline, stop-level delay probabilities, and historical run performance cards.
 5. Guarantee graceful error, loading skeletons, and empty state handling across all components.

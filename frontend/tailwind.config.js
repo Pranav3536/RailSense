@@ -57,6 +57,15 @@ export default {
           'sans-serif',
         ],
       },
+      // TYPOGRAPHY SCALE (Phase 6.1 — at 18px / 112.5% root):
+      // text-xs:  0.75rem  = 13.5px (micro-labels / badges only)
+      // text-sm:  0.875rem = 15.75px (secondary, stat labels, card descriptions — min text threshold)
+      // text-base: 1.0rem   = 18.0px (standard body copy, nav links)
+      // text-lg:   1.125rem = 20.25px (card titles, section subheads)
+      // text-xl:   1.25rem  = 22.5px (section titles)
+      // text-2xl:  1.5rem   = 27.0px (sub-headers)
+      // text-3xl:  1.875rem = 33.75px (page view headers)
+      // text-4xl:  2.25rem  = 40.5px (stat card primary KPI values)
     },
   },
   plugins: [],
