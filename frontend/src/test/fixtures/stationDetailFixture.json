@@ -1,0 +1,100 @@
+{
+  "calling_trains_sample": [
+    {
+      "category": "SHT",
+      "delayed_rate": 0.0,
+      "mean_delay": -1.79,
+      "observed_stops": 19,
+      "train_name": "SWARAN SHATABDI",
+      "train_number": "12003"
+    },
+    {
+      "category": "SHT",
+      "delayed_rate": 10.53,
+      "mean_delay": 8.63,
+      "observed_stops": 19,
+      "train_name": "KLK SHATABADI",
+      "train_number": "12012"
+    },
+    {
+      "category": "SHT",
+      "delayed_rate": 10.53,
+      "mean_delay": 9.63,
+      "observed_stops": 19,
+      "train_name": "AII NDLS SHATBI",
+      "train_number": "12016"
+    },
+    {
+      "category": "SHT",
+      "delayed_rate": 47.37,
+      "mean_delay": 26.84,
+      "observed_stops": 19,
+      "train_name": "NDLS SHATABADI",
+      "train_number": "12039"
+    },
+    {
+      "category": "SUF",
+      "delayed_rate": 31.58,
+      "mean_delay": 17.89,
+      "observed_stops": 19,
+      "train_name": "TAJ EXPRESS",
+      "train_number": "12279"
+    },
+    {
+      "category": "SUF",
+      "delayed_rate": 89.47,
+      "mean_delay": 83.42,
+      "observed_stops": 19,
+      "train_name": "SHANE PUNJAB",
+      "train_number": "12498"
+    },
+    {
+      "category": "TOD",
+      "delayed_rate": 100.0,
+      "mean_delay": 277.11,
+      "observed_stops": 18,
+      "train_name": "DBG NDLS SPL",
+      "train_number": "02569"
+    },
+    {
+      "category": "TOD",
+      "delayed_rate": 77.78,
+      "mean_delay": 79.06,
+      "observed_stops": 18,
+      "train_name": "SOU NDLS SPL",
+      "train_number": "04071"
+    },
+    {
+      "category": "MEX",
+      "delayed_rate": 33.33,
+      "mean_delay": 14.17,
+      "observed_stops": 18,
+      "train_name": "GITA JAYANTI EX",
+      "train_number": "11841"
+    },
+    {
+      "category": "MEX",
+      "delayed_rate": 88.89,
+      "mean_delay": 53.56,
+      "observed_stops": 18,
+      "train_name": "GITA JAYANTI EX",
+      "train_number": "11842"
+    }
+  ],
+  "category_mix": {
+    "EMU": 971,
+    "MEX": 500,
+    "RAJ": 348,
+    "SHT": 403,
+    "SUF": 1403
+  },
+  "data_as_of": "2026-10-25",
+  "definition": "Station delay metrics represent arrivals delayed > 15m with 95% Wilson score confidence intervals.",
+  "delayed_rate": 63.54,
+  "mean_delay": 63.24,
+  "station_code": "NDLS",
+  "stops_count": 4666,
+  "trains_count": 356,
+  "wilson_lower": 61.73,
+  "wilson_upper": 65.32
+}

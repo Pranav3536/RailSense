@@ -234,6 +234,11 @@ See `DECISIONS.md` for full rationale.
 - **D-27:** Average Precision (AP) Replaces Trapezoid PR-AUC for Constant Baselines (`average_precision_score` eliminates 0.7460 artifact down to true 0.4920 prevalence).
 - **D-28:** Operational Decision Thresholds: Balanced F1 Threshold (0.410) and High-Recall Threshold (0.455).
 - **D-29:** Strict Non-Causal Attribution Phrasing Across API & Documentation ("observed delay hotspot", "associated with", "what the model uses").
+- **D-47:** Canonical Binary Decision Threshold Reconciliation (0.410 across metadata, tests, and UI).
+- **D-48:** True Worker Process Memory Measurement Protocol (benchmarking Waitress child worker, 167 MB peak, 344 MB headroom).
+- **D-49:** Free Local NLP Architecture (TF-IDF + Logistic Regression + RapidFuzz, 93.89% test accuracy, zero external APIs).
+- **D-50:** Deterministic Parameterised Templates & Zero Free-Form SQL Generation.
+- **D-51:** Empirical Delay Pattern Definitions & Methodological Constraints.
 
 ---
 
@@ -448,6 +453,81 @@ pytest backend/tests/test_api_integration.py -v
 
 ---
 
+---
+
+## 11. Files Created or Modified in Phase 9
+
+```
+c:\RailSense\
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py                [UPDATED — NLP service initialization, 30/min rate limiter]
+│   │   ├── api/
+│   │   │   ├── __init__.py            [UPDATED — registered insights blueprint]
+│   │   │   ├── health.py              [UPDATED — added nlp: ready probe]
+│   │   │   ├── patterns.py            [UPDATED — added level, order, min_support, limit params and train names]
+│   │   │   └── insights.py            [CREATED — POST /api/insights/query and GET /api/insights/examples]
+│   │   ├── nlp/
+│   │   │   ├── __init__.py            [CREATED — SmartInsightsService coordinator]
+│   │   │   ├── normalizer.py          [CREATED — input cleaning, 300 char validation]
+│   │   │   ├── constants.py           [CREATED — IST hour buckets, weekdays, categories, confidence thresholds]
+│   │   │   ├── classifier.py          [CREATED — TF-IDF + Logistic Regression intent classifier]
+│   │   │   ├── entities.py            [CREATED — RapidFuzz train/station extractor, bounds, cues]
+│   │   │   ├── templates.py           [CREATED — deterministic parameterised answer builders]
+│   │   │   ├── intents.json           [CREATED — 19 discrete intents with 15+ training examples each]
+│   │   │   └── eval/
+│   │   │       └── questions.jsonl    [CREATED — 218 test questions (87 dev / 131 test)]
+│   │   └── serving_client.py          [UPDATED — added query methods for NLP templates]
+│   ├── models/
+│   │   └── model_metadata.json        [UPDATED — reconciled to canonical 0.410 threshold]
+│   ├── serving/
+│   │   ├── model_lab.json             [UPDATED — reconciled to canonical 0.410 metrics]
+│   │   └── patterns.json              [UPDATED — precomputed pattern bins and hotspots]
+│   ├── scripts/
+│   │   ├── evaluate_nlp.py            [CREATED — intent and entity test benchmark runner]
+│   │   ├── generate_nlp_intents.py    [CREATED — intent generator with domain examples]
+│   │   ├── capture_phase9_fixtures.py [CREATED — recorded live API responses for vitest]
+│   │   └── run_phase9_preflight.py    [CREATED — Task A measurements (RSS, latency, thresholds)]
+│   └── tests/
+│       ├── test_nlp.py                [CREATED — 21 unit tests for NLP pipeline, guards, entity extraction]
+│       └── test_insights_routes.py    [CREATED — 9 route integration tests for /api/insights]
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   │   ├── adapters.js            [UPDATED — added adaptPatterns, adaptInsights adapters]
+│   │   │   ├── client.js              [UPDATED — insights query support]
+│   │   │   └── endpoints.js           [UPDATED — queryInsights, getInsightsExamples, getPatterns with params]
+│   │   ├── components/ui/
+│   │   │   ├── ProbabilityGauge.jsx   [UPDATED — 0.410 threshold marker]
+│   │   │   └── ConfusionMatrix.jsx    [UPDATED — 0.410 threshold display]
+│   │   ├── config/
+│   │   │   └── metricGlossary.js      [UPDATED — 0.410 threshold documentation]
+│   │   ├── pages/
+│   │   │   ├── DelayPatternsPage.jsx  [CREATED — 5 pattern sections, Recharts, hotspots explorer, drawer]
+│   │   │   ├── SmartInsightsPage.jsx  [CREATED — query input, chips, clarification flow, session history]
+│   │   │   ├── DelayPredictionPage.jsx[UPDATED — threshold synchronization]
+│   │   │   └── ModelLabPage.jsx       [UPDATED — 0.410 reconciled metrics assertions]
+│   │   └── test/
+│   │       ├── DelayPatternsPage.test.jsx [CREATED — 7 tests covering all 5 sections, toggles, filters]
+│   │       ├── SmartInsightsPage.test.jsx [CREATED — 7 tests covering query, clarification, history, rate limit]
+│   │       ├── DelayPredictionPage.test.jsx [UPDATED — timing and stop select updates]
+│   │       ├── ModelLabPage.test.jsx  [UPDATED — 0.410 reconciled assertions]
+│   │       ├── Pages.test.jsx         [UPDATED — mount tests for Tab 5 and Tab 6]
+│   │       ├── Sidebar.test.jsx       [UPDATED — navigation tests]
+│   │       └── fixtures/              [CREATED — patterns and insights live fixtures]
+└── docs/
+    ├── phase9_preflight.md            [CREATED — Task A claims verification and benchmarking report]
+    ├── NLP_DESIGN.md                  [CREATED — architectural specification for local NLP]
+    ├── NLP_EVALUATION.md              [CREATED — 93.89% test accuracy evaluation report]
+    ├── openapi.yaml                   [UPDATED — added insights endpoints]
+    ├── API.md                         [UPDATED — added insights and patterns parameter documentation]
+    └── experiments/
+        ├── nlp_eval.json              [CREATED — programmatic evaluation results]
+        └── final_test_results.json    [UPDATED — reconciled 0.410 test metrics]
+```
+
+---
+
 ## 14. Next Exact Action
 
 **Phase 6 Status: COMPLETE (Verified)**
@@ -507,10 +587,42 @@ pytest backend/tests/test_api_integration.py -v
   - Connected "Predict Delay" actions in `TrainExplorerPage.jsx` header and per-stop timetable.
 - Full verification: Vitest **48 passed across 10 test files**, ESLint **0 errors / 0 warnings**, Vite build **200.27 kB clean bundle**, Backend pytest **103 passed, 4 skipped**.
 
-**Next Milestone: Phase 9 — Historical Delay Patterns & Smart Insights**
-In Phase 9, the session will:
-1. Connect Tab 5 (Delay Patterns) to `/api/patterns/<kind>` (hourly, day-of-week, category, route position, hotspot stations).
-2. Connect Tab 6 (Smart Insights) to local NLP engine (`/api/insights/query`).
+### Phase 9 — Delay Patterns & Smart Insights (COMPLETED)
+- **Task A Claims Check & Measurements Completed:**
+  - True Waitress worker RSS: 165.10 MB idle, 167.29 MB active peak load; 344.71 MB (67.3%) headroom under Render 512 MB limit.
+  - Latency verified: 0.33 to 6.38 ms across all train catalog and search queries. Zero timeouts.
+  - Model facts verified: LightGBM hyperparameters (max_depth 8, num_leaves 63, lr 0.08, 298 trees).
+  - Canonical operational decision threshold reconciled at **0.410** strictly from validation split:
+    - Test AP: **0.8482**, ROC-AUC: **0.8592**, F1: **0.7782**, Precision: **0.7402**, Recall: **0.8203**, Brier: **0.1536**, ECE: **0.0213**.
+    - Confusion Matrix: **TN: 71,067, FP: 27,470, FN: 17,152, TP: 78,276**.
+- **Tab 5 Delay Patterns ("Historical Analytics", `/patterns`)**:
+  - Live at `/patterns`, connected to `GET /api/patterns` with full parameter support (`dim`, `level`, `order`, `min_support`, `limit`).
+  - 5 comprehensive visual sections:
+    1. By Hour of Day (0-23 IST): Recharts BarChart, volume tooltips, low-support muting, 50.4% fleet reference line.
+    2. By Day of Week: Weekday BarChart with prominent calendar caution (19-day window contains only 2 Mondays/Tuesdays).
+    3. By Category: Service category comparison with `CategoryLabel` full names and low-support muting.
+    4. By Journey Position: Stop sequence progression buckets (`Early (2-3)`, `Mid-Early (4-10)`, `Mid (11-25)`, `Late (26-50)`, `Deep (>50)`).
+    5. Observed Delay Hotspots Explorer: Station vs train ranking, top/bottom toggle, minimum support filter, limit selector, and inline station detail drawer.
+  - Methodological constraints: zero causal vocabulary, zero use of the word "probability".
+- **Tab 6 Smart Insights ("Natural Language Analytics", `/insights`)**:
+  - Live at `/insights`, connected to `POST /api/insights/query` and `GET /api/insights/examples`.
+  - 100% free, local NLP engine using scikit-learn TF-IDF (1-2 word + 3-5 char n-grams) + Logistic Regression ($C=5.0$) achieving **93.89% Accuracy** and **0.9410 Macro-F1** on held-out test questions (vs 22.9% keyword baseline).
+  - RapidFuzz entity extraction with interactive clarification flow for ambiguous queries (e.g. 'Rajdhani').
+  - Deterministic parameterised templates reading from SQLite store; zero free-form SQL generation.
+  - Pre-departure forward prediction queries safely redirected to Tab 3 (`/predict`).
+  - Physical delay cause inquiries politely refused with domain rationale.
+  - Question input with 300-char counter, 30/min rate limit cooldown timer, in-memory session history (max 20), and collapsible explanation details.
+- **Verification & Test Status**:
+  - Backend Pytest: **133 passed, 4 skipped** across 7 test suites in 13.55s.
+  - Frontend Vitest: **64 passed across 12 files** in 41.51s.
+  - Frontend ESLint: **0 errors, 0 warnings**.
+  - Production Build: Clean Vite production build in 7.77s.
+
+**Next Milestone: Phase 10 — Production Hardening, Dockerization & Deployment Preparation**
+In Phase 10, the session will:
+1. Containerize backend and frontend services with multi-stage Dockerfiles.
+2. Configure production WSGI/Reverse proxy configurations.
+3. Establish health check scripts and readiness probes for Render / Vercel deployment.
 
 ---
 

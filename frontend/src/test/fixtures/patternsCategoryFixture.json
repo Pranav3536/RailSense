@@ -1,0 +1,167 @@
+{
+  "data": [
+    {
+      "category": "MEX",
+      "delayed_rate": 57.02,
+      "eligible_stops": 571895,
+      "mean_delay_min": 39.41,
+      "median_delay_min": 20.0,
+      "total_stops": 680214
+    },
+    {
+      "category": "SUB",
+      "delayed_rate": 17.07,
+      "eligible_stops": 313903,
+      "mean_delay_min": 9.57,
+      "median_delay_min": 6.0,
+      "total_stops": 826844
+    },
+    {
+      "category": "MEMU",
+      "delayed_rate": 59.35,
+      "eligible_stops": 249068,
+      "mean_delay_min": 42.18,
+      "median_delay_min": 22.0,
+      "total_stops": 415795
+    },
+    {
+      "category": "PAS",
+      "delayed_rate": 55.22,
+      "eligible_stops": 235974,
+      "mean_delay_min": 38.59,
+      "median_delay_min": 19.0,
+      "total_stops": 363957
+    },
+    {
+      "category": "SUF",
+      "delayed_rate": 57.41,
+      "eligible_stops": 217500,
+      "mean_delay_min": 53.09,
+      "median_delay_min": 20.0,
+      "total_stops": 247228
+    },
+    {
+      "category": "DMU",
+      "delayed_rate": 50.58,
+      "eligible_stops": 80397,
+      "mean_delay_min": 31.06,
+      "median_delay_min": 16.0,
+      "total_stops": 140225
+    },
+    {
+      "category": "TOD",
+      "delayed_rate": 76.1,
+      "eligible_stops": 41812,
+      "mean_delay_min": 146.75,
+      "median_delay_min": 73.0,
+      "total_stops": 49730
+    },
+    {
+      "category": "VNDB",
+      "delayed_rate": 28.83,
+      "eligible_stops": 16940,
+      "mean_delay_min": 11.64,
+      "median_delay_min": 8.0,
+      "total_stops": 19542
+    },
+    {
+      "category": "EMU",
+      "delayed_rate": 75.79,
+      "eligible_stops": 11129,
+      "mean_delay_min": 56.37,
+      "median_delay_min": 40.0,
+      "total_stops": 21500
+    },
+    {
+      "category": "JSH",
+      "delayed_rate": 45.12,
+      "eligible_stops": 9389,
+      "mean_delay_min": 23.95,
+      "median_delay_min": 13.0,
+      "total_stops": 11263
+    },
+    {
+      "category": "AMTB",
+      "delayed_rate": 60.92,
+      "eligible_stops": 7055,
+      "mean_delay_min": 60.67,
+      "median_delay_min": 25.0,
+      "total_stops": 8238
+    },
+    {
+      "category": "RAJ",
+      "delayed_rate": 46.13,
+      "eligible_stops": 5489,
+      "mean_delay_min": 33.81,
+      "median_delay_min": 14.0,
+      "total_stops": 6319
+    },
+    {
+      "category": "SHT",
+      "delayed_rate": 28.01,
+      "eligible_stops": 4644,
+      "mean_delay_min": 13.56,
+      "median_delay_min": 8.0,
+      "total_stops": 5504
+    },
+    {
+      "category": "GBR",
+      "delayed_rate": 57.23,
+      "eligible_stops": 4234,
+      "mean_delay_min": 55.51,
+      "median_delay_min": 21.0,
+      "total_stops": 4719
+    },
+    {
+      "category": "DRNT",
+      "delayed_rate": 53.18,
+      "eligible_stops": 1730,
+      "mean_delay_min": 89.96,
+      "median_delay_min": 17.0,
+      "total_stops": 2103
+    },
+    {
+      "category": "VNDM",
+      "delayed_rate": 34.88,
+      "eligible_stops": 605,
+      "mean_delay_min": 12.83,
+      "median_delay_min": 11.0,
+      "total_stops": 667
+    },
+    {
+      "category": "TEJ",
+      "delayed_rate": 33.69,
+      "eligible_stops": 558,
+      "mean_delay_min": 40.27,
+      "median_delay_min": 10.0,
+      "total_stops": 712
+    },
+    {
+      "category": "VNDS",
+      "delayed_rate": 24.87,
+      "eligible_stops": 382,
+      "mean_delay_min": 7.76,
+      "median_delay_min": 9.0,
+      "total_stops": 435
+    },
+    {
+      "category": "PEXP",
+      "delayed_rate": 72.84,
+      "eligible_stops": 324,
+      "mean_delay_min": 226.05,
+      "median_delay_min": 147.5,
+      "total_stops": 453
+    },
+    {
+      "category": "TRST",
+      "delayed_rate": 60.0,
+      "eligible_stops": 40,
+      "mean_delay_min": 60.08,
+      "median_delay_min": 35.0,
+      "total_stops": 126
+    }
+  ],
+  "data_as_of": "2026-10-25",
+  "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
+  "kind": "category"
+}

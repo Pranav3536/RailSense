@@ -83,9 +83,14 @@ def create_app(config: Optional[dict] = None) -> Flask:
         max_requests=app.config["RATE_LIMIT_MAX"],
         window_seconds=app.config["RATE_LIMIT_WINDOW"]
     )
+    insights_limiter = InMemoryRateLimiter(
+        max_requests=int(os.environ.get("INSIGHTS_RATE_LIMIT_MAX", "30")),
+        window_seconds=60
+    )
     app.config["RATE_LIMITER"] = limiter
+    app.config["INSIGHTS_RATE_LIMITER"] = insights_limiter
 
-    # 3. Singletons: Serving Client, Predictor
+    # 3. Singletons: Serving Client, Predictor, NLP Service
     if "SERVING_CLIENT" not in app.config:
         try:
             serving_client = ServingClient()
@@ -102,6 +107,15 @@ def create_app(config: Optional[dict] = None) -> Flask:
             app.logger.warning(f"Predictor model loading deferred: {e}")
             app.config["PREDICTOR"] = None
 
+    if "NLP_SERVICE" not in app.config and app.config.get("SERVING_CLIENT"):
+        try:
+            from app.nlp import SmartInsightsService
+            nlp_service = SmartInsightsService(app.config["SERVING_CLIENT"])
+            app.config["NLP_SERVICE"] = nlp_service
+        except Exception as e:
+            app.logger.warning(f"NLP service init deferred: {e}")
+            app.config["NLP_SERVICE"] = None
+
     # 4. Request Lifecycle Middlewares
     @app.before_request
     def before_request_hook():
@@ -116,6 +130,21 @@ def create_app(config: Optional[dict] = None) -> Flask:
         client_ip = request.headers.get("X-Forwarded-For", request.remote_addr or "127.0.0.1")
         if "," in client_ip:
             client_ip = client_ip.split(",")[0].strip()
+
+        # Stricter rate limit for /api/insights
+        if request.path.startswith("/api/insights"):
+            allowed, remaining = insights_limiter.is_allowed(client_ip)
+            g.rate_limit_remaining = remaining
+            if not allowed:
+                return jsonify({
+                    "error": {
+                        "code": "RATE_LIMIT_EXCEEDED",
+                        "message": "Too many insights requests. Rate limit is 30 requests per minute.",
+                        "details": None,
+                        "request_id": g.request_id
+                    }
+                }), 429
+            return None
 
         allowed, remaining = limiter.is_allowed(client_ip)
         g.rate_limit_remaining = remaining

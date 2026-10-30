@@ -521,7 +521,7 @@ def build_serving_store():
 
     patterns_data = {
         "provenance": overview_data["provenance"],
-        "definition": "Observed delay patterns reflect historical associations in the 19-day observed window. High delay rates indicate observed delay hotspots and platform bottlenecks, not physical causation.",
+        "definition": "Observed delay patterns reflect historical associations in the 19-day observed window. High delay rates indicate observed delay hotspots and operational variance, not physical causation.",
         "by_hour": hour_stats,
         "by_day_of_week": dow_stats,
         "by_position": pos_stats,

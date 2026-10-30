@@ -124,7 +124,7 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     });
   });
 
-  it('displays "API unreachable" when fetch fails due to network or server offline', async () => {
+  it('displays "API unreachable" when fetch fails after network or server offline', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch (offline)'));
 
     render(

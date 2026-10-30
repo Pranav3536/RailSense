@@ -1,13 +1,13 @@
 {
   "provenance": {
-    "built_at": "2026-10-29 21:16:14 UTC",
+    "built_at": "2026-10-30 17:51:14 UTC",
     "source": "TiDB Cloud railsense.train_records (via local cache)",
     "row_count": 2805574,
     "runs_count": 147367,
     "date_range": "2026-10-07 to 2026-10-25",
     "build_script_version": "1.0.0"
   },
-  "definition": "Observed delay patterns reflect historical associations in the 19-day observed window. High delay rates indicate observed delay hotspots and platform bottlenecks, not physical causation.",
+  "definition": "Observed delay patterns reflect historical associations in the 19-day observed window. High delay rates indicate observed delay hotspots and operational variance, not physical causation.",
   "by_hour": [
     {
       "hour": 0,

@@ -1,0 +1,70 @@
+{
+  "evaluation_timestamp": "2026-10-30",
+  "total_questions": 218,
+  "dev_questions_count": 87,
+  "test_questions_count": 131,
+  "intents_count": 19,
+  "model_comparison_test": {
+    "keyword_baseline": {
+      "accuracy": 0.229,
+      "macro_f1": 0.2335
+    },
+    "nearest_centroid": {
+      "accuracy": 0.9008,
+      "macro_f1": 0.9047
+    },
+    "logistic_regression_tfidf": {
+      "accuracy": 0.9389,
+      "macro_f1": 0.941,
+      "mean_confidence": 0.5946,
+      "mean_margin": 0.5217
+    }
+  },
+  "entity_extraction_test": {
+    "overall_accuracy_pct": 93.33,
+    "correct_entities": 70,
+    "total_entities": 75,
+    "by_type": {
+      "station_code": {
+        "accuracy_pct": 90.0,
+        "correct": 9,
+        "total": 10
+      },
+      "train_number": {
+        "accuracy_pct": 100.0,
+        "correct": 24,
+        "total": 24
+      },
+      "weekday": {
+        "accuracy_pct": 100.0,
+        "correct": 2,
+        "total": 2
+      },
+      "category": {
+        "accuracy_pct": 93.75,
+        "correct": 15,
+        "total": 16
+      },
+      "order": {
+        "accuracy_pct": 81.25,
+        "correct": 13,
+        "total": 16
+      },
+      "top_n": {
+        "accuracy_pct": 100.0,
+        "correct": 5,
+        "total": 5
+      },
+      "time_of_day": {
+        "accuracy_pct": 100.0,
+        "correct": 2,
+        "total": 2
+      }
+    }
+  },
+  "ood_fallback_test": {
+    "samples_tested": 5,
+    "fallback_triggered": 5,
+    "fallback_rate_pct": 100.0
+  }
+}

@@ -174,3 +174,38 @@ paths:
           description: Train or station not found on route
         '422':
           description: Origin stop (seq=1) or multiple stops require sequence number
+
+  /api/insights/query:
+    post:
+      summary: Smart Insights Local NLP Query Interface
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                  maxLength: 300
+                  example: "Which train category is most delayed?"
+                selected_entities:
+                  type: object
+                  description: Disambiguation candidate values
+      responses:
+        '200':
+          description: Deterministic template answer with visual data
+        '415':
+          description: Content-Type must be application/json
+        '422':
+          description: Question empty or exceeds 300 characters
+        '429':
+          description: Rate limit exceeded (30 req/min)
+  /api/insights/examples:
+    get:
+      summary: Smart Insights Curated Example Queries
+      responses:
+        '200':
+          description: Curated example questions and capability overview

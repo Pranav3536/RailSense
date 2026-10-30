@@ -169,7 +169,7 @@ export function ModelLabPage() {
         <StatCard
           label="F1-Score (Optimal)"
           value={finalTest.f1_positive ? finalTest.f1_positive.toFixed(4) : '0.7798'}
-          subtitle="Balanced precision/recall at threshold 0.42"
+          subtitle="Balanced precision/recall at threshold 0.41"
           icon={Cpu}
         />
         <StatCard
@@ -231,7 +231,7 @@ export function ModelLabPage() {
                   <strong className="text-slate-800">Test Split:</strong> Oct 23 – Oct 24 (2 days, ~194k stops, untouched)
                 </li>
                 <li>
-                  <strong className="text-slate-800">Censored:</strong> Oct 25 (excluded due to collection cutoff)
+                  <strong className="text-slate-800">Censored:</strong> Oct 25 (excluded from test evaluation (collection cutoff))
                 </li>
               </ul>
             </div>
@@ -539,7 +539,7 @@ export function ModelLabPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <CheckCircle size={18} className="text-emerald-600" aria-hidden="true" />
-              <CardTitle>Test Split Confusion Matrix (Threshold 0.42)</CardTitle>
+              <CardTitle>Test Split Confusion Matrix (Threshold 0.41)</CardTitle>
             </div>
             <CardDescription>
               Exact counts of 194k untouched test stop predictions versus ground-truth outcomes.
@@ -589,7 +589,7 @@ export function ModelLabPage() {
               <div className="font-semibold text-slate-900">Threshold Selection Rationales:</div>
               <ul className="space-y-1.5 list-disc list-inside">
                 <li>
-                  <strong className="text-slate-800">Balanced F1 Threshold (0.420):</strong> Maximizes harmonic mean of precision and recall (F1 = 0.7798) on validation partition. Retained for default deployment.
+                  <strong className="text-slate-800">Balanced F1 Threshold (0.410):</strong> Maximizes harmonic mean of precision and recall (F1 = 0.7867 val / 0.7782 test) on validation partition. Retained for default deployment.
                 </li>
                 <li>
                   <strong className="text-slate-800">High-Recall Threshold (0.512):</strong> Selected if passengers require catching $\ge$ 80% of all delayed stops, maintaining 74.8% precision.

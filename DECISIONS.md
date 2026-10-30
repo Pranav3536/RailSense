@@ -616,3 +616,80 @@ No test metrics are ever reported for the deployment model.
 **Date decided:** 2026-10-30 (Phase 8.5)
 
 **Decision:** The offline refresh tool (`backend/tools/refresh/`) can extract new data from TiDB Cloud when credentials are provided. However, running a data refresh shifts the historical observation window, modifies feature distributions, and may invalidate calibrated decision thresholds (0.420) and model artifacts. A refresh must be treated as a full retraining milestone, not a routine runtime task.
+
+---
+
+## D-47 — Canonical Binary Decision Threshold Reconciliation (0.410)
+
+**Date decided:** 2026-10-30 (Phase 9)
+
+**Decision:** The canonical operational decision threshold for the schedule-time calibrated LightGBM model is formally established at **0.410** across all documentation, metadata, test suites, and frontend components.
+
+**Rationale:**
+- In Phase 4, the optimal decision threshold was selected strictly on the **validation partition** using calibrated probabilities to maximize F1-score (Val F1: 0.7867 at threshold 0.410; recall >= 0.80 threshold: 0.455).
+- Historical evaluation records had partially referenced 0.418 (an uncalibrated trial). In Phase 9 Task A, all test metrics were uniformly re-evaluated at the canonical 0.410 threshold on the untouched test partition (Oct 23–24, 193,965 stops):
+  - Average Precision (AP): **0.8482**
+  - ROC-AUC: **0.8592**
+  - F1-Score: **0.7782**
+  - Precision: **0.7402**
+  - Recall: **0.8203**
+  - Confusion Matrix: **TN: 71,067, FP: 27,470, FN: 17,152, TP: 78,276**
+- All precomputed artifacts (`model_metadata.json`, `model_lab.json`, `final_test_results.json`) and frontend test assertions are synchronized to these exact reconciled values.
+
+---
+
+## D-48 — True Worker Process Memory Measurement Protocol
+
+**Date decided:** 2026-10-30 (Phase 9)
+
+**Decision:** Server RSS memory benchmarking must be measured directly on the active child worker process executing application code and serving incoming requests (`Waitress` worker), rather than parent launcher or supervisor scripts.
+
+**Rationale:**
+- In Phase 8.5, an RSS of 4.20 MB was recorded because the launcher process was queried.
+- Measuring the real serving worker with all models, SQLite database connections, and RapidFuzz catalog caches loaded reveals:
+  - Baseline pre-init: 16.63 MB
+  - Idle worker: 165.10 MB
+  - Active peak load (25 predict calls + patterns): 167.29 MB
+  - Settled post-load: 167.29 MB
+- Peak usage provides **344.71 MB (67.3%) headroom** under Render's 512 MB free-tier limit, proving the deployment is stable and free from OOM risk.
+
+---
+
+## D-49 — Free Local NLP Architecture (TF-IDF + Logistic Regression + RapidFuzz)
+
+**Date decided:** 2026-10-30 (Phase 9)
+
+**Decision:** Tab 6 Smart Insights natural language processing is built exclusively using existing local runtime dependencies (`scikit-learn`, `rapidfuzz`, and Python standard library). Zero external API calls (no OpenAI, Anthropic, Gemini, or embeddings endpoints), zero GPU dependencies, and zero heavy NLP libraries (no spaCy, no PyYAML).
+
+**Rationale:**
+- TF-IDF feature extraction (word n-grams 1-2 + character n-grams 3-5) combined with Logistic Regression ($C=5.0$) achieves **93.89% Accuracy** and **0.9410 Macro-F1** on held-out test questions.
+- RapidFuzz token matching resolves train names at $\ge 82$ similarity, with an interactive clarification flow for ambiguous queries (e.g. 'Rajdhani').
+- Inference completes in **sub-1.5 ms** per query with zero marginal cost and 100% user data privacy.
+
+---
+
+## D-50 — Deterministic Parameterised Templates & Zero Free-Form SQL Generation
+
+**Date decided:** 2026-10-30 (Phase 9)
+
+**Decision:** Smart Insights answers are constructed entirely through deterministic parameterised templates (`backend/app/nlp/templates.py`). User text is **never concatenated into SQL** or parsed into arbitrary SQLite queries.
+
+**Rationale:**
+- Prevents SQL injection and hallucinated statistics completely.
+- Templates read strictly from verified precomputed store metrics via `ServingClient`.
+- Forward delay prediction is prohibited in conversational analytics and immediately redirects to Tab 3 (`/predict`).
+- Inquiries about physical delay causes trigger `causal_refusal` explaining that observational records cannot isolate physical causation (such as atmospheric events, signaling, or dispatch conflicts).
+
+---
+
+## D-51 — Empirical Delay Pattern Definitions & Methodological Constraints
+
+**Date decided:** 2026-10-30 (Phase 9)
+
+**Decision:** Historical analytics in Tab 5 (`DelayPatternsPage.jsx`) are calculated strictly from empirical frequencies across the 1,773,607 label-eligible stop arrivals recorded between 2026-10-07 and 2026-10-25:
+1. **Hour:** Scheduled arrival hour in Indian Standard Time (IST, 00:00 to 23:00).
+2. **Day of Week:** Weekday of scheduled arrival date, accompanied by an explicit warning note stating that weekdays reflect only 2-3 calendar days in the 19-day dataset.
+3. **Category:** Service classifications mapped to the 20 official Indian Railways codes.
+4. **Journey Position:** Stop sequence progression buckets (`Early (2-3)`, `Mid-Early (4-10)`, `Mid (11-25)`, `Late (26-50)`, `Deep (>50)`).
+5. **Hotspots:** Filtered stations ($N \ge 100$) and trains ($N \ge 50$) ranked with Wilson 95% binomial confidence intervals.
+6. The word "probability" is strictly prohibited across all Patterns and Insights views.

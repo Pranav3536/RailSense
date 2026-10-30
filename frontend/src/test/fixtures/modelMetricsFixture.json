@@ -625,22 +625,22 @@
     }
   ],
   "final_test_metrics": {
-    "brier_score": 0.1529,
+    "brier_score": 0.1536,
     "confusion_matrix": {
-      "fn": 17037,
-      "fp": 27248,
-      "tn": 71289,
-      "tp": 78391
+      "fn": 17152,
+      "fp": 27470,
+      "tn": 71067,
+      "tp": 78276
     },
-    "ece": 0.0183,
-    "f1_macro": 0.7714,
-    "f1_positive": 0.7798,
-    "pr_auc": 0.8525,
-    "precision": 0.7421,
+    "ece": 0.0213,
+    "f1_macro": 0.7699,
+    "f1_positive": 0.7782,
+    "pr_auc": 0.8482,
+    "precision": 0.7402,
     "precision_at_recall_80": 0.7476,
-    "recall": 0.8215,
-    "roc_auc": 0.8602,
-    "threshold": 0.42
+    "recall": 0.8203,
+    "roc_auc": 0.8592,
+    "threshold": 0.41
   },
   "lifts": {
     "lift_over_category_pct": 42.03,
@@ -908,7 +908,7 @@
   },
   "provenance": {
     "build_script_version": "1.0.0",
-    "built_at": "2026-10-29 21:16:14 UTC",
+    "built_at": "2026-10-30 17:51:14 UTC",
     "date_range": "2026-10-07 to 2026-10-25",
     "row_count": 2805574,
     "runs_count": 147367,

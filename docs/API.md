@@ -223,6 +223,101 @@ Calculates calibrated delay probability and factor attribution for a scheduled t
 
 ---
 
+
+---
+
+### `POST /api/insights/query`
+
+Process natural language questions about historical delay patterns and fleet punctuality using the local NLP engine.
+
+- **Rate Limit:** 30 requests/minute per client IP
+- **Input Constraints:** UTF-8 string, max 300 characters, `Content-Type: application/json`
+- **Privacy:** User text is **never logged** (only SHA-256 hash, length, classified intent, confidence, latency).
+
+**Request Body:**
+```json
+{
+  "question": "Which train category is most delayed?",
+  "selected_entities": null
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "query": "Which train category is most delayed?",
+  "understood_intent": "category_ranking",
+  "confidence": 0.8703,
+  "confidence_level": "HIGH",
+  "margin": 0.8501,
+  "needs_clarification": false,
+  "clarification_options": [],
+  "entities": {
+    "category": null,
+    "train_number": null,
+    "train_name": null,
+    "station_code": null,
+    "weekday": null,
+    "time_of_day": null,
+    "top_n": 10,
+    "order": "top"
+  },
+  "answer": {
+    "answer_text": "Across service classifications, Suburban (SUB) exhibits the lowest observed delay rate at 17.1%...",
+    "visual_type": "table",
+    "visual_data": [ ... ],
+    "definition_note": "Categories sorted by empirical delayed arrival rate (arrival_delay_min > 15m).",
+    "support_badge": "Categories: 20 classes",
+    "caveats": ["Low-support categories with small sample sizes exhibit wider variance."],
+    "deep_link": { "label": "Explore Category Breakdown", "path": "/overview" },
+    "template_id": "category_ranking"
+  },
+  "explanation": {
+    "resolved_intent": "category_ranking",
+    "confidence_score": 0.8703,
+    "confidence_margin": 0.8501,
+    "data_source": "Precomputed Serving SQLite Store & Analytics JSON",
+    "template_id": "category_ranking",
+    "safety_note": "No runtime LLM, no user text concatenated into SQL"
+  },
+  "suggestions": [],
+  "data_as_of": "2026-10-25"
+}
+```
+
+---
+
+### `GET /api/insights/examples`
+
+Get curated natural language questions, supported topics, and operational constraints.
+
+- **Rate Limit:** 120 requests/minute
+- **Cache TTL:** Static response, cached in-memory
+
+**Response (200 OK):**
+```json
+{
+  "examples": [
+    {
+      "question": "What is the overall delay rate across Indian Railways?",
+      "intent": "fleet_summary",
+      "badge": "Overview"
+    },
+    {
+      "question": "Which train category is most delayed?",
+      "intent": "category_ranking",
+      "badge": "Categories"
+    }
+  ],
+  "capabilities": {
+    "methodology": "Predefined parameterised templates matched via local TF-IDF...",
+    "supported_topics": [ ... ],
+    "unsupported_topics": [ ... ]
+  },
+  "data_as_of": "2026-10-25"
+}
+```
+
 ## 3. Error Code Reference
 
 | HTTP Status | Error Code | Description / Remedy |

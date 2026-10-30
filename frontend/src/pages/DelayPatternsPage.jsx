@@ -1,96 +1,1083 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+  Cell,
+} from 'recharts';
+import {
+  Clock,
+  Calendar,
+  Layers,
+  Milestone,
+  Flame,
+  Info,
+  ChevronRight,
+  X,
+  ExternalLink,
+  Filter,
+} from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { BarChart3, CheckCircle2, Server } from 'lucide-react';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  SectionHeader,
+  Skeleton,
+  ErrorState,
+  ChartCard,
+  SupportBadge,
+  CategoryLabel,
+  ChartTableToggle,
+  Badge,
+} from '../components/ui';
+import { getPatterns, getStationDetail } from '../api/endpoints';
+import {
+  adaptPatternsHour,
+  adaptPatternsDow,
+  adaptPatternsCategory,
+  adaptPatternsPosition,
+  adaptPatternsHotspots,
+  adaptStationDetail,
+} from '../api/adapters';
+import { formatNumber, formatPercent, formatMinutes } from '../utils/format';
+import { CHART_THEME } from '../components/charts/chartTheme';
 
 /**
- * DelayPatternsPage — Tab 5 Placeholder (Phase 9)
- * Truthful placeholder explaining upcoming Phase 9 Historical Analytics scope.
- * Contains ZERO fake numbers and ZERO mock charts.
+ * Custom Tooltip for Hour Pattern
  */
-export function DelayPatternsPage() {
-  const plannedEndpoints = [
-    { method: 'GET', path: '/api/patterns/hourly', desc: 'Precomputed delay rates broken down by scheduled departure hour' },
-    { method: 'GET', path: '/api/patterns/daily', desc: 'Empirical delay rates broken down by day of week' },
-    { method: 'GET', path: '/api/patterns/category', desc: 'Delay rates and median arrival delays across train classifications' },
-    { method: 'GET', path: '/api/patterns/sequence', desc: 'Delay progression as route sequence number increases' },
-    { method: 'GET', path: '/api/stations', desc: 'Observed station stop frequencies and delay statistics' }
-  ];
-
-  const plannedFeatures = [
-    'Hourly departure profile analyzing delay variations across time of day',
-    'Day-of-week breakdown revealing operational variances between weekdays and weekends',
-    'Category delay comparison highlighting differences across train service classes',
-    'Journey progression analysis showing cumulative delay evolution as stops advance',
-    'Station hotspot explorer displaying observed stop frequencies across the network'
-  ];
-
+function HourTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0].payload;
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Historical Analytics"
-        subtitle="Empirical delay distributions decomposed by scheduled hour, day of week, train category, and sequence depth."
-        badge={<Badge variant="primary">Planned in Phase 9</Badge>}
-      />
-
-      <Card className="border-blue-100 bg-gradient-to-br from-white to-blue-50/20">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
-              <BarChart3 size={24} />
-            </div>
-            <div>
-              <CardTitle>Phase 9 Milestone: Empirical Delay Patterns</CardTitle>
-              <CardDescription>
-                This tab will display multi-dimensional historical delay patterns upon execution of Phase 9.
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          <div>
-            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3.5">
-              Planned Analytical Views
-            </h4>
-            <ul className="space-y-3">
-              {plannedFeatures.map((feat) => (
-                <li key={feat} className="flex items-start gap-3 text-sm text-slate-700">
-                  <CheckCircle2 size={18} className="text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="pt-5 border-t border-slate-100">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3.5 flex items-center gap-2">
-              <Server size={18} />
-              Backend Pattern Endpoints (Precomputed Serving Store)
-            </h4>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {plannedEndpoints.map((ep) => (
-                <div key={ep.path} className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm">
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <span className="font-mono font-bold text-blue-600">{ep.method}</span>
-                    <span className="font-mono text-slate-800 font-medium">{ep.path}</span>
-                  </div>
-                  <p className="text-slate-500 text-xs leading-relaxed">{ep.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 text-amber-950 text-sm flex items-start gap-3">
-            <span className="font-semibold flex-shrink-0">Integrity Note:</span>
-            <span className="leading-relaxed">
-              All pattern breakdowns are empirical aggregations from observed records.
-              No causal claims or synthetic curves are created in the frontend.
-            </span>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="bg-white p-3 rounded-xl shadow-lg border border-slate-200 text-sm">
+      <p className="font-bold text-slate-900 mb-1 font-mono">{label} IST</p>
+      <div className="space-y-1">
+        <p className="text-blue-700 font-semibold">
+          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+        </p>
+        <p className="text-slate-600">
+          Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
+        </p>
+        <p className="text-slate-500 text-xs">
+          Eligible Stops: <span className="font-mono">{formatNumber(d.stopsCount)}</span>
+        </p>
+        {d.isLowSupport && (
+          <p className="text-amber-700 text-xs font-semibold pt-1">
+            Low stop support ({formatNumber(d.stopsCount)} stops)
+          </p>
+        )}
+      </div>
     </div>
   );
 }
+
+/**
+ * Custom Tooltip for Day of Week Pattern
+ */
+function DowTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div className="bg-white p-3 rounded-xl shadow-lg border border-slate-200 text-sm">
+      <p className="font-bold text-slate-900 mb-1">{label}</p>
+      <div className="space-y-1">
+        <p className="text-blue-700 font-semibold">
+          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+        </p>
+        <p className="text-slate-600">
+          Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
+        </p>
+        <p className="text-slate-500 text-xs">
+          Calendar Days: <span className="font-mono font-medium">{d.calendarDaysCount} days in window</span>
+        </p>
+        <p className="text-slate-500 text-xs">
+          Stops Monitored: <span className="font-mono">{formatNumber(d.stopsCount)}</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Custom Tooltip for Route Position Pattern
+ */
+function PositionTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div className="bg-white p-3 rounded-xl shadow-lg border border-slate-200 text-sm">
+      <p className="font-bold text-slate-900 mb-1">{label}</p>
+      <div className="space-y-1">
+        <p className="text-blue-700 font-semibold">
+          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+        </p>
+        <p className="text-slate-600">
+          Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
+        </p>
+        <p className="text-slate-500 text-xs">
+          Stops Count: <span className="font-mono">{formatNumber(d.stopsCount)}</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * DelayPatternsPage — Tab 5 Historical Analytics (Phase 9)
+ * Multi-dimensional empirical delay distributions with isolated per-section state.
+ * Strictly non-causal: zero causal terminology across all sections.
+ */
+export function DelayPatternsPage() {
+  const navigate = useNavigate();
+
+  // Section 1: Hourly Pattern State
+  const [hourData, setHourData] = useState([]);
+  const [hourLoading, setHourLoading] = useState(true);
+  const [hourError, setHourError] = useState(null);
+  const [hourView, setHourView] = useState('chart');
+
+  // Section 2: Day of Week Pattern State
+  const [dowData, setDowData] = useState([]);
+  const [dowLoading, setDowLoading] = useState(true);
+  const [dowError, setDowError] = useState(null);
+  const [dowView, setDowView] = useState('chart');
+
+  // Section 3: Category Pattern State
+  const [catData, setCatData] = useState([]);
+  const [catLoading, setCatLoading] = useState(true);
+  const [catError, setCatError] = useState(null);
+  const [catView, setCatView] = useState('chart');
+
+  // Section 4: Journey Position Pattern State
+  const [posData, setPosData] = useState([]);
+  const [posLoading, setPosLoading] = useState(true);
+  const [posError, setPosError] = useState(null);
+  const [posView, setPosView] = useState('chart');
+
+  // Section 5: Hotspots Explorer State
+  const [hotspotLevel, setHotspotLevel] = useState('station');
+  const [hotspotOrder, setHotspotOrder] = useState('top');
+  const [minSupportInput, setMinSupportInput] = useState(100);
+  const [limitInput, setLimitInput] = useState(10);
+  const [hotspotData, setHotspotData] = useState(null);
+  const [hotspotLoading, setHotspotLoading] = useState(true);
+  const [hotspotError, setHotspotError] = useState(null);
+
+  // Station Detail Modal / Inline Drawer State
+  const [selectedStationCode, setSelectedStationCode] = useState(null);
+  const [stationDetail, setStationDetail] = useState(null);
+  const [stationLoading, setStationLoading] = useState(false);
+  const [stationError, setStationError] = useState(null);
+
+  // Fetch Hourly Pattern
+  const fetchHour = useCallback(async () => {
+    setHourLoading(true);
+    setHourError(null);
+    try {
+      const raw = await getPatterns('hour');
+      setHourData(adaptPatternsHour(raw));
+    } catch (err) {
+      setHourError(err);
+    } finally {
+      setHourLoading(false);
+    }
+  }, []);
+
+  // Fetch Day of Week Pattern
+  const fetchDow = useCallback(async () => {
+    setDowLoading(true);
+    setDowError(null);
+    try {
+      const raw = await getPatterns('dow');
+      setDowData(adaptPatternsDow(raw));
+    } catch (err) {
+      setDowError(err);
+    } finally {
+      setDowLoading(false);
+    }
+  }, []);
+
+  // Fetch Category Pattern
+  const fetchCategory = useCallback(async () => {
+    setCatLoading(true);
+    setCatError(null);
+    try {
+      const raw = await getPatterns('category');
+      setCatData(adaptPatternsCategory(raw));
+    } catch (err) {
+      setCatError(err);
+    } finally {
+      setCatLoading(false);
+    }
+  }, []);
+
+  // Fetch Journey Position Pattern
+  const fetchPosition = useCallback(async () => {
+    setPosLoading(true);
+    setPosError(null);
+    try {
+      const raw = await getPatterns('position');
+      setPosData(adaptPatternsPosition(raw));
+    } catch (err) {
+      setPosError(err);
+    } finally {
+      setPosLoading(false);
+    }
+  }, []);
+
+  // Fetch Hotspots with applied parameters
+  const fetchHotspots = useCallback(async (level, order, minSup, limit) => {
+    setHotspotLoading(true);
+    setHotspotError(null);
+    try {
+      const raw = await getPatterns('hotspots', {
+        level,
+        order,
+        min_support: minSup,
+        limit,
+      });
+      setHotspotData(adaptPatternsHotspots(raw));
+    } catch (err) {
+      setHotspotError(err);
+    } finally {
+      setHotspotLoading(false);
+    }
+  }, []);
+
+  // Fetch Station Detail for drawer
+  const fetchStationInfo = useCallback(async (code) => {
+    if (!code) return;
+    setStationLoading(true);
+    setStationError(null);
+    try {
+      const raw = await getStationDetail(code);
+      setStationDetail(adaptStationDetail(raw));
+    } catch (err) {
+      setStationError(err);
+    } finally {
+      setStationLoading(false);
+    }
+  }, []);
+
+  // Initial load
+  useEffect(() => {
+    fetchHour();
+    fetchDow();
+    fetchCategory();
+    fetchPosition();
+    fetchHotspots('station', 'top', 100, 10);
+  }, [fetchHour, fetchDow, fetchCategory, fetchPosition, fetchHotspots]);
+
+  // Handle Hotspots Apply Button
+  const handleApplyHotspots = () => {
+    const minBound = hotspotLevel === 'station' ? 100 : 50;
+    const cleanMin = Math.max(minBound, Number(minSupportInput) || minBound);
+    const cleanLimit = Math.max(1, Math.min(50, Number(limitInput) || 10));
+    fetchHotspots(hotspotLevel, hotspotOrder, cleanMin, cleanLimit);
+  };
+
+  // Switch hotspot level handler
+  const handleLevelChange = (newLevel) => {
+    setHotspotLevel(newLevel);
+    if (newLevel === 'train' && minSupportInput < 50) {
+      setMinSupportInput(50);
+    } else if (newLevel === 'station' && minSupportInput < 100) {
+      setMinSupportInput(100);
+    }
+  };
+
+  // Handle station click in hotspot table
+  const handleStationClick = (code) => {
+    setSelectedStationCode(code);
+    fetchStationInfo(code);
+  };
+
+  return (
+    <div className="space-y-8 pb-12">
+      {/* 1. Page Header */}
+      <PageHeader
+        title="Historical Analytics"
+        subtitle="Empirical delay distributions decomposed by scheduled hour, day of week, train category, and journey sequence depth."
+        badge={<Badge variant="primary">Observed Dataset</Badge>}
+      />
+
+      {/* 2. Methodology & Integrity Intro Card */}
+      <Card className="border-blue-100 bg-gradient-to-br from-white via-blue-50/15 to-white shadow-xs">
+        <CardContent className="pt-6 space-y-4">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0 mt-0.5">
+              <Info size={22} />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="text-base font-bold text-slate-900">
+                Methodological Scope: Observed Historical Associations
+              </h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                All metrics on this page represent empirical frequency calculations across{' '}
+                <span className="font-semibold text-slate-800 font-mono">1,773,607</span> label-eligible stop arrivals recorded between{' '}
+                <span className="font-semibold text-slate-800 font-mono">2026-10-07</span> and{' '}
+                <span className="font-semibold text-slate-800 font-mono">2026-10-25</span>.
+                These distributions demonstrate observed historical patterns, not forward journey predictions or operational causation.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <span className="font-bold text-slate-700 block mb-1">Standard Delay Threshold</span>
+              <span className="text-slate-600">
+                Arrival delay &gt; 15 min on stops with <code className="text-blue-700">seq &gt; 1</code> and{' '}
+                <code className="text-blue-700">arrival_reported = 1</code>.
+              </span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <span className="font-bold text-slate-700 block mb-1">Early Arrivals Preserved</span>
+              <span className="text-slate-600">
+                Negative delays (early arrivals) are valid operational outcomes and are never truncated to zero.
+              </span>
+            </div>
+            <div className="p-3 rounded-lg bg-amber-50/70 border border-amber-200">
+              <span className="font-bold text-amber-900 block mb-1">Non-Causal Ground Rule</span>
+              <span className="text-amber-800">
+                Observational data cannot isolate physical causes (signaling, track allocation, or dispatch decisions).
+              </span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 3. Section 1: By Hour of Day */}
+      <section aria-labelledby="section-hourly-pattern" className="space-y-4">
+        <SectionHeader
+          id="section-hourly-pattern"
+          title="Observed Delays by Scheduled Hour of Day"
+          description="Empirical delay rate progression across the 24-hour cycle based on scheduled arrival hour in Indian Standard Time (IST)."
+          icon={Clock}
+          badge={<SupportBadge count={1773607} label="arrivals" />}
+        />
+
+        {hourError ? (
+          <ErrorState
+            title="Unable to load hourly patterns"
+            message={hourError.message}
+            requestId={hourError.requestId}
+            onRetry={fetchHour}
+          />
+        ) : hourLoading ? (
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        ) : (
+          <ChartCard
+            title="Hourly Delayed Arrival Frequency"
+            subtitle="Scheduled arrival hour (IST). Dotted line marks fleet average (50.4%)."
+            action={<ChartTableToggle view={hourView} onViewChange={setHourView} />}
+            footer={
+              <p className="text-xs text-slate-500">
+                Key takeaway: Peak observed delayed rate occurs at{' '}
+                <span className="font-semibold text-slate-800 font-mono">02:00 IST (62.2%)</span>, while minimum observed rate is recorded at{' '}
+                <span className="font-semibold text-slate-800 font-mono">11:00 IST (38.8%)</span>.
+              </p>
+            }
+          >
+            {hourView === 'chart' ? (
+              <div className="h-72 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={hourData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+                    <XAxis
+                      dataKey="hourLabel"
+                      stroke={CHART_THEME.textColor}
+                      fontSize={CHART_THEME.axisFontSize}
+                      tickLine={false}
+                      interval={2}
+                    />
+                    <YAxis
+                      stroke={CHART_THEME.textColor}
+                      fontSize={CHART_THEME.axisFontSize}
+                      tickLine={false}
+                      tickFormatter={(v) => `${v}%`}
+                      domain={[0, 80]}
+                    />
+                    <Tooltip content={<HourTooltip />} />
+                    <ReferenceLine
+                      y={50.44}
+                      stroke="#94a3b8"
+                      strokeDasharray="4 4"
+                      label={{ value: 'Fleet Avg (50.4%)', position: 'top', fill: '#64748b', fontSize: 12 }}
+                    />
+                    <Bar dataKey="delayedRate" radius={[4, 4, 0, 0]} maxBarSize={28}>
+                      {hourData.map((entry) => (
+                        <Cell
+                          key={`hour-bar-${entry.hour}`}
+                          fill={entry.isLowSupport ? '#cbd5e1' : entry.delayedRate >= 55 ? '#ef4444' : '#3b82f6'}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="overflow-x-auto max-h-72 border border-slate-200 rounded-xl">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs font-semibold text-slate-600 sticky top-0 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Hour (IST)</th>
+                      <th className="py-2.5 px-3">Observed Delayed Rate</th>
+                      <th className="py-2.5 px-3">Mean Delay</th>
+                      <th className="py-2.5 px-3">Eligible Stops Volume</th>
+                      <th className="py-2.5 px-3">Support Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-mono text-xs">
+                    {hourData.map((h) => (
+                      <tr key={`table-hour-${h.hour}`} className="hover:bg-slate-50/70">
+                        <td className="py-2 px-3 font-bold text-slate-900">{h.hourLabel}</td>
+                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercent(h.delayedRate)}</td>
+                        <td className="py-2 px-3 text-slate-700">{formatMinutes(h.meanDelayMin)}</td>
+                        <td className="py-2 px-3 text-slate-600">{formatNumber(h.stopsCount)}</td>
+                        <td className="py-2 px-3 font-sans">
+                          {h.isLowSupport ? (
+                            <span className="text-amber-700 font-medium">Low Support</span>
+                          ) : (
+                            <span className="text-emerald-700 font-medium">Robust</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </ChartCard>
+        )}
+      </section>
+
+      {/* 4. Section 2: By Day of Week */}
+      <section aria-labelledby="section-dow-pattern" className="space-y-4">
+        <SectionHeader
+          id="section-dow-pattern"
+          title="Observed Delays by Day of Week"
+          description="Empirical delay frequencies across weekdays based on scheduled arrival date."
+          icon={Calendar}
+          badge={<SupportBadge count={7} label="weekdays" />}
+        />
+
+        {dowError ? (
+          <ErrorState
+            title="Unable to load day-of-week patterns"
+            message={dowError.message}
+            requestId={dowError.requestId}
+            onRetry={fetchDow}
+          />
+        ) : dowLoading ? (
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        ) : (
+          <ChartCard
+            title="Weekday Punctuality Comparison"
+            subtitle="Caution: Each weekday rests on only 2-3 calendar days in the 19-day window. Evidence for weekday variance is weak."
+            action={<ChartTableToggle view={dowView} onViewChange={setDowView} />}
+            footer={
+              <p className="text-xs text-slate-500">
+                Key takeaway: Observed delay rates range narrowly between{' '}
+                <span className="font-semibold text-slate-800 font-mono">48.4% (Tuesday)</span> and{' '}
+                <span className="font-semibold text-slate-800 font-mono">51.6% (Friday)</span>. Subtle variance reflects limited calendar sample depth.
+              </p>
+            }
+          >
+            {dowView === 'chart' ? (
+              <div className="h-72 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dowData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+                    <XAxis dataKey="dayOfWeek" stroke={CHART_THEME.textColor} fontSize={CHART_THEME.axisFontSize} tickLine={false} />
+                    <YAxis
+                      stroke={CHART_THEME.textColor}
+                      fontSize={CHART_THEME.axisFontSize}
+                      tickLine={false}
+                      tickFormatter={(v) => `${v}%`}
+                      domain={[40, 60]}
+                    />
+                    <Tooltip content={<DowTooltip />} />
+                    <ReferenceLine y={50.44} stroke="#94a3b8" strokeDasharray="4 4" />
+                    <Bar dataKey="delayedRate" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={38} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs font-semibold text-slate-600 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Day of Week</th>
+                      <th className="py-2.5 px-3">Calendar Days in Window</th>
+                      <th className="py-2.5 px-3">Observed Delayed Rate</th>
+                      <th className="py-2.5 px-3">Mean Delay</th>
+                      <th className="py-2.5 px-3">Total Stops Monitored</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-mono text-xs">
+                    {dowData.map((d) => (
+                      <tr key={`table-dow-${d.dayOfWeek}`} className="hover:bg-slate-50/70">
+                        <td className="py-2.5 px-3 font-bold text-slate-900 font-sans">{d.dayOfWeek}</td>
+                        <td className="py-2.5 px-3">
+                          <span className="font-semibold text-slate-800">{d.calendarDaysCount} days</span>
+                          {d.calendarDaysCount === 2 && <span className="text-amber-700 text-xs ml-1 font-sans">(partial sample)</span>}
+                        </td>
+                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercent(d.delayedRate)}</td>
+                        <td className="py-2.5 px-3 text-slate-700">{formatMinutes(d.meanDelayMin)}</td>
+                        <td className="py-2.5 px-3 text-slate-600">{formatNumber(d.stopsCount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </ChartCard>
+        )}
+      </section>
+
+      {/* 5. Section 3: By Train Category */}
+      <section aria-labelledby="section-category-pattern" className="space-y-4">
+        <SectionHeader
+          id="section-category-pattern"
+          title="Observed Delays by Service Category"
+          description="Delayed arrival frequency across train operational service classifications."
+          icon={Layers}
+          badge={<SupportBadge count={catData.length} label="classes" />}
+        />
+
+        {catError ? (
+          <ErrorState
+            title="Unable to load category patterns"
+            message={catError.message}
+            requestId={catError.requestId}
+            onRetry={fetchCategory}
+          />
+        ) : catLoading ? (
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        ) : (
+          <ChartCard
+            title="Category Delay Comparison"
+            subtitle="Sorted by eligible stop volume. Low-support service classes (<500 stops) are muted."
+            action={<ChartTableToggle view={catView} onViewChange={setCatView} />}
+            footer={
+              <p className="text-xs text-slate-500">
+                Key takeaway: Suburban (<span className="font-semibold text-slate-800 font-mono">SUB</span>) records the lowest delay rate at{' '}
+                <span className="font-semibold text-slate-800 font-mono">17.1%</span>, whereas Holiday Specials (
+                <span className="font-semibold text-slate-800 font-mono">TOD</span>) record the highest rate at{' '}
+                <span className="font-semibold text-slate-800 font-mono">76.1%</span>.
+              </p>
+            }
+          >
+            {catView === 'chart' ? (
+              <div className="h-72 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={catData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+                    <XAxis dataKey="category" stroke={CHART_THEME.textColor} fontSize={CHART_THEME.axisFontSize} tickLine={false} />
+                    <YAxis
+                      stroke={CHART_THEME.textColor}
+                      fontSize={CHART_THEME.axisFontSize}
+                      tickLine={false}
+                      tickFormatter={(v) => `${v}%`}
+                      domain={[0, 90]}
+                    />
+                    <Tooltip
+                      formatter={(val, name, item) => [
+                        `${formatPercent(val)} (${formatMinutes(item.payload.meanDelayMin)} mean)`,
+                        'Delayed Rate',
+                      ]}
+                    />
+                    <Bar dataKey="delayedRate" radius={[4, 4, 0, 0]} maxBarSize={32}>
+                      {catData.map((c) => (
+                        <Cell
+                          key={`cat-bar-${c.category}`}
+                          fill={c.isLowSupport ? '#cbd5e1' : c.delayedRate >= 60 ? '#f97316' : '#2563eb'}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="overflow-x-auto max-h-72 border border-slate-200 rounded-xl">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs font-semibold text-slate-600 sticky top-0 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Service Code</th>
+                      <th className="py-2.5 px-3">Classification</th>
+                      <th className="py-2.5 px-3">Observed Delayed Rate</th>
+                      <th className="py-2.5 px-3">Mean Delay</th>
+                      <th className="py-2.5 px-3">Median Delay</th>
+                      <th className="py-2.5 px-3">Eligible Stops</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-mono text-xs">
+                    {catData.map((c) => (
+                      <tr key={`table-cat-${c.category}`} className="hover:bg-slate-50/70">
+                        <td className="py-2 px-3 font-bold text-slate-900">
+                          <CategoryLabel category={c.category} />
+                        </td>
+                        <td className="py-2 px-3 text-slate-700 font-sans">{c.categoryName}</td>
+                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercent(c.delayedRate)}</td>
+                        <td className="py-2 px-3 text-slate-700">{formatMinutes(c.meanDelayMin)}</td>
+                        <td className="py-2 px-3 text-slate-600">{formatMinutes(c.medianDelayMin)}</td>
+                        <td className="py-2 px-3 text-slate-600">{formatNumber(c.eligibleStops)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </ChartCard>
+        )}
+      </section>
+
+      {/* 6. Section 4: By Journey Position */}
+      <section aria-labelledby="section-position-pattern" className="space-y-4">
+        <SectionHeader
+          id="section-position-pattern"
+          title="Observed Delays by Journey Sequence Position"
+          description="Delayed arrival frequency as trains progress from origin departure to terminal destination."
+          icon={Milestone}
+          badge={<SupportBadge count={posData.length} label="position buckets" />}
+        />
+
+        {posError ? (
+          <ErrorState
+            title="Unable to load journey position patterns"
+            message={posError.message}
+            requestId={posError.requestId}
+            onRetry={fetchPosition}
+          />
+        ) : posLoading ? (
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        ) : (
+          <ChartCard
+            title="Delay Evolution Along Journey Route"
+            subtitle="Worded as observed empirical association with journey progression, never causation."
+            action={<ChartTableToggle view={posView} onViewChange={setPosView} />}
+            footer={
+              <p className="text-xs text-slate-500">
+                Key takeaway: Observed delay rate increases monotonically from{' '}
+                <span className="font-semibold text-slate-800 font-mono">26.3%</span> at early route stops (seq 2-3) to{' '}
+                <span className="font-semibold text-slate-800 font-mono">73.9%</span> on deep journey terminal stops (seq &gt; 50).
+              </p>
+            }
+          >
+            {posView === 'chart' ? (
+              <div className="h-72 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={posData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+                    <XAxis dataKey="positionBucket" stroke={CHART_THEME.textColor} fontSize={CHART_THEME.axisFontSize} tickLine={false} />
+                    <YAxis
+                      stroke={CHART_THEME.textColor}
+                      fontSize={CHART_THEME.axisFontSize}
+                      tickLine={false}
+                      tickFormatter={(v) => `${v}%`}
+                      domain={[0, 90]}
+                    />
+                    <Tooltip content={<PositionTooltip />} />
+                    <Bar dataKey="delayedRate" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={45}>
+                      {posData.map((p, idx) => (
+                        <Cell
+                          key={`pos-bar-${p.positionBucket}`}
+                          fill={idx >= 3 ? '#ea580c' : '#2563eb'}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs font-semibold text-slate-600 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Position Bucket</th>
+                      <th className="py-2.5 px-3">Observed Delayed Rate</th>
+                      <th className="py-2.5 px-3">Mean Delay</th>
+                      <th className="py-2.5 px-3">Eligible Stops Sample</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-mono text-xs">
+                    {posData.map((p) => (
+                      <tr key={`table-pos-${p.positionBucket}`} className="hover:bg-slate-50/70">
+                        <td className="py-2.5 px-3 font-bold text-slate-900 font-sans">{p.positionBucket}</td>
+                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercent(p.delayedRate)}</td>
+                        <td className="py-2.5 px-3 text-slate-700">{formatMinutes(p.meanDelayMin)}</td>
+                        <td className="py-2.5 px-3 text-slate-600">{formatNumber(p.stopsCount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </ChartCard>
+        )}
+      </section>
+
+      {/* 7. Section 5: Observed Delay Hotspots Explorer */}
+      <section aria-labelledby="section-hotspots-explorer" className="space-y-4">
+        <SectionHeader
+          id="section-hotspots-explorer"
+          title="Observed Delay Hotspots Explorer"
+          description="Interactive ranking of high-delay network hotspots and punctual services with Wilson 95% confidence intervals."
+          icon={Flame}
+          badge={<Badge variant="default">Interactive Explorer</Badge>}
+        />
+
+        {/* Explorer Filter Bar */}
+        <Card className="bg-slate-50/80 border-slate-200">
+          <CardContent className="pt-5 pb-5">
+            <div className="flex flex-wrap items-end gap-4 sm:gap-6">
+              {/* Level Control */}
+              <div className="space-y-1.5 min-w-[130px]">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                  Entity Level
+                </label>
+                <div className="flex rounded-lg border border-slate-300 bg-white p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => handleLevelChange('station')}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                      hotspotLevel === 'station' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Stations
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleLevelChange('train')}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                      hotspotLevel === 'train' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Trains
+                  </button>
+                </div>
+              </div>
+
+              {/* Order Control */}
+              <div className="space-y-1.5 min-w-[150px]">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                  Ranking Order
+                </label>
+                <select
+                  value={hotspotOrder}
+                  onChange={(e) => setHotspotOrder(e.target.value)}
+                  className="w-full text-xs font-medium bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="top">Top Hotspots (Most Delayed)</option>
+                  <option value="bottom">Top Punctual (Least Delayed)</option>
+                </select>
+              </div>
+
+              {/* Min Support Input */}
+              <div className="space-y-1.5 min-w-[120px]">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                  Min Support ({hotspotLevel === 'station' ? '>=100' : '>=50'})
+                </label>
+                <input
+                  type="number"
+                  min={hotspotLevel === 'station' ? 100 : 50}
+                  max={2000}
+                  step={25}
+                  value={minSupportInput}
+                  onChange={(e) => setMinSupportInput(e.target.value)}
+                  className="w-full text-xs font-mono bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Limit Input */}
+              <div className="space-y-1.5 min-w-[90px]">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                  Limit
+                </label>
+                <select
+                  value={limitInput}
+                  onChange={(e) => setLimitInput(Number(e.target.value))}
+                  className="w-full text-xs font-medium bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={20}>Top 20</option>
+                  <option value={50}>Top 50</option>
+                </select>
+              </div>
+
+              {/* Apply Button */}
+              <button
+                type="button"
+                onClick={handleApplyHotspots}
+                disabled={hotspotLoading}
+                className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors disabled:opacity-50"
+              >
+                <Filter size={14} />
+                Apply Filters
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Hotspots Results Table */}
+        {hotspotError ? (
+          <ErrorState
+            title="Failed to load delay hotspots"
+            message={hotspotError.message}
+            requestId={hotspotError.requestId}
+            onRetry={handleApplyHotspots}
+          />
+        ) : hotspotLoading ? (
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        ) : (
+          <Card className="border-slate-200">
+            <CardHeader className="pb-3 border-b border-slate-100 flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-base font-bold text-slate-900">
+                  {hotspotOrder === 'top' ? 'Observed Delay Hotspots' : 'Observed Punctual Services'} (
+                  {hotspotLevel === 'station' ? 'Stations' : 'Trains'})
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Showing {hotspotData?.items?.length || 0} entries with at least {hotspotData?.minSupport} recorded stops.
+                  Ranked by Wilson 95% confidence interval bounds.
+                </CardDescription>
+              </div>
+              <span className="text-xs font-mono text-slate-400">
+                Window: 2026-10-07 to 2026-10-25
+              </span>
+            </CardHeader>
+
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs font-semibold text-slate-600 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-4 w-12 text-center">#</th>
+                      <th className="py-2.5 px-4">
+                        {hotspotLevel === 'station' ? 'Station Code' : 'Train'}
+                      </th>
+                      <th className="py-2.5 px-4">Observed Delayed Rate</th>
+                      <th className="py-2.5 px-4">Wilson 95% CI</th>
+                      <th className="py-2.5 px-4">Mean Delay</th>
+                      <th className="py-2.5 px-4">Stops Monitored</th>
+                      <th className="py-2.5 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-mono text-xs">
+                    {hotspotData?.items?.map((item) => (
+                      <tr
+                        key={item.stationCode || item.trainNumber}
+                        className="hover:bg-blue-50/40 transition-colors"
+                      >
+                        <td className="py-3 px-4 text-center text-slate-400 font-bold">{item.rank}</td>
+                        <td className="py-3 px-4 font-bold text-slate-900">
+                          {hotspotLevel === 'station' ? (
+                            <button
+                              type="button"
+                              onClick={() => handleStationClick(item.stationCode)}
+                              className="text-blue-700 hover:text-blue-900 hover:underline font-bold font-mono inline-flex items-center gap-1"
+                              title={`View stop details for station ${item.stationCode}`}
+                            >
+                              {item.stationCode}
+                              <ChevronRight size={13} />
+                            </button>
+                          ) : (
+                            <div className="space-y-0.5">
+                              <button
+                                type="button"
+                                onClick={() => navigate(`/explorer/${item.trainNumber}`)}
+                                className="text-blue-700 hover:text-blue-900 hover:underline font-bold font-mono inline-flex items-center gap-1"
+                                title={`Open train ${item.trainNumber} in Train Explorer`}
+                              >
+                                {item.trainNumber}
+                                <ExternalLink size={12} />
+                              </button>
+                              {item.trainName && (
+                                <p className="text-xs text-slate-500 font-sans font-normal truncate max-w-[220px]">
+                                  {item.trainName}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`font-semibold ${
+                              item.delayedRate >= 75
+                                ? 'text-rose-600'
+                                : item.delayedRate >= 50
+                                ? 'text-amber-600'
+                                : 'text-emerald-600'
+                            }`}
+                          >
+                            {formatPercent(item.delayedRate)}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-slate-600">{item.wilsonText}</td>
+                        <td className="py-3 px-4 text-slate-700">{formatMinutes(item.meanDelay)}</td>
+                        <td className="py-3 px-4 text-slate-600">{formatNumber(item.stopsCount)}</td>
+                        <td className="py-3 px-4 text-right font-sans">
+                          {hotspotLevel === 'station' ? (
+                            <button
+                              type="button"
+                              onClick={() => handleStationClick(item.stationCode)}
+                              className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-0.5"
+                            >
+                              Details
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => navigate(`/explorer/${item.trainNumber}`)}
+                              className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-0.5"
+                            >
+                              Explore
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Inline Station Detail Drawer Card */}
+        {selectedStationCode && (
+          <Card className="border-blue-200 bg-blue-50/20 shadow-md">
+            <CardHeader className="pb-3 border-b border-blue-100 flex-row items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-xl font-extrabold text-blue-900 font-mono">
+                  {selectedStationCode}
+                </span>
+                <Badge variant="primary">Station Historical Profile</Badge>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedStationCode(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                title="Close station details"
+              >
+                <X size={18} />
+              </button>
+            </CardHeader>
+
+            <CardContent className="pt-4 space-y-4">
+              {stationLoading ? (
+                <Skeleton className="h-40 w-full rounded-xl" />
+              ) : stationError ? (
+                <div className="p-4 rounded-xl bg-rose-50 text-rose-700 text-sm">
+                  Failed to load station profile for {selectedStationCode}: {stationError.message}
+                </div>
+              ) : stationDetail ? (
+                <div className="space-y-4">
+                  {/* Station KPIs */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                    <div className="p-3 bg-white rounded-xl border border-slate-200">
+                      <span className="text-xs text-slate-500 font-medium block">Observed Delayed Rate</span>
+                      <span className="text-lg font-bold font-mono text-blue-700">
+                        {formatPercent(stationDetail.delayedRate)}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-slate-200">
+                      <span className="text-xs text-slate-500 font-medium block">Mean Arrival Delay</span>
+                      <span className="text-lg font-bold font-mono text-slate-800">
+                        {formatMinutes(stationDetail.meanDelay)}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-slate-200">
+                      <span className="text-xs text-slate-500 font-medium block">Wilson 95% Confidence</span>
+                      <span className="text-sm font-semibold font-mono text-slate-700 pt-1 block">
+                        {stationDetail.wilsonText}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-slate-200">
+                      <span className="text-xs text-slate-500 font-medium block">Calling Trains / Stops</span>
+                      <span className="text-sm font-semibold font-mono text-slate-800 pt-1 block">
+                        {formatNumber(stationDetail.trainsCount)} trains ({formatNumber(stationDetail.stopsCount)} stops)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Calling Trains Sample */}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                      Calling Trains Sample ({stationDetail.callingTrainsSample.length} services)
+                    </h4>
+                    <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white max-h-52">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-slate-50 font-semibold text-slate-600 sticky top-0 border-b border-slate-200">
+                          <tr>
+                            <th className="py-2 px-3">Train</th>
+                            <th className="py-2 px-3">Service Name</th>
+                            <th className="py-2 px-3">Category</th>
+                            <th className="py-2 px-3">Delayed Rate</th>
+                            <th className="py-2 px-3">Mean Delay</th>
+                            <th className="py-2 px-3">Observed Stops</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 font-mono">
+                          {stationDetail.callingTrainsSample.map((tr) => (
+                            <tr key={`calling-${tr.trainNumber}`} className="hover:bg-slate-50">
+                              <td className="py-1.5 px-3 font-bold text-blue-700">
+                                <button
+                                  type="button"
+                                  onClick={() => navigate(`/explorer/${tr.trainNumber}`)}
+                                  className="hover:underline font-bold"
+                                >
+                                  {tr.trainNumber}
+                                </button>
+                              </td>
+                              <td className="py-1.5 px-3 text-slate-800 font-sans">{tr.trainName || '—'}</td>
+                              <td className="py-1.5 px-3 font-sans">
+                                <CategoryLabel category={tr.category} />
+                              </td>
+                              <td className="py-1.5 px-3 font-semibold text-slate-800">
+                                {formatPercent(tr.delayedRate)}
+                              </td>
+                              <td className="py-1.5 px-3 text-slate-600">{formatMinutes(tr.meanDelay)}</td>
+                              <td className="py-1.5 px-3 text-slate-500">{tr.observedStops}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </CardContent>
+          </Card>
+        )}
+      </section>
+
+      {/* 8. Footer */}
+      <footer className="pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+        <div>
+          <span>Data as of: </span>
+          <span className="font-mono font-medium text-slate-700">2026-10-25</span>
+          <span className="mx-2">•</span>
+          <span>Source: </span>
+          <span className="font-medium text-slate-700">Observed Railway Dataset</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+          <span>Serving store: SQLite + In-Memory Fast Lookup</span>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
 export default DelayPatternsPage;

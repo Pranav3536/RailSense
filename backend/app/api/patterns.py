@@ -4,7 +4,7 @@ Provides precomputed delay distributions by departure hour, day of week,
 train category, route position progress, and observed delay hotspots.
 """
 
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint, jsonify, current_app, request
 
 patterns_bp = Blueprint('patterns', __name__)
 
@@ -29,11 +29,16 @@ def get_pattern(kind: str):
     """
     Returns empirical delay pattern distributions across 2.8M rows.
     Valid kinds:
-      - hour: delay probability and mean delay by hour of day (0-23)
-      - dow: delay probability and mean delay by day of week (Monday-Sunday)
+      - hour: delay rate and mean delay by scheduled arrival hour (0-23 IST)
+      - dow: delay rate and mean delay by day of week (Monday-Sunday, scheduled arrival date)
       - category: delay distribution and volume across train categories
-      - position: delay progression as a function of journey sequence position
-      - hotspots: top observed delay hotspot stations with confidence intervals
+      - position: delay progression as a function of journey sequence position bucket
+      - hotspots: observed delay hotspots and punctual services (stations or trains)
+        Query params for hotspots:
+          * level: 'station' (default) or 'train'
+          * order: 'top' (default, highest delay rate) or 'bottom' (most punctual)
+          * min_support: integer (minimum allowed: 100 for stations, 50 for trains)
+          * limit: integer (1 to 50, default 10)
     """
     serving_client = current_app.config.get("SERVING_CLIENT")
     if not serving_client:
@@ -60,11 +65,17 @@ def get_pattern(kind: str):
         if target_key == 'category':
             ov_data = serving_client.get_overview_json()
             kind_data = ov_data.get("category_breakdown", [])
-        else:
-            patterns_data = serving_client.get_patterns_json()
-            kind_data = patterns_data.get(target_key)
+            return jsonify({
+                "kind": clean_kind,
+                "data": kind_data,
+                "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
+                "data_as_of": "2026-10-25"
+            }), 200
 
-        if kind_data is None:
+        patterns_data = serving_client.get_patterns_json()
+        raw_kind_data = patterns_data.get(target_key)
+
+        if raw_kind_data is None:
             return jsonify({
                 "error": {
                     "code": "PATTERN_NOT_FOUND",
@@ -72,12 +83,65 @@ def get_pattern(kind: str):
                 }
             }), 404
 
+        if clean_kind == 'hotspots':
+            level = request.args.get('level', 'station').strip().lower()
+            if level not in ('station', 'train'):
+                level = 'station'
+
+            order = request.args.get('order', 'top').strip().lower()
+            if order not in ('top', 'bottom', 'punctual', 'delayed'):
+                order = 'top'
+
+            level_key = 'stations' if level == 'station' else 'trains'
+            min_allowed_support = 100 if level == 'station' else 50
+            
+            try:
+                limit = int(request.args.get('limit', 10))
+                limit = max(1, min(50, limit))
+            except (ValueError, TypeError):
+                limit = 10
+
+            try:
+                min_sup_req = int(request.args.get('min_support', min_allowed_support))
+                min_support = max(min_allowed_support, min_sup_req)
+            except (ValueError, TypeError):
+                min_support = min_allowed_support
+
+            group_dict = raw_kind_data.get(level_key, {})
+            pool = group_dict.get('top_hotspots', []) if order in ('top', 'delayed') else group_dict.get('top_punctual', [])
+            
+            # Filter by min_support if higher than base threshold
+            filtered = [dict(item) for item in pool if item.get('stops_count', 0) >= min_support][:limit]
+
+            # Enrich train items with train_name and category from catalog
+            if level == 'train':
+                for item in filtered:
+                    tr_info = serving_client.get_train(item.get('train_number'))
+                    if tr_info:
+                        item['train_name'] = tr_info.get('train_name', '')
+                        item['category'] = tr_info.get('category', '')
+
+            return jsonify({
+                "kind": "hotspots",
+                "level": level,
+                "order": 'top' if order in ('top', 'delayed') else 'bottom',
+                "min_support": min_support,
+                "limit": limit,
+                "total_available": len(pool),
+                "items": filtered,
+                "data": filtered,
+                "raw_hotspots": raw_kind_data,
+                "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
+                "data_as_of": "2026-10-25"
+            }), 200
+
         return jsonify({
             "kind": clean_kind,
-            "data": kind_data,
+            "data": raw_kind_data,
             "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
             "data_as_of": "2026-10-25"
         }), 200
+
     except Exception as e:
         return jsonify({
             "error": {

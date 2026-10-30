@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 8.5 of 11 complete — Tab 1 (Overview), Tab 2 (Train Explorer), Tab 3 (Delay Prediction), and Tab 4 (Model Lab) connected live to REST API, 48 Vitest tests, 103 backend pytest passing.**
+> **Status: Phase 9 of 11 complete — All 6 Tabs (Overview, Train Explorer, Delay Prediction, Model Lab, Delay Patterns, Smart Insights) connected live to REST API, 64 Vitest tests, 133 backend pytest passing.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 
@@ -12,10 +12,10 @@ RailSense is a portfolio Data Science + ML project that turns a real Indian Rail
 |-----|---------|--------|
 | 1 — Overview ("Railway at a Glance") | Fleet KPIs, 8-tier delay distribution histogram, category comparison, 19-day daily trendline with boundary caveats | **COMPLETE (Phase 7)** |
 | 2 — Train Explorer ("Single Train Deep Dive") | Search catalog, canonical timetable keyed strictly by `seq`, stop delay progression, per-date history | **COMPLETE (Phase 7)** |
-| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.420 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8.5)** |
+| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.410 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8.5)** |
 | 4 — Model Lab ("Model Evaluation & Transparency") | Multi-model benchmark comparison table with Test/Val split toggle, PR curve, Calibration reliability diagram, ROC curve, test partition confusion matrix, feature importance, and Formulation 2 research benchmark | **COMPLETE (Phase 8.5)** |
-| 5 — Delay Patterns ("Historical Analytics") | Category, station, time-of-day and day-of-week breakdown | Planned (Phase 9) |
-| 6 — Smart Insights ("Natural Language Analytics") | Free-text query → parameterised SQL → chart/table (local NLP, no LLM) | Planned (Phase 9) |
+| 5 — Delay Patterns ("Historical Analytics") | Category, station, time-of-day, day-of-week breakdown, route position, and interactive hotspot explorer | **COMPLETE (Phase 9)** |
+| 6 — Smart Insights ("Natural Language Analytics") | Local NLP question answering (TF-IDF + Logistic Regression + RapidFuzz) with deterministic templates, clarification flow, and prediction redirect | **COMPLETE (Phase 9)** |
 
 ---
 
@@ -121,7 +121,7 @@ python scripts/smoke_api.py
 python wsgi.py
 # Server runs at: http://127.0.0.1:5000 (Swagger UI at http://127.0.0.1:5000/api/docs)
 
-# 5. Run full test suite (107 passed, 4 skipped in ~8s)
+# 5. Run full test suite (133 passed, 4 skipped in ~13s)
 pytest tests -v
 ```
 
@@ -176,8 +176,8 @@ Key variables:
 
 See [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) for full benchmark documentation, per-segment error analysis, and SHAP explainability.
 
-- **Primary Architecture:** LightGBM + Isotonic Calibration (`PR-AUC = 0.8525`, `ROC-AUC = 0.8602`, `F1 = 0.7798` on untouched Test split).
-- **Decision Threshold:** `0.420` (tuned on Validation to maximize F1; catches 82.2% of late arrivals with 74.2% precision).
+- **Primary Architecture:** LightGBM + Isotonic Calibration (`AP = 0.8482`, `ROC-AUC = 0.8592`, `F1 = 0.7782` on untouched Test split).
+- **Decision Threshold:** `0.410` (tuned on Validation to maximize F1; catches 82.0% of late arrivals with 74.0% precision).
 - **En-Route Model (Formulation 2):** Incorporates observed delay at stop $k-1$ (`PR-AUC = 0.9293`, `ROC-AUC = 0.9278`, `F1 = 0.8527`).
 - **Explainability:** SHAP TreeExplainer plots archived in `docs/model/` with plain-English translation in `docs/model/explanations_simple.md`.
 - **Saved Artifacts:** Model binaries stored in `backend/models/` (gitignored), metadata in `backend/models/model_metadata.json`, and inference service in `backend/app/ml/predict.py`.

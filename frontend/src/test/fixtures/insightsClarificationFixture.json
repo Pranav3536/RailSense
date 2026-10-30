@@ -1,0 +1,31 @@
+{
+  "query": "How is Rajdhani delayed?",
+  "understood_intent": "clarification_needed",
+  "needs_clarification": true,
+  "confidence": 0.55,
+  "confidence_level": "MEDIUM",
+  "clarification_options": [
+    {
+      "train_number": "12951",
+      "train_name": "NDLS TEJAS RAJ",
+      "category": "RAJ"
+    },
+    {
+      "train_number": "12423",
+      "train_name": "RAJDHANI EXP",
+      "category": "RAJ"
+    }
+  ],
+  "answer": {
+    "answer_text": "Multiple trains match 'Rajdhani'. Please select one to view its operational profile.",
+    "visual_type": "none",
+    "visual_data": null,
+    "template_id": "clarification"
+  },
+  "entities": {},
+  "explanation": {
+    "resolved_intent": "clarification",
+    "data_source": "SQLite Catalog",
+    "template_id": "clarification"
+  }
+}

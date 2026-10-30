@@ -89,7 +89,7 @@ export function ConfusionMatrix({ matrix, className = '' }) {
 
       <div className="text-xs text-slate-500 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200">
         <span className="font-semibold text-slate-700">Total test evaluations:</span>{' '}
-        <span className="font-mono">{formatNumber(total)}</span> stops. At threshold 0.42, the model achieves{' '}
+        <span className="font-mono">{formatNumber(total)}</span> stops. At threshold 0.41, the model achieves{' '}
         <span className="font-semibold text-slate-700">74.2% Precision</span> (TP / (TP + FP)) and{' '}
         <span className="font-semibold text-slate-700">82.2% Recall</span> (TP / (TP + FN)).
       </div>

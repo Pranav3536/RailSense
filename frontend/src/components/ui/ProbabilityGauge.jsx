@@ -8,11 +8,11 @@ import { formatPercent } from '../../utils/format';
 export function ProbabilityGauge({
   probability,
   rawProbability = null,
-  threshold = 0.42,
+  threshold = 0.41,
   className = '',
 }) {
   const probVal = Math.min(Math.max(Number(probability) || 0, 0), 1);
-  const threshVal = Math.min(Math.max(Number(threshold) || 0.42, 0), 1);
+  const threshVal = Math.min(Math.max(Number(threshold) || 0.41, 0), 1);
   const probPct = probVal * 100;
   const threshPct = threshVal * 100;
 

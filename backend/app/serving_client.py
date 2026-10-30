@@ -26,6 +26,7 @@ class ServingClient:
         self.sqlite_path = self.serving_dir / "serving.sqlite"
         self._catalog_loaded = False
         self._trains_all: List[Dict[str, Any]] = []
+        self._trains_by_number: Dict[str, Dict[str, Any]] = {}
         self._trains_by_cat: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         self._init_catalog_cache()
 
@@ -40,6 +41,7 @@ class ServingClient:
             self._trains_all = [dict(r) for r in cur.fetchall()]
             conn.close()
 
+            self._trains_by_number = {t["train_number"]: t for t in self._trains_all}
             self._trains_by_cat = defaultdict(list)
             for t in self._trains_all:
                 cat = str(t.get("category", "")).upper().strip()
@@ -48,6 +50,12 @@ class ServingClient:
             self._catalog_loaded = True
         except Exception:
             self._catalog_loaded = False
+
+    def get_train(self, train_number: str) -> Optional[Dict[str, Any]]:
+        """Instant O(1) in-memory lookup for a train by train_number."""
+        if not self._catalog_loaded:
+            return None
+        return self._trains_by_number.get(str(train_number).strip())
 
     def get_connection(self) -> sqlite3.Connection:
         """Opens a read-only SQLite connection using URI mode."""

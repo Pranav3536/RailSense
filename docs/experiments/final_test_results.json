@@ -1,8 +1,8 @@
 {
   "execution_timestamp": "2026-10-29 20:48:08",
   "best_model": "lightgbm_calibrated",
-  "optimal_f1_threshold": 0.42,
-  "recall80_threshold": 0.512,
+  "optimal_f1_threshold": 0.41,
+  "recall80_threshold": 0.455,
   "best_iteration": 298,
   "validation_metrics": {
     "logistic_regression": {
@@ -242,21 +242,21 @@
       }
     },
     "lightgbm_calibrated": {
-      "pr_auc": 0.8525,
-      "roc_auc": 0.8602,
-      "threshold": 0.42,
-      "precision": 0.7421,
-      "recall": 0.8215,
-      "f1_positive": 0.7798,
-      "f1_macro": 0.7714,
+      "pr_auc": 0.8482,
+      "roc_auc": 0.8592,
+      "threshold": 0.41,
+      "precision": 0.7402,
+      "recall": 0.8203,
+      "f1_positive": 0.7782,
+      "f1_macro": 0.7699,
       "precision_at_recall_80": 0.7476,
-      "brier_score": 0.1529,
-      "ece": 0.0183,
+      "brier_score": 0.1536,
+      "ece": 0.0213,
       "confusion_matrix": {
-        "tn": 71289,
-        "fp": 27248,
-        "fn": 17037,
-        "tp": 78391
+        "tn": 71067,
+        "fp": 27470,
+        "fn": 17152,
+        "tp": 78276
       }
     },
     "en_route_lightgbm": {
@@ -279,9 +279,9 @@
     }
   },
   "lifts": {
-    "lift_over_majority_pct": 14.28,
-    "lift_over_category_pct": 38.21,
-    "lift_over_history_pct": 6.18
+    "lift_over_majority_pct": 72.4,
+    "lift_over_category_pct": 42.03,
+    "lift_over_history_pct": 4.95
   },
   "error_analysis": {
     "by_category": {

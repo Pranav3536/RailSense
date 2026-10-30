@@ -3351,3 +3351,201 @@ The sidebar's **Truthful Database & Service Status Card** consumes `/api/health/
 ```
 
 ---
+
+
+## Phase 9 Endpoints
+
+### 1. `GET /api/patterns`
+
+Returns precomputed delay pattern distributions and hotspot analyses.
+
+**Query Parameters:**
+- `dim` (required): `hour` | `dow` | `category` | `position` | `hotspots`
+- `level` (optional, for `dim=hotspots`): `station` (default) | `train`
+- `order` (optional, for `dim=hotspots`): `top` (default, highest delay rate) | `bottom` (lowest delay rate)
+- `min_support` (optional, for `dim=hotspots`): integer minimum arrivals (defaults: 100 for stations, 50 for trains)
+- `limit` (optional, for `dim=hotspots`): integer (1 to 100, default 20)
+
+**Response `dim=hour`:**
+```json
+{
+  "dimension": "hour",
+  "generated_at": "2026-10-30T10:00:00Z",
+  "total_arrivals": 1773607,
+  "fleet_delayed_rate": 0.5036,
+  "bins": [
+    {
+      "hour": 0,
+      "total_arrivals": 58241,
+      "delayed_arrivals": 31201,
+      "delayed_rate": 0.5357,
+      "avg_delay_min": 24.8,
+      "p50_delay_min": 18.0,
+      "p90_delay_min": 68.0,
+      "wilson_ci_lower": 0.5316,
+      "wilson_ci_upper": 0.5398
+    }
+  ]
+}
+```
+
+**Response `dim=hotspots` (Station level):**
+```json
+{
+  "dimension": "hotspots",
+  "level": "station",
+  "order": "top",
+  "min_support": 100,
+  "limit": 20,
+  "hotspots": [
+    {
+      "station_code": "SPJ",
+      "station_name": "SAMASTIPUR JN",
+      "total_arrivals": 1284,
+      "delayed_arrivals": 1042,
+      "delayed_rate": 0.8115,
+      "avg_delay_min": 68.4,
+      "wilson_ci_lower": 0.7891,
+      "wilson_ci_upper": 0.8322
+    }
+  ]
+}
+```
+
+---
+
+### 2. `POST /api/insights/query`
+
+Performs local natural language question answering with deterministic template execution.
+
+**Request Headers:**
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "query": "Is train 12951 punctual?"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "query": "Is train 12951 punctual?",
+  "intent": "train_punctuality",
+  "confidence": 0.942,
+  "confidence_band": "High",
+  "answer": "Train 12951 (NDLS TEJAS RAJ) recorded a 28.4% delayed arrival rate across 194 observed stops in our 19-day dataset, with an average delay of 8.2 minutes.",
+  "caveat": "Historical observation from Oct 7 to Oct 25, 2026. Not a guarantee of future operational performance.",
+  "deep_link": {
+    "tab": "explorer",
+    "path": "/explorer?train=12951",
+    "label": "Open Train 12951 in Explorer"
+  },
+  "visual": {
+    "type": "kpi_card",
+    "metrics": [
+      { "label": "Observed Delay Rate", "value": "28.4%" },
+      { "label": "Avg Delay", "value": "8.2 min" },
+      { "label": "Sample Size", "value": "194 stops" }
+    ]
+  },
+  "clarification_needed": false,
+  "candidates": [],
+  "explanation": {
+    "method": "Local TF-IDF (1-2 word + 3-5 char n-grams) + Logistic Regression",
+    "matched_entities": { "train_number": "12951", "train_name": "NDLS TEJAS RAJ" },
+    "execution_time_ms": 1.15
+  }
+}
+```
+
+**Response (Clarification Required, e.g. ambiguous query):**
+```json
+{
+  "query": "How is Rajdhani doing?",
+  "intent": "train_punctuality",
+  "confidence": 0.88,
+  "confidence_band": "High",
+  "answer": "Multiple Rajdhani services match your query. Please select the specific service you wish to inspect:",
+  "caveat": "Observational data covers Oct 7 to Oct 25, 2026.",
+  "deep_link": null,
+  "visual": null,
+  "clarification_needed": true,
+  "candidates": [
+    { "train_number": "12951", "train_name": "NDLS TEJAS RAJ" },
+    { "train_number": "12431", "train_name": "RAJDHANI EXP" },
+    { "train_number": "22691", "train_name": "RAJDHANI EXP" }
+  ],
+  "explanation": {
+    "method": "Fuzzy token matching identified multiple candidate trains.",
+    "execution_time_ms": 1.42
+  }
+}
+```
+
+**Response (Refusal / Redirect):**
+```json
+{
+  "query": "Will train 12951 be delayed tomorrow?",
+  "intent": "pre_departure_prediction_refusal",
+  "confidence": 0.95,
+  "confidence_band": "High",
+  "answer": "Smart Insights answers historical questions from our 19-day dataset. To predict delays for an upcoming trip, please use our ML Inference Engine on the Delay Prediction tab.",
+  "caveat": null,
+  "deep_link": {
+    "tab": "predict",
+    "path": "/predict?train=12951",
+    "label": "Open Delay Prediction"
+  },
+  "visual": null,
+  "clarification_needed": false,
+  "candidates": [],
+  "explanation": {
+    "method": "Intent classification routed forward prediction query to Tab 3.",
+    "execution_time_ms": 0.92
+  }
+}
+```
+
+---
+
+### 3. `GET /api/insights/examples`
+
+Returns categorized starter questions for the Smart Insights natural language interface.
+
+**Response:**
+```json
+{
+  "categories": [
+    {
+      "name": "Fleet Overview",
+      "questions": [
+        "What is the overall delayed arrival rate across the railway?",
+        "How many trains and stations are tracked in this dataset?"
+      ]
+    },
+    {
+      "name": "Train Punctuality",
+      "questions": [
+        "How punctual is train 12951 (NDLS TEJAS RAJ)?",
+        "Which are the most punctual trains in the fleet?"
+      ]
+    },
+    {
+      "name": "Station Hotspots",
+      "questions": [
+        "Which stations have the highest observed delay rates?",
+        "What is the delay record at New Delhi (NDLS)?"
+      ]
+    },
+    {
+      "name": "Temporal & Route Patterns",
+      "questions": [
+        "What time of day sees the highest arrival delays?",
+        "Are delays higher on weekends or weekdays?"
+      ]
+    }
+  ]
+}
+```

@@ -76,8 +76,12 @@ def readiness():
     else:
         analytics_status = "ready"
 
+    # 4. Check NLP Service
+    nlp_service = current_app.config.get("NLP_SERVICE")
+    nlp_status = "ready" if (nlp_service and hasattr(nlp_service, "classifier") and nlp_service.classifier.model) else "unavailable"
+
     # Determine overall status
-    is_ready = (serving_status == "ready" and model_status == "ready" and analytics_status == "ready")
+    is_ready = (serving_status == "ready" and model_status == "ready" and analytics_status == "ready" and nlp_status == "ready")
     is_degraded = (serving_status == "ready" or model_status == "ready") and not is_ready
 
     if is_ready:
@@ -104,7 +108,8 @@ def readiness():
         "components": {
             "serving_store": serving_status,
             "prediction_engine": model_status,
-            "json_analytics": analytics_status
+            "json_analytics": analytics_status,
+            "nlp": nlp_status
         },
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC")
     }

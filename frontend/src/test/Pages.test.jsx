@@ -5,8 +5,8 @@ import DelayPatternsPage from '../pages/DelayPatternsPage';
 import SmartInsightsPage from '../pages/SmartInsightsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
-describe('Placeholder Pages Suite (Phase 9 Future Scope)', () => {
-  it('renders DelayPatternsPage with honest Phase 9 badge', () => {
+describe('Pages Mounting Suite', () => {
+  it('renders DelayPatternsPage successfully', () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <DelayPatternsPage />
@@ -14,11 +14,10 @@ describe('Placeholder Pages Suite (Phase 9 Future Scope)', () => {
     );
 
     expect(screen.getByText('Historical Analytics')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 9')).toBeInTheDocument();
-    expect(screen.getByText('/api/patterns/hourly')).toBeInTheDocument();
+    expect(screen.getByText('Observed Dataset')).toBeInTheDocument();
   });
 
-  it('renders SmartInsightsPage with honest Phase 9 badge', () => {
+  it('renders SmartInsightsPage successfully', () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <SmartInsightsPage />
@@ -26,8 +25,7 @@ describe('Placeholder Pages Suite (Phase 9 Future Scope)', () => {
     );
 
     expect(screen.getByText('Natural Language Analytics')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 9')).toBeInTheDocument();
-    expect(screen.getByText('/api/insights/query')).toBeInTheDocument();
+    expect(screen.getByText('Local NLP Engine')).toBeInTheDocument();
   });
 
   it('renders NotFoundPage with error code 404 and return link', () => {

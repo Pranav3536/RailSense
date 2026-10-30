@@ -92,10 +92,17 @@ export function getStationDetail(stationCode, options = {}) {
 /**
  * Get empirical delay distribution patterns.
  * @param {'hour'|'dow'|'category'|'position'|'hotspots'} kind
+ * @param {object} [params] Optional query params for hotspots (level, order, min_support, limit)
  */
-export function getPatterns(kind, options = {}) {
+export function getPatterns(kind, params = {}, options = {}) {
   const clean = encodeURIComponent(String(kind).trim().toLowerCase());
-  return apiRequest(`/patterns/${clean}`, { ttlMs: CACHE_STATIC_MS, ...options });
+  const query = new URLSearchParams();
+  if (params.level) query.set('level', params.level);
+  if (params.order) query.set('order', params.order);
+  if (params.min_support) query.set('min_support', String(params.min_support));
+  if (params.limit) query.set('limit', String(params.limit));
+  const qs = query.toString();
+  return apiRequest(`/patterns/${clean}${qs ? `?${qs}` : ''}`, { ttlMs: CACHE_STATIC_MS, ...options });
 }
 
 /**
@@ -127,4 +134,27 @@ export function predictDelay(body, options = {}) {
     ttlMs: 0,
     ...options,
   });
+}
+
+/**
+ * Submit natural language question to Smart Insights local NLP engine.
+ * @param {object} body
+ * @param {string} body.question Max 300 characters
+ * @param {object} [body.selected_entities]
+ * @param {number} [body.top_n]
+ */
+export function queryInsights(body, options = {}) {
+  return apiRequest('/insights/query', {
+    method: 'POST',
+    body,
+    ttlMs: 0,
+    ...options,
+  });
+}
+
+/**
+ * Get curated Smart Insights example questions and capability overview.
+ */
+export function getInsightsExamples(options = {}) {
+  return apiRequest('/insights/examples', { ttlMs: CACHE_STATIC_MS, ...options });
 }

@@ -211,3 +211,161 @@ export function adaptTrainDetail(raw) {
     historyByDate,
   };
 }
+
+/**
+ * Normalizes GET /api/patterns/hour responses.
+ */
+export function adaptPatternsHour(raw) {
+  if (!raw || typeof raw !== 'object') return [];
+  const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  return list.map((h) => {
+    const stopsCount = Number(h.stops_count) || 0;
+    return {
+      hour: Number(h.hour),
+      hourLabel: `${String(h.hour).padStart(2, '0')}:00`,
+      delayedRate: Number(h.delayed_rate) || 0,
+      meanDelayMin: Number(h.mean_delay_min) || 0,
+      stopsCount,
+      isLowSupport: stopsCount < 25000,
+    };
+  });
+}
+
+/**
+ * Normalizes GET /api/patterns/dow responses.
+ */
+export function adaptPatternsDow(raw) {
+  if (!raw || typeof raw !== 'object') return [];
+  const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  const calendarDaysMap = {
+    Monday: 2,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 3,
+    Friday: 3,
+    Saturday: 3,
+    Sunday: 3,
+  };
+  return list.map((d) => {
+    const dow = d.day_of_week || '';
+    return {
+      dayOfWeek: dow,
+      delayedRate: Number(d.delayed_rate) || 0,
+      meanDelayMin: Number(d.mean_delay_min) || 0,
+      stopsCount: Number(d.stops_count) || 0,
+      calendarDaysCount: calendarDaysMap[dow] || 2,
+    };
+  });
+}
+
+/**
+ * Normalizes GET /api/patterns/category responses.
+ */
+export function adaptPatternsCategory(raw) {
+  if (!raw || typeof raw !== 'object') return [];
+  const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  return list.map((c) => {
+    const eligibleStops = Number(c.eligible_stops) || 0;
+    const catMeta = CATEGORY_MAP[c.category] || null;
+    return {
+      category: c.category || 'OTHER',
+      categoryName: catMeta ? catMeta.name : c.category,
+      delayedRate: Number(c.delayed_rate) || 0,
+      meanDelayMin: Number(c.mean_delay_min) || 0,
+      medianDelayMin: Number(c.median_delay_min) || 0,
+      eligibleStops,
+      totalStops: Number(c.total_stops) || 0,
+      isLowSupport: eligibleStops < 500,
+    };
+  });
+}
+
+/**
+ * Normalizes GET /api/patterns/position responses.
+ */
+export function adaptPatternsPosition(raw) {
+  if (!raw || typeof raw !== 'object') return [];
+  const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  return list.map((p) => ({
+    positionBucket: p.position_bucket || '',
+    delayedRate: Number(p.delayed_rate) || 0,
+    meanDelayMin: Number(p.mean_delay_min) || 0,
+    stopsCount: Number(p.stops_count) || 0,
+  }));
+}
+
+/**
+ * Normalizes GET /api/patterns/hotspots responses.
+ */
+export function adaptPatternsHotspots(raw) {
+  if (!raw || typeof raw !== 'object') {
+    return { level: 'station', order: 'top', items: [], dataAsOf: '2026-10-25' };
+  }
+  const level = raw.level || 'station';
+  const order = raw.order || 'top';
+  const items = Array.isArray(raw.items) ? raw.items : (Array.isArray(raw.data) ? raw.data : []);
+
+  const adaptedItems = items.map((item, idx) => {
+    const stopsCount = Number(item.stops_count) || 0;
+    const delRate = Number(item.delayed_rate) || 0;
+    const wilsonLow = Number(item.wilson_lower) || 0;
+    const wilsonUp = Number(item.wilson_upper) || 0;
+
+    return {
+      rank: idx + 1,
+      stationCode: item.station_code || null,
+      trainNumber: item.train_number ? String(item.train_number) : null,
+      trainName: item.train_name || '',
+      category: item.category || '',
+      delayedRate: delRate,
+      meanDelay: Number(item.mean_delay) || 0,
+      stopsCount,
+      delayedCount: Number(item.delayed_count) || 0,
+      wilsonLower: wilsonLow,
+      wilsonUpper: wilsonUp,
+      wilsonText: `[${wilsonLow.toFixed(1)}%, ${wilsonUp.toFixed(1)}%]`,
+    };
+  });
+
+  return {
+    level,
+    order,
+    minSupport: Number(raw.min_support) || (level === 'station' ? 100 : 50),
+    limit: Number(raw.limit) || 10,
+    totalAvailable: Number(raw.total_available) || items.length,
+    items: adaptedItems,
+    dataAsOf: raw.data_as_of || '2026-10-25',
+    definition: raw.definition || '',
+  };
+}
+
+/**
+ * Normalizes GET /api/stations/{station_code} detail response.
+ */
+export function adaptStationDetail(raw) {
+  if (!raw || typeof raw !== 'object' || !raw.station_code) {
+    return null;
+  }
+  const sample = Array.isArray(raw.calling_trains_sample) ? raw.calling_trains_sample : [];
+  return {
+    stationCode: raw.station_code,
+    trainsCount: Number(raw.trains_count) || 0,
+    stopsCount: Number(raw.stops_count) || 0,
+    delayedRate: Number(raw.delayed_rate) || 0,
+    meanDelay: Number(raw.mean_delay) || 0,
+    wilsonLower: Number(raw.wilson_lower) || 0,
+    wilsonUpper: Number(raw.wilson_upper) || 0,
+    wilsonText: `[${(Number(raw.wilson_lower) || 0).toFixed(1)}%, ${(Number(raw.wilson_upper) || 0).toFixed(1)}%]`,
+    categoryMix: raw.category_mix || {},
+    callingTrainsSample: sample.map((t) => ({
+      trainNumber: String(t.train_number),
+      trainName: t.train_name || '',
+      category: t.category || '',
+      observedStops: Number(t.observed_stops) || 0,
+      delayedRate: Number(t.delayed_rate) || 0,
+      meanDelay: Number(t.mean_delay) || 0,
+    })),
+    dataAsOf: raw.data_as_of || '2026-10-25',
+    definition: raw.definition || '',
+  };
+}

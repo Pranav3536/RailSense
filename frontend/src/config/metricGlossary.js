@@ -24,7 +24,7 @@ export const METRIC_GLOSSARY = {
     short: 'F1-Score',
     formula: '2 × (Precision × Recall) / (Precision + Recall)',
     description:
-      'Harmonic mean balancing precision and recall. Tuned on the validation split to select the optimal operational threshold (0.42).',
+      'Harmonic mean balancing precision and recall. Tuned on the validation split to select the optimal operational threshold (0.41).',
   },
   precision: {
     name: 'Precision',

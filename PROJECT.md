@@ -207,7 +207,8 @@ All endpoints implemented, verified, and documented via OpenAPI 3.0 (`docs/opena
 | POST | `/api/predict` | Pre-departure delay prediction with calibrated risk band | Verified |
 | GET | `/api/openapi.json` | OpenAPI 3.0 specification | Verified |
 | GET | `/api/docs` | Interactive Swagger UI documentation | Verified |
-| POST | `/api/insights/query` | Local NLP query engine (Reserved for Phase 9) | Phase 9 |
+| POST | `/api/insights/query` | Local NLP query engine with deterministic templates | Verified |
+| GET | `/api/insights/examples` | Categorized starter questions for natural language interface | Verified |
 
 ---
 
@@ -243,10 +244,31 @@ Documented fully in `docs/UI_DESIGN_SYSTEM.md`. Follows the fixed design tokens:
 - **Tab 1: Overview Dashboard ("Railway at a Glance")**: Connected live to `/api/overview`. Features 5 macro volume StatCards, 5 delay performance StatCards, daily delayed rate trendline with 49.9% fleet baseline, 8-tier delay distribution histogram, category comparison chart with low-support annotations (< 30 stops), view-as-table toggles, and educational boundary principles collapsible.
 - **Tab 2: Train Explorer ("Single Train Deep Dive")**: Connected live to `/api/trains` and `/api/trains/<train_number>` with deep linking (`/explorer` & `/explorer/:trainNumber`). Features debounced search, category filter, paginated catalog, train summary header, timetable table keyed strictly by `seq` (handling 200 circular routes), stop delay progression line chart, and per-date run history chart with boundary markers.
 
-### Phase 8.5 Implementation Status: COMPLETE
-- **Tab 3: Delay Prediction Engine ("ML Inference Engine")**: Connected live to `POST /api/predict`. Features accessible `TrainPicker`, dynamic stop selector dropdown by sequence number `seq`, date picker defaulting to latest dataset date (`2026-10-25`), rate-limit cooldown handling (120 req/min), live results panel with `ProbabilityGauge` (with threshold marker at 0.420), `RiskBadge` (Low/Medium/High), plain-words decision statement, `ColdStartNotice` for low-history services (<5 completed runs), `FactorBars` showing model feature associations, `WarningList` with in-sample demonstration notice or out-of-window caveat, and historical empirical stop baseline comparator.
-- **Tab 4: Model Evaluation & Transparency Lab ("Model Lab")**: Connected live to `GET /api/model/info` and `GET /api/model/metrics`. Features architectural facts (LightGBM GBDT + Isotonic Calibration), multi-model benchmark comparison table with Test / Validation split toggle and `LiftBar` (+72.4% over Majority, +42.0% over Category Prior, +4.95% over Train History), Recharts Precision-Recall curve (with prevalence baseline 49.2%), Calibration Reliability diagram (with ideal diagonal), ROC curve, test partition Confusion Matrix (71,289 TN, 27,248 FP, 17,037 FN, 78,391 TP) at 0.420 threshold, calibration diagnostics (Brier score 0.1529, ECE 0.0183), feature importance rankings (gain metric) across 298 trees with plain-English labels from `featureLabels.js`, subgroup breakdown tables, anti-leakage banned features card, and Formulation 2 (En-Route Model) research benchmark card.
-- **Frontend Test Suite**: 48 tests passing across 10 files in Vitest; ESLint 0 errors, 0 warnings; Vite production build passes cleanly (200.27 kB). Backend pytest passes with 103 passed, 4 skipped.
+### Phase 8 & 8.5 Implementation Status: COMPLETE
+- **Tab 3: Delay Prediction Engine ("ML Inference Engine")**: Connected live to `POST /api/predict`. Features accessible `TrainPicker`, dynamic stop selector dropdown by sequence number `seq`, date picker defaulting to latest dataset date (`2026-10-25`), rate-limit cooldown handling (120 req/min), live results panel with `ProbabilityGauge` (with threshold marker at canonical 0.410), `RiskBadge` (Low/Medium/High), plain-words decision statement, `ColdStartNotice` for low-history services (<5 completed runs), `FactorBars` showing model feature associations, `WarningList` with in-sample demonstration notice or out-of-window caveat, and historical empirical stop baseline comparator.
+- **Tab 4: Model Evaluation & Transparency Lab ("Model Lab")**: Connected live to `GET /api/model/info` and `GET /api/model/metrics`. Features architectural facts (LightGBM GBDT + Isotonic Calibration), multi-model benchmark comparison table with Test / Validation split toggle and `LiftBar` (+72.4% over Majority, +42.0% over Category Prior, +4.95% over Train History), Recharts Precision-Recall curve (with prevalence baseline 49.2%), Calibration Reliability diagram (with ideal diagonal), ROC curve, test partition Confusion Matrix (71,067 TN, 27,470 FP, 17,152 FN, 78,276 TP) at canonical 0.410 threshold, calibration diagnostics (Brier score 0.1536, ECE 0.0213), feature importance rankings (gain metric) across 298 trees with plain-English labels from `featureLabels.js`, subgroup breakdown tables, anti-leakage banned features card, and Formulation 2 (En-Route Model) research benchmark card.
+
+### Phase 9 Implementation Status: COMPLETE
+- **Tab 5: Delay Patterns ("Historical Analytics", `/patterns`)**: Connected live to `GET /api/patterns`. Features 5 empirical historical delay distribution sections:
+  1. *By Hour of Day (0-23 IST)*: Bar chart with volume tooltips, low-support muting, and fleet reference line (50.4%).
+  2. *By Day of Week*: Weekday bar chart with prominent calendar caution note (19-day dataset contains only 2 Mondays/Tuesdays vs 3 other days).
+  3. *By Category*: Service category comparison with `CategoryLabel` full names and low-support muting.
+  4. *By Journey Position*: Stop sequence progression buckets (`Early (2-3)`, `Mid-Early (4-10)`, `Mid (11-25)`, `Late (26-50)`, `Deep (>50)`).
+  5. *Observed Delay Hotspots Explorer*: Interactive station vs train ranking with top/bottom toggle, minimum support filter, limit selector, and inline station detail drawer.
+  - Strict methodological adherence: zero causal vocabulary, zero use of the word "probability".
+- **Tab 6: Smart Insights ("Natural Language Analytics", `/insights`)**: Connected live to `POST /api/insights/query` and `GET /api/insights/examples`.
+  - 100% local, free NLP pipeline: Scikit-learn TF-IDF (1-2 word + 3-5 char n-grams) + Logistic Regression ($C=5.0$) achieving **93.89% Accuracy** and **0.9410 Macro-F1** on held-out test questions.
+  - Deterministic entity extraction with RapidFuzz for train names and fuzzy station matching.
+  - Deterministic parameterised response templates reading from SQLite precomputed store with zero free-form SQL generation.
+  - Interactive clarification flow for ambiguous queries (e.g., 'Rajdhani').
+  - Pre-departure prediction refusal redirecting to Tab 3 (`/predict`).
+  - Strict causal inquiry refusal explaining observational limits.
+  - Question input with 300-char counter, 30/min rate limit cooldown timer, in-memory session history (max 20), and collapsible explanation details.
+- **Verification & Test Status**:
+  - Backend Pytest: **133 passed, 4 skipped** across 7 test suites in 13.55s.
+  - Frontend Vitest: **64 passed across 12 files** in 41.51s.
+  - Frontend ESLint: **0 errors, 0 warnings**.
+  - Production Build: Clean Vite production build in 7.77s.
 
 ---
 

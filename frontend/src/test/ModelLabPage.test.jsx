@@ -36,10 +36,10 @@ describe('ModelLabPage (Tab 4)', () => {
 
     expect(screen.getByText('Model Evaluation & Transparency')).toBeInTheDocument();
 
-    // Check header KPI values
-    expect(screen.getByText('0.8525')).toBeInTheDocument(); // AP
-    expect(screen.getByText('0.8602')).toBeInTheDocument(); // ROC-AUC
-    expect(screen.getByText('0.7798')).toBeInTheDocument(); // F1-Score
+    // Check header KPI values (rendered in both KPI card and comparison table)
+    expect(screen.getAllByText('0.8482').length).toBeGreaterThan(0); // AP
+    expect(screen.getAllByText('0.8592').length).toBeGreaterThan(0); // ROC-AUC
+    expect(screen.getAllByText('0.7782').length).toBeGreaterThan(0); // F1-Score
 
     // Check Model Architecture info
     expect(screen.getByText(/LightGBM Gradient Boosted Decision Trees \+ Isotonic Regression/i)).toBeInTheDocument();
@@ -58,9 +58,9 @@ describe('ModelLabPage (Tab 4)', () => {
     expect(screen.getByText('Precision-Recall (PR) Curve')).toBeInTheDocument();
     expect(screen.getByText('Calibration Reliability Diagram')).toBeInTheDocument();
 
-    // Check Confusion Matrix numbers
-    expect(screen.getByText(/71,289/)).toBeInTheDocument(); // TN
-    expect(screen.getByText(/78,391/)).toBeInTheDocument(); // TP
+    // Check Confusion Matrix numbers (at reconciled threshold 0.410)
+    expect(screen.getByText(/71,067/)).toBeInTheDocument(); // TN
+    expect(screen.getByText(/78,276/)).toBeInTheDocument(); // TP
 
     // Check Feature Importance
     expect(screen.getByText('Feature Importance (Gain Metric)')).toBeInTheDocument();

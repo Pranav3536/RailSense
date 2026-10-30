@@ -1,0 +1,185 @@
+{
+  "answer": {
+    "answer_text": "Across service classifications, Suburban (SUB) exhibits the lowest observed delay rate at 17.1% (313,903 stops), while Holiday Special (TOD) shows the highest observed delay rate at 76.1% (41,812 stops).",
+    "caveats": [
+      "Low-support categories with small sample sizes exhibit wider variance."
+    ],
+    "deep_link": {
+      "label": "Explore Category Breakdown",
+      "path": "/overview"
+    },
+    "definition_note": "Categories sorted by empirical delayed arrival rate (arrival_delay_min > 15m).",
+    "support_badge": "Categories: 20 classes",
+    "template_id": "category_ranking",
+    "visual_data": [
+      {
+        "Category": "TOD",
+        "Delayed Rate": "76.10%",
+        "Eligible Stops": "41,812",
+        "Mean Delay": "146.8 min",
+        "Median Delay": "73.0 min"
+      },
+      {
+        "Category": "EMU",
+        "Delayed Rate": "75.79%",
+        "Eligible Stops": "11,129",
+        "Mean Delay": "56.4 min",
+        "Median Delay": "40.0 min"
+      },
+      {
+        "Category": "PEXP",
+        "Delayed Rate": "72.84%",
+        "Eligible Stops": "324",
+        "Mean Delay": "226.1 min",
+        "Median Delay": "147.5 min"
+      },
+      {
+        "Category": "AMTB",
+        "Delayed Rate": "60.92%",
+        "Eligible Stops": "7,055",
+        "Mean Delay": "60.7 min",
+        "Median Delay": "25.0 min"
+      },
+      {
+        "Category": "TRST",
+        "Delayed Rate": "60.00%",
+        "Eligible Stops": "40",
+        "Mean Delay": "60.1 min",
+        "Median Delay": "35.0 min"
+      },
+      {
+        "Category": "MEMU",
+        "Delayed Rate": "59.35%",
+        "Eligible Stops": "249,068",
+        "Mean Delay": "42.2 min",
+        "Median Delay": "22.0 min"
+      },
+      {
+        "Category": "SUF",
+        "Delayed Rate": "57.41%",
+        "Eligible Stops": "217,500",
+        "Mean Delay": "53.1 min",
+        "Median Delay": "20.0 min"
+      },
+      {
+        "Category": "GBR",
+        "Delayed Rate": "57.23%",
+        "Eligible Stops": "4,234",
+        "Mean Delay": "55.5 min",
+        "Median Delay": "21.0 min"
+      },
+      {
+        "Category": "MEX",
+        "Delayed Rate": "57.02%",
+        "Eligible Stops": "571,895",
+        "Mean Delay": "39.4 min",
+        "Median Delay": "20.0 min"
+      },
+      {
+        "Category": "PAS",
+        "Delayed Rate": "55.22%",
+        "Eligible Stops": "235,974",
+        "Mean Delay": "38.6 min",
+        "Median Delay": "19.0 min"
+      },
+      {
+        "Category": "DRNT",
+        "Delayed Rate": "53.18%",
+        "Eligible Stops": "1,730",
+        "Mean Delay": "90.0 min",
+        "Median Delay": "17.0 min"
+      },
+      {
+        "Category": "DMU",
+        "Delayed Rate": "50.58%",
+        "Eligible Stops": "80,397",
+        "Mean Delay": "31.1 min",
+        "Median Delay": "16.0 min"
+      },
+      {
+        "Category": "RAJ",
+        "Delayed Rate": "46.13%",
+        "Eligible Stops": "5,489",
+        "Mean Delay": "33.8 min",
+        "Median Delay": "14.0 min"
+      },
+      {
+        "Category": "JSH",
+        "Delayed Rate": "45.12%",
+        "Eligible Stops": "9,389",
+        "Mean Delay": "23.9 min",
+        "Median Delay": "13.0 min"
+      },
+      {
+        "Category": "VNDM",
+        "Delayed Rate": "34.88%",
+        "Eligible Stops": "605",
+        "Mean Delay": "12.8 min",
+        "Median Delay": "11.0 min"
+      },
+      {
+        "Category": "TEJ",
+        "Delayed Rate": "33.69%",
+        "Eligible Stops": "558",
+        "Mean Delay": "40.3 min",
+        "Median Delay": "10.0 min"
+      },
+      {
+        "Category": "VNDB",
+        "Delayed Rate": "28.83%",
+        "Eligible Stops": "16,940",
+        "Mean Delay": "11.6 min",
+        "Median Delay": "8.0 min"
+      },
+      {
+        "Category": "SHT",
+        "Delayed Rate": "28.01%",
+        "Eligible Stops": "4,644",
+        "Mean Delay": "13.6 min",
+        "Median Delay": "8.0 min"
+      },
+      {
+        "Category": "VNDS",
+        "Delayed Rate": "24.87%",
+        "Eligible Stops": "382",
+        "Mean Delay": "7.8 min",
+        "Median Delay": "9.0 min"
+      },
+      {
+        "Category": "SUB",
+        "Delayed Rate": "17.07%",
+        "Eligible Stops": "313,903",
+        "Mean Delay": "9.6 min",
+        "Median Delay": "6.0 min"
+      }
+    ],
+    "visual_type": "table"
+  },
+  "clarification_options": [],
+  "confidence": 0.8703,
+  "confidence_level": "HIGH",
+  "data_as_of": "2026-10-25",
+  "entities": {
+    "category": null,
+    "order": "top",
+    "station_code": null,
+    "time_of_day": null,
+    "top_n": 10,
+    "train_name": null,
+    "train_number": null,
+    "weekday": null
+  },
+  "explanation": {
+    "confidence_margin": 0.8501,
+    "confidence_score": 0.8703,
+    "data_source": "Precomputed Serving SQLite Store & Analytics JSON",
+    "resolved_intent": "category_ranking",
+    "safety_note": "No runtime LLM, no user text concatenated into SQL",
+    "template_id": "category_ranking"
+  },
+  "margin": 0.8501,
+  "needs_clarification": false,
+  "query": "Which train category is most delayed?",
+  "suggestions": [],
+  "understood_intent": "category_ranking"
+}

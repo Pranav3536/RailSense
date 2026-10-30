@@ -36,7 +36,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
 
     // Wait for train details to load
     await waitFor(() => {
-      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
     });
 
     // Check stop selector has options

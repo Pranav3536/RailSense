@@ -18,6 +18,33 @@ const cacheStore = new Map();
 // In-flight Promise deduplication: URL -> Promise
 const inFlightRequests = new Map();
 
+// Dev-only request counter (disabled in production build)
+const devRequestCounter = {
+  totalRequests: 0,
+  windowStart: Date.now(),
+  getRatePerMinute() {
+    const elapsedMinutes = (Date.now() - this.windowStart) / 60000;
+    return elapsedMinutes > 0 ? (this.totalRequests / elapsedMinutes).toFixed(1) : 0;
+  },
+  recordRequest() {
+    if (import.meta.env?.DEV) {
+      this.totalRequests += 1;
+    }
+  },
+};
+
+/**
+ * Returns dev request metrics for profiling.
+ */
+export function getDevRequestMetrics() {
+  if (!import.meta.env?.DEV) return null;
+  return {
+    totalRequests: devRequestCounter.totalRequests,
+    requestsPerMinute: Number(devRequestCounter.getRatePerMinute()),
+    activeCachedEntries: cacheStore.size,
+  };
+}
+
 export class ApiClientError extends Error {
   constructor(message, status, code, details = null, requestId = null) {
     super(message);
@@ -106,6 +133,8 @@ export async function apiRequest(endpoint, options = {}) {
         },
         body: body ? JSON.stringify(body) : undefined,
       });
+
+      devRequestCounter.recordRequest();
 
       clearTimeout(timeoutId);
 

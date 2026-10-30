@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "day_of_week": "Monday",
+      "delayed_rate": 49.61,
+      "mean_delay_min": 38.43,
+      "stops_count": 204875
+    },
+    {
+      "day_of_week": "Tuesday",
+      "delayed_rate": 48.41,
+      "mean_delay_min": 36.27,
+      "stops_count": 202913
+    },
+    {
+      "day_of_week": "Wednesday",
+      "delayed_rate": 49.62,
+      "mean_delay_min": 37.15,
+      "stops_count": 212368
+    },
+    {
+      "day_of_week": "Thursday",
+      "delayed_rate": 49.64,
+      "mean_delay_min": 37.3,
+      "stops_count": 288063
+    },
+    {
+      "day_of_week": "Friday",
+      "delayed_rate": 50.98,
+      "mean_delay_min": 38.6,
+      "stops_count": 300846
+    },
+    {
+      "day_of_week": "Saturday",
+      "delayed_rate": 51.03,
+      "mean_delay_min": 39.45,
+      "stops_count": 297236
+    },
+    {
+      "day_of_week": "Sunday",
+      "delayed_rate": 49.36,
+      "mean_delay_min": 38.82,
+      "stops_count": 266767
+    }
+  ],
+  "data_as_of": "2026-10-25",
+  "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
+  "kind": "dow"
+}

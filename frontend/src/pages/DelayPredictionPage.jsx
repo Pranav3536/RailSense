@@ -45,7 +45,7 @@ export function DelayPredictionPage() {
   // Form State
   const initialTrain = searchParams.get('train') || '';
   const initialSeq = searchParams.get('seq') || '';
-  const initialDate = searchParams.get('date') || '2026-10-25';
+  const initialDate = searchParams.get('date') || '';
 
   const [trainNumber, setTrainNumber] = useState(initialTrain);
   const [selectedSeq, setSelectedSeq] = useState(initialSeq);
@@ -273,7 +273,7 @@ export function DelayPredictionPage() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => setJourneyDate('2026-10-25')}
+                    onClick={() => setJourneyDate('')}
                     className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                     title="Fill latest date in dataset window (2026-10-25)"
                   >
@@ -313,7 +313,7 @@ export function DelayPredictionPage() {
             {/* Actions Bar */}
             <div className="flex items-center justify-between pt-2 border-t border-slate-100">
               <div className="text-xs text-slate-500">
-                Rate limited to 120 requests/minute. Model threshold: <span className="font-mono font-semibold">0.420</span>.
+                Rate limited to 120 requests/minute. Model threshold: <span className="font-mono font-semibold">{prediction?.threshold_used?.toFixed(3) || "0.410"}</span>.
               </div>
 
               <button
@@ -370,7 +370,7 @@ export function DelayPredictionPage() {
                   <ProbabilityGauge
                     probability={prediction.probability_delayed}
                     rawProbability={prediction.probability_raw || prediction.raw_probability}
-                    threshold={prediction.threshold_used || 0.42}
+                    threshold={prediction.threshold_used || 0.41}
                   />
 
                   {/* Decision Text in Plain Words */}
@@ -529,7 +529,7 @@ export function DelayPredictionPage() {
                     <strong>Estimated Delay Probability:</strong> Represents the model&apos;s statistical estimation that this service arrives &gt;15 minutes behind schedule at the target stop. The raw tree probability is calibrated via Isotonic Regression on held-out validation data so that a predicted 40% probability corresponds closely to an observed 40% historical delay frequency.
                   </p>
                   <p>
-                    <strong>Operational Threshold (0.420):</strong> The binary decision cut-off was tuned to maximize the F1-score on the validation split. Because arrival delay is slightly imbalanced and false negatives are costly in passenger planning, the balanced F1 threshold (0.420) catches 82.2% of all late arrivals with 74.2% precision on the untouched test split.
+                    <strong>Operational Threshold (0.410):</strong> The binary decision cut-off was tuned to maximize the F1-score on the validation split. Because arrival delay is slightly imbalanced and false negatives are costly in passenger planning, the balanced F1 threshold (0.410) catches 82.0% of all late arrivals with 74.0% precision on the untouched test split.
                   </p>
                   <p>
                     <strong>Non-Causal Attribute Association:</strong> Factors shown above are features the model uses to compute the probability (e.g. stop sequence, scheduled arrival time of day, and trailing 7-day priors). They do not represent causal physical explanations (such as external disruptions or infrastructure events), which are unobserved in timetable data.
