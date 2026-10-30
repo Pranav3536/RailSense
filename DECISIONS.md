@@ -527,6 +527,39 @@ No test metrics are ever reported for the deployment model.
 
 **Decision:** All per-date charts and tables explicitly differentiate collection boundary days (October 7 left-truncated start, October 25 right-censored end) from complete middle observation days. These edge dates are styled with distinct visual markers, legend entries, and explanatory tooltips referencing `docs/validation_report.md` to prevent users from misinterpreting partial-day artifacts as operational delay trends.
 
+---
+
+## D-37 — Pre-Departure Schedule-Time Inference with Zero En-Route Leakage
+
+**Date decided:** 2026-10-30 (Phase 8)
+
+**Decision:** Tab 3 (`DelayPredictionPage.jsx`) connects to `POST /api/predict` taking schedule-time parameters only: train service, arrival stop by `seq`, and journey start date. Origin stop (`seq=1`) is permanently disabled because arrival delay is physically undefined at journey departure. Real-time en-route inputs (actual departure, actual arrival at earlier stops) are strictly banned from production request payloads.
+
+---
+
+## D-38 — Calibrated Probability Space & Operational Threshold Decoupling
+
+**Date decided:** 2026-10-30 (Phase 8)
+
+**Decision:** Raw LightGBM decision tree leaf scores are mapped through isotonic regression calibrators trained on held-out validation data so that output probabilities reflect true historical empirical frequencies. The operational decision threshold (0.420) is determined by maximizing the F1-score on the validation partition, catching 82.2% of all late arrivals on the untouched test split. The term "probability" is strictly confined to Delay Prediction and Model Lab documentation; all customer-facing communications make no causal guarantees.
+
+---
+
+## D-39 — Segregation of Formulation 2 (En-Route Telemetry) as Research Benchmark
+
+**Date decided:** 2026-10-30 (Phase 8)
+
+**Decision:** Formulation 2 (which observes delay at stop $k-1$ to predict stop $k$, achieving AP 0.9289 vs 0.8482) is completely excluded from the interactive pre-departure prediction form and presented solely in Tab 4 Model Lab as a clearly demarcated research benchmark. It is accompanied by explicit operational limitations stating that real-time IoT tracking telemetry is required en-route and unavailable at pre-booking time.
+
+---
+
+## D-40 — Truthful Model Transparency & Reconciled AP Metric Standards
+
+**Date decided:** 2026-10-30 (Phase 8)
+
+**Decision:** The Model Lab (`ModelLabPage.jsx`) displays zero hardcoded numbers. All model metrics, lifts (+72.4% over Majority, +42.0% over Category Prior, +4.95% over Train History), Recharts curves (PR curve, Calibration reliability diagram, ROC curve), and test partition confusion matrix (71,289 TN, 27,248 FP, 17,037 FN, 78,391 TP) are loaded dynamically from `/api/model/info` and `/api/model/metrics`. Average Precision (AP) is standardized to `sklearn.metrics.average_precision_score`.
+
+
 
 
 

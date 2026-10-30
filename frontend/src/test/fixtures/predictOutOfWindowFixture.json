@@ -1,0 +1,28 @@
+{
+  "caveats": [
+    "Pre-departure timetable model: assumes scheduled route and standard operating conditions.",
+    "Does not observe dynamic real-time en-route incidents, signal failures, or sudden weather disruptions.",
+    "Delay is defined as arrival_delay_min > 15 minutes at the scheduled stop."
+  ],
+  "contributing_factors": [
+    "Train 12951 exhibits high historical punctuality (24.9% delay rate)"
+  ],
+  "data_as_of": "2026-10-25",
+  "historical_context": {
+    "is_cold_start": false,
+    "scheduled_arrival_time": "21:06",
+    "stop_sequence": 4,
+    "train_category": "RAJ"
+  },
+  "journey_date": "2026-11-05",
+  "model_version": "1.0.0",
+  "predicted_delayed": false,
+  "probability_delayed": 0.1584,
+  "probability_raw": 0.192,
+  "raw_probability": 0.192,
+  "risk_band": "Low",
+  "seq": 4,
+  "station_code": "BRC",
+  "threshold_used": 0.42,
+  "train_number": "12951"
+}

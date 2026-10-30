@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "MULTIPLE_STOPS_REQUIRE_SEQ",
+    "message": "Train 02542 calls at station KGN multiple times. Please specify 'seq'.",
+    "valid_seq_options": [
+      1,
+      3
+    ]
+  }
+}

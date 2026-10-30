@@ -32,8 +32,6 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
 
   it('contains zero unverified owner claims (41.8%, 26.4, 2.8M+, 10,743 trains) in source files', () => {
     const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
-    
-    // Check non-test source files only
     const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')));
 
     const forbiddenClaims = ['41.8%', '26.4', '2.8M+', '10,743 trains'];
@@ -56,7 +54,7 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
     const forbiddenSecrets = [
       'gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
       'TIDB_PASSWORD',
-      'root.train_records'
+      'root.train_records',
     ];
 
     allFrontendFiles.forEach((file) => {
@@ -78,6 +76,33 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
       causalTerms.forEach((term) => {
         expect(content).not.toContain(term);
       });
+    });
+  });
+
+  it('confines the term "probability" strictly to Delay Prediction, Model Lab, and Metric Glossary files', () => {
+    const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
+    const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')));
+
+    // Files allowed to mention "probability" (model estimated outputs and evaluation metrics)
+    const allowedSubstrings = [
+      'DelayPredictionPage',
+      'ModelLabPage',
+      'ProbabilityGauge',
+      'RiskBadge',
+      'metricGlossary',
+      'featureLabels',
+      path.join('components', 'ui', 'index.js'),
+    ];
+
+    nonTestFiles.forEach((file) => {
+      const isAllowed = allowedSubstrings.some((allowed) => file.includes(allowed));
+      if (!isAllowed) {
+        const content = fs.readFileSync(file, 'utf-8');
+        expect(
+          content.toLowerCase(),
+          `Found forbidden usage of "probability" in non-model file ${file}`
+        ).not.toContain('probability');
+      }
     });
   });
 

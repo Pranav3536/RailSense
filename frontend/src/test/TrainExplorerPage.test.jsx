@@ -40,9 +40,6 @@ describe('TrainExplorerPage (Tab 2)', () => {
       expect(screen.getByText('NDLS TEJAS RAJ')).toBeInTheDocument();
       expect(screen.getAllByText('12002').length).toBeGreaterThan(0);
       expect(screen.getByText('BHOPAL SHATABDI')).toBeInTheDocument();
-
-      // Check quick explore buttons
-      expect(screen.getByText('Quick explore:')).toBeInTheDocument();
     });
 
     it('handles search input filtering', async () => {
@@ -83,7 +80,7 @@ describe('TrainExplorerPage (Tab 2)', () => {
 
       // Check header info
       expect(screen.getByText('12951')).toBeInTheDocument();
-      expect(screen.getByText('Rajdhani Express')).toBeInTheDocument();
+      expect(screen.getAllByText('RAJ').length).toBeGreaterThan(0);
       expect(screen.getAllByText('MMCT').length).toBeGreaterThan(0);
       expect(screen.getAllByText('NDLS').length).toBeGreaterThan(0);
 
@@ -91,10 +88,18 @@ describe('TrainExplorerPage (Tab 2)', () => {
       expect(screen.getByText('BVI')).toBeInTheDocument();
       expect(screen.getByText('ST')).toBeInTheDocument();
 
-      // Check Phase 8 prediction button is present and disabled
-      const predictBtn = screen.getByRole('button', { name: /Open Delay Prediction \(Phase 8\)/i });
+      // Check prediction button is enabled and links to Phase 8 ML inference
+      const predictBtn = screen.getByRole('button', { name: /Predict Delay/i });
       expect(predictBtn).toBeInTheDocument();
-      expect(predictBtn).toBeDisabled();
+      expect(predictBtn).not.toBeDisabled();
+
+      // Toggle stops to table view
+      const tableRadios = screen.getAllByRole('radio', { name: /Table/i });
+      fireEvent.click(tableRadios[0]);
+
+      // Check timetable has action predict buttons
+      const timetablePredictBtns = screen.getAllByRole('button', { name: /^Predict$/i });
+      expect(timetablePredictBtns.length).toBeGreaterThan(0);
 
       // Check Back to Search button
       expect(screen.getByRole('button', { name: /Back to Train Search/i })).toBeInTheDocument();

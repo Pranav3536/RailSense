@@ -1,3 +1,4 @@
+import { isValidElement } from 'react';
 import { Card } from './Card';
 import { Skeleton } from './Skeleton';
 import { DefinitionNote } from './DefinitionNote';
@@ -39,10 +40,10 @@ export function StatCard({
         </div>
         {Icon && (
           <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 flex-shrink-0">
-            {typeof Icon === 'function' ? (
-              <Icon size={20} aria-hidden="true" />
-            ) : (
+            {isValidElement(Icon) ? (
               Icon
+            ) : (
+              <Icon size={20} aria-hidden="true" />
             )}
           </div>
         )}

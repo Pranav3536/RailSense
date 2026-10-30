@@ -484,12 +484,33 @@ pytest backend/tests/test_api_integration.py -v
 - Zero causal terms ("bottleneck", "congestion", "fog", "caused by") and zero "probability" wording on overview/explorer tabs.
 - Full verification: Vitest **43 passed across 8 test files**, ESLint **0 errors / 0 warnings**, Vite build: **199 kB clean bundle**, Backend pytest: **103 passed, 4 skipped**.
 
-**Next Milestone: Phase 8 — Delay Prediction Tab (Pre-Departure Inference Engine)**
-In Phase 8, the session will:
-1. Connect Tab 3 (Delay Prediction) to `POST /api/predict`.
-2. Build schedule-time inference input form (train number, start date, station, scheduled arrival/departure).
-3. Display predicted delay probability (calibrated via isotonic regression), risk band assignment (Low / Medium / High), decision threshold indicator (0.420 / 0.410), and top SHAP local feature attributions.
-4. Guarantee pre-departure safety (banning en-route actual arrival/departure inputs from request-time feature extraction).
+### Phase 8 — Delay Prediction & Model Evaluation Lab (COMPLETED)
+- Tab 3 Delay Prediction ("ML Inference Engine") live at `/predict` and connected to `POST /api/predict` and `GET /api/trains/<train_number>`:
+  - Supports deep links (`/predict?train=&seq=&date=`).
+  - Interactive form with debounced accessible `TrainPicker`, dynamic stop selector dropdown by `seq` (origin stop seq=1 disabled with clear rationale), date picker defaulting to `2026-10-25`.
+  - Explicit submit button (`Predict Delay`) guarded against double submission and rate limit (120 req/min) with countdown timer.
+  - Live results panel featuring `ProbabilityGauge` (with threshold marker at 0.420), `RiskBadge` (Low/Medium/High), plain-words decision statement, `ColdStartNotice` for low-support runs (<5 historical runs), `FactorBars` showing model feature associations, `WarningList` with in-sample demonstration notice or out-of-window warning, and empirical stop-level baseline comparator.
+  - "About this number" educational collapsible linking to Model Lab.
+- Tab 4 Model Lab ("Model Evaluation & Transparency") live at `/model-lab` and connected to `GET /api/model/info` and `GET /api/model/metrics`:
+  - Architecture and fact cards: LightGBM GBDT + Isotonic Regression, binary classification, strict temporal split boundaries, test prevalence (49.2%), latency (2.1 ms).
+  - Multi-model benchmark comparison table with Test / Validation split toggle and `LiftBar` (+72.4% over Majority, +42.0% over Category Prior, +4.95% over Train History).
+  - Recharts discrimination & calibration curves: Precision-Recall Curve (with 49.2% prevalence baseline line), Calibration Reliability Diagram (with ideal diagonal), and ROC Curve, each with data table toggle.
+  - Test partition Confusion Matrix (71,289 TN, 27,248 FP, 17,037 FN, 78,391 TP) with plain-words precision/recall breakdown at operational threshold 0.420.
+  - Calibration diagnostics: Brier score (0.1529), ECE (0.0183), and threshold rationales (0.420 balanced F1, 0.512 high recall, 0.500 default).
+  - Feature importance rankings (gain metric) across 298 trees with plain-English labels from `featureLabels.js`.
+  - Per-category and per-position subgroup performance breakdowns.
+  - Anti-leakage protocol card detailing reasons for banning post-hoc columns (`departure_delay_min`, `actual_arrival`, `actual_departure`, `status`, `run_quality`, `arrival_reported`).
+  - Formulation 2 (En-Route Model) research benchmark card clearly separated from pre-departure inference.
+- Phase 7 cleanups completed:
+  - Removed hardcoded `FEATURED_TRAINS` quick explore pills from `TrainExplorerPage.jsx`.
+  - Updated `CategoryLabel.jsx` to only display plain-English name when documented in `docs/data_dictionary.md`; otherwise shows raw code with tooltip "code as in dataset".
+  - Connected "Predict Delay" actions in `TrainExplorerPage.jsx` header and per-stop timetable.
+- Full verification: Vitest **48 passed across 10 test files**, ESLint **0 errors / 0 warnings**, Vite build **200.27 kB clean bundle**, Backend pytest **103 passed, 4 skipped**.
+
+**Next Milestone: Phase 9 — Historical Delay Patterns & Smart Insights**
+In Phase 9, the session will:
+1. Connect Tab 5 (Delay Patterns) to `/api/patterns/<kind>` (hourly, day-of-week, category, route position, hotspot stations).
+2. Connect Tab 6 (Smart Insights) to local NLP engine (`/api/insights/query`).
 
 ---
 

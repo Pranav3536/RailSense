@@ -1,0 +1,28 @@
+{
+  "caveats": [
+    "Pre-departure timetable model: assumes scheduled route and standard operating conditions.",
+    "Does not observe dynamic real-time en-route incidents, signal failures, or sudden weather disruptions.",
+    "Delay is defined as arrival_delay_min > 15 minutes at the scheduled stop."
+  ],
+  "contributing_factors": [
+    "Early journey stop (stop #3) benefits from initial timetable buffer"
+  ],
+  "data_as_of": "2026-10-25",
+  "historical_context": {
+    "is_cold_start": true,
+    "scheduled_arrival_time": "11:00",
+    "stop_sequence": 3,
+    "train_category": "PAS"
+  },
+  "journey_date": "2026-10-18",
+  "model_version": "1.0.0",
+  "predicted_delayed": false,
+  "probability_delayed": 0.2999,
+  "probability_raw": 0.3346,
+  "raw_probability": 0.3346,
+  "risk_band": "Low",
+  "seq": 3,
+  "station_code": "KGN",
+  "threshold_used": 0.42,
+  "train_number": "02542"
+}

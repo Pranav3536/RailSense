@@ -216,6 +216,9 @@ def test_predict_success(client):
     assert data["seq"] == 4
     assert "probability_delayed" in data
     assert 0.0 <= data["probability_delayed"] <= 1.0
+    assert "probability_raw" in data
+    assert "raw_probability" in data
+    assert 0.0 <= data["probability_raw"] <= 1.0
     assert data["risk_band"] in ("Low", "Medium", "High")
     assert "contributing_factors" in data
     assert "historical_context" in data

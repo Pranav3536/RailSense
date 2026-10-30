@@ -3298,6 +3298,7 @@ The sidebar's **Truthful Database & Service Status Card** consumes `/api/health/
   "model_version": "1.0.0",
   "predicted_delayed": false,
   "probability_delayed": 0.227,
+  "probability_raw": 0.2541,
   "raw_probability": 0.2541,
   "risk_band": "Low",
   "seq": 4,

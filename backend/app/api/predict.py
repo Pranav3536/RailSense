@@ -190,6 +190,7 @@ def predict_delay():
         "seq": resolved_seq,
         "predicted_delayed": pred_res["is_delayed_predicted"],
         "probability_delayed": calib_prob,
+        "probability_raw": pred_res["raw_probability"],
         "raw_probability": pred_res["raw_probability"],
         "risk_band": risk_band,
         "threshold_used": pred_res["threshold_used"],

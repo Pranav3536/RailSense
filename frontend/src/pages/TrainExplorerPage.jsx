@@ -134,17 +134,6 @@ function DateHistoryTooltip({ active, payload, label }) {
 }
 
 /**
- * Featured train recommendations for fast discovery
- */
-const FEATURED_TRAINS = [
-  { number: '12951', name: 'Mumbai Rajdhani (Tejas)', note: 'Premier Rajdhani express' },
-  { number: '12002', name: 'Bhopal Shatabdi', note: 'High-speed daytime chair car' },
-  { number: '12301', name: 'Howrah Rajdhani', note: 'Heavy trunk trunk route' },
-  { number: '22436', name: 'Vande Bharat (VNS-NDLS)', note: 'Semi-high speed distributed traction' },
-  { number: '11013', name: 'LTT Coimbatore Express', note: 'Circular / repeating station route' },
-];
-
-/**
  * TrainExplorerPage — Tab 2 ("Single Train Deep Dive")
  */
 export function TrainExplorerPage() {
@@ -248,12 +237,12 @@ export function TrainExplorerPage() {
             action={
               <button
                 type="button"
-                disabled
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-80 min-h-[44px]"
-                title="Schedule-time ML inference will be unlocked in Phase 8"
+                onClick={() => navigate(`/predict?train=${train.trainNumber}`)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition-colors min-h-[44px]"
+                title="Open schedule-time ML delay prediction for this service"
               >
-                <Sparkles className="w-4 h-4 text-slate-400" aria-hidden="true" />
-                <span>Open Delay Prediction (Phase 8)</span>
+                <Sparkles className="w-4 h-4 text-white" aria-hidden="true" />
+                <span>Predict Delay</span>
               </button>
             }
           />
@@ -517,6 +506,7 @@ export function TrainExplorerPage() {
                       <th className="py-2.5 px-3">Delayed Rate</th>
                       <th className="py-2.5 px-3">Mean Delay</th>
                       <th className="py-2.5 px-3">Support</th>
+                      <th className="py-2.5 px-3 text-right">Inference</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -532,6 +522,20 @@ export function TrainExplorerPage() {
                         </td>
                         <td className="py-2 px-3">
                           <SupportBadge count={s.observedStopsCount} threshold={LOW_SUPPORT_THRESHOLD} />
+                        </td>
+                        <td className="py-2 px-3 text-right">
+                          {s.seq > 1 ? (
+                            <button
+                              type="button"
+                              onClick={() => navigate(`/predict?train=${train.trainNumber}&seq=${s.seq}&station=${s.stationCode}`)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-200 transition-colors"
+                              title={`Open delay prediction for stop #${s.seq} (${s.stationCode})`}
+                            >
+                              Predict
+                            </button>
+                          ) : (
+                            <span className="text-xs text-slate-400 font-medium">Origin</span>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -706,23 +710,6 @@ export function TrainExplorerPage() {
                 ))}
               </select>
             </div>
-          </div>
-
-          {/* Quick Recommendation Chips */}
-          <div className="flex items-center gap-2 flex-wrap text-xs pt-1">
-            <span className="text-slate-500 font-medium">Quick explore:</span>
-            {FEATURED_TRAINS.map((ft) => (
-              <button
-                key={ft.number}
-                type="button"
-                onClick={() => handleSelectTrain(ft.number)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 hover:bg-primary-50 text-slate-700 hover:text-primary-700 border border-slate-200 transition-colors font-medium min-h-[32px]"
-                title={`${ft.name} — ${ft.note}`}
-              >
-                <span className="font-mono font-bold">{ft.number}</span>
-                <span className="text-slate-500">({ft.name.split(' ')[0]})</span>
-              </button>
-            ))}
           </div>
         </CardContent>
       </Card>

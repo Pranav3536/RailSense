@@ -1,37 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import DelayPredictionPage from '../pages/DelayPredictionPage';
-import ModelLabPage from '../pages/ModelLabPage';
 import DelayPatternsPage from '../pages/DelayPatternsPage';
 import SmartInsightsPage from '../pages/SmartInsightsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
-describe('Placeholder Pages Suite (Phases 8-9)', () => {
-  it('renders DelayPredictionPage with honest Phase 8 badge', () => {
-    render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <DelayPredictionPage />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText('ML Inference Engine')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 8')).toBeInTheDocument();
-    expect(screen.getByText('/api/predict')).toBeInTheDocument();
-  });
-
-  it('renders ModelLabPage with honest Phase 8 badge', () => {
-    render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <ModelLabPage />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText('Model Evaluation & Transparency')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 8')).toBeInTheDocument();
-    expect(screen.getByText('/api/model/info')).toBeInTheDocument();
-  });
-
+describe('Placeholder Pages Suite (Phase 9 Future Scope)', () => {
   it('renders DelayPatternsPage with honest Phase 9 badge', () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -63,8 +37,8 @@ describe('Placeholder Pages Suite (Phases 8-9)', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Error 404')).toBeInTheDocument();
-    expect(screen.getByText('Page Not Found')).toBeInTheDocument();
-    expect(screen.getByText('Return to Overview')).toBeInTheDocument();
+    expect(screen.getByText(/404/i)).toBeInTheDocument();
+    expect(screen.getByText(/Page not found/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Return to Overview/i })).toBeInTheDocument();
   });
 });

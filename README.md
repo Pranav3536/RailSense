@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 7 of 11 complete — Tab 1 (Overview) and Tab 2 (Train Explorer) connected live to REST API, 43 Vitest tests, 103 backend pytest passing.**
+> **Status: Phase 8 of 11 complete — Tab 1 (Overview), Tab 2 (Train Explorer), Tab 3 (Delay Prediction), and Tab 4 (Model Lab) connected live to REST API, 48 Vitest tests, 103 backend pytest passing.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 
@@ -12,8 +12,8 @@ RailSense is a portfolio Data Science + ML project that turns a real Indian Rail
 |-----|---------|--------|
 | 1 — Overview ("Railway at a Glance") | Fleet KPIs, 8-tier delay distribution histogram, category comparison, 19-day daily trendline with boundary caveats | **COMPLETE (Phase 7)** |
 | 2 — Train Explorer ("Single Train Deep Dive") | Search catalog, canonical timetable keyed strictly by `seq`, stop delay progression, per-date history | **COMPLETE (Phase 7)** |
-| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for a train+station, SHAP feature weights | Planned (Phase 8) |
-| 4 — Model Lab ("Model Evaluation & Transparency") | Confusion matrix, PR curve, feature importance, model card | Planned (Phase 8) |
+| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.420 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8)** |
+| 4 — Model Lab ("Model Evaluation & Transparency") | Multi-model benchmark comparison table with Test/Val split toggle, PR curve, Calibration reliability diagram, ROC curve, test partition confusion matrix, feature importance, and Formulation 2 research benchmark | **COMPLETE (Phase 8)** |
 | 5 — Delay Patterns ("Historical Analytics") | Category, station, time-of-day and day-of-week breakdown | Planned (Phase 9) |
 | 6 — Smart Insights ("Natural Language Analytics") | Free-text query → parameterised SQL → chart/table (local NLP, no LLM) | Planned (Phase 9) |
 
