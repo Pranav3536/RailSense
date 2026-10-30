@@ -218,7 +218,7 @@ export function adaptTrainDetail(raw) {
 export function adaptPatternsHour(raw) {
   if (!raw || typeof raw !== 'object') return [];
   const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
-  return list.map((h) => {
+  const adapted = list.map((h) => {
     const stopsCount = Number(h.stops_count) || 0;
     return {
       hour: Number(h.hour),
@@ -229,6 +229,8 @@ export function adaptPatternsHour(raw) {
       isLowSupport: stopsCount < 25000,
     };
   });
+  adapted.fleetDelayedRate = Number(raw?.fleet_delayed_rate) || 49.91;
+  return adapted;
 }
 
 /**

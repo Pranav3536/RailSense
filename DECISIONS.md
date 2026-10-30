@@ -686,10 +686,24 @@ No test metrics are ever reported for the deployment model.
 
 **Date decided:** 2026-10-30 (Phase 9)
 
-**Decision:** Historical analytics in Tab 5 (`DelayPatternsPage.jsx`) are calculated strictly from empirical frequencies across the 1,773,607 label-eligible stop arrivals recorded between 2026-10-07 and 2026-10-25:
+**Decision:** Historical analytics in Tab 5 (`DelayPatternsPage.jsx`) are calculated strictly from empirical frequencies across the 1,773,068 label-eligible stop arrivals recorded between 2026-10-07 and 2026-10-25:
 1. **Hour:** Scheduled arrival hour in Indian Standard Time (IST, 00:00 to 23:00).
 2. **Day of Week:** Weekday of scheduled arrival date, accompanied by an explicit warning note stating that weekdays reflect only 2-3 calendar days in the 19-day dataset.
-3. **Category:** Service classifications mapped to the 20 official Indian Railways codes.
+3. **Category:** Service classifications mapped to category codes documented in docs/data_dictionary.md.
 4. **Journey Position:** Stop sequence progression buckets (`Early (2-3)`, `Mid-Early (4-10)`, `Mid (11-25)`, `Late (26-50)`, `Deep (>50)`).
 5. **Hotspots:** Filtered stations ($N \ge 100$) and trains ($N \ge 50$) ranked with Wilson 95% binomial confidence intervals.
 6. The word "probability" is strictly prohibited across all Patterns and Insights views.
+
+
+---
+
+## D-52 — Phase 10 Integration QA, Security Hardening, and Production Deployment-Readiness
+
+**Date decided:** 2026-10-30 (Phase 10)
+
+**Decision:** The platform undergoes exhaustive multi-layer QA before deployment:
+1. **Accessibility Standards (WCAG 2.1 AA):** Automated `@axe-core/playwright` audits across all 6 tabs must pass with zero critical or serious violations. Heading hierarchies must enforce strictly one `<h1>` per view. Scrollable tables must be focusable regions (`tabIndex={0} role="region"`). Minimum touch target size >= 44px.
+2. **Reverse Proxy Hardening & Anti-Spoofing:** Wrap Flask with `werkzeug.middleware.proxy_fix.ProxyFix` configured via `TRUSTED_PROXY_COUNT` (default `0`). When `0`, untrusted `X-Forwarded-For` headers sent directly by clients are ignored, binding rate limiting and logging strictly to socket `remote_addr`.
+3. **HTTP Header & Payload Defense:** Cap request body size at 1MB (`MAX_CONTENT_LENGTH = 1 * 1024 * 1024`, HTTP 413). Enforce `Content-Type: application/json` on all POST endpoints (`/api/predict`, `/api/insights/query`, HTTP 415). Apply `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and CSP.
+4. **Artifact Delivery & Offline Self-Containment:** Total serving payload is audited at **45.90 MB** across 9 files with cryptographic SHA-256 manifest (`backend/serving/manifest.json`). Given that all files are < 50 MB, Direct Git storage is selected over Git LFS or external S3 buckets, enabling seamless zero-token builds on Render and Vercel.
+5. **No Retraining or Threshold Changes:** Primary LightGBM threshold remains fixed at `0.410`. Test AP remains `0.8482`. NLP intent classification thresholds remain fixed at `confidence >= 0.40`, `margin >= 0.08`. Zero causal claims allowed in analytical UI.

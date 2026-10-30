@@ -15,6 +15,15 @@
 export const LOW_SUPPORT_THRESHOLD = 30;
 
 /**
+ * Wake-Up Notice Constants:
+ * Render free tier spins down after inactivity; initial requests take up to a minute.
+ * If a readiness or data request is pending after WAKE_UP_TIMEOUT_MS, a neutral notice is displayed.
+ */
+export const WAKE_UP_TIMEOUT_MS = 4000;
+export const WAKE_UP_NOTICE_MESSAGE =
+  'The server may be waking up (free hosting). This can take up to a minute.';
+
+/**
  * Dataset Collection Boundaries (19-Day Observational Window)
  * Source: docs/validation_report.md
  */

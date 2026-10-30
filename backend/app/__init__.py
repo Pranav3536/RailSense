@@ -56,17 +56,38 @@ def create_app(config: Optional[dict] = None) -> Flask:
     """
     app = Flask(__name__)
 
+    # Validate environment mode
+    railsense_env = os.environ.get("RAILSENSE_ENV", "development").strip().lower()
+    if railsense_env not in ("development", "production", "testing"):
+        raise ValueError(
+            f"Invalid RAILSENSE_ENV='{railsense_env}'. Must be one of: 'development', 'production', 'testing'."
+        )
+
     # Default configuration from environment
     app.config.update({
+        "RAILSENSE_ENV": railsense_env,
         "MAX_CONTENT_LENGTH": 1 * 1024 * 1024,  # 1MB max payload
         "JSON_SORT_KEYS": False,
         "API_MAX_PAGE_SIZE": int(os.environ.get("API_MAX_PAGE_SIZE", "100")),
         "RATE_LIMIT_MAX": int(os.environ.get("RATE_LIMIT_MAX", "120")),
         "RATE_LIMIT_WINDOW": int(os.environ.get("RATE_LIMIT_WINDOW", "60")),
+        "TRUSTED_PROXY_COUNT": int(os.environ.get("TRUSTED_PROXY_COUNT", "0")),
     })
 
     if config:
         app.config.update(config)
+
+    # Reverse proxy middleware for secure client IP handling
+    trusted_proxies = app.config.get("TRUSTED_PROXY_COUNT", 0)
+    if trusted_proxies > 0:
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=trusted_proxies,
+            x_proto=trusted_proxies,
+            x_host=trusted_proxies,
+            x_port=trusted_proxies
+        )
 
     # 1. CORS Configuration
     cors_origins_raw = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173")
@@ -126,10 +147,8 @@ def create_app(config: Optional[dict] = None) -> Flask:
         if request.path in ("/api/health", "/api/health/ready", "/health"):
             return None
 
-        # Rate limiting check
-        client_ip = request.headers.get("X-Forwarded-For", request.remote_addr or "127.0.0.1")
-        if "," in client_ip:
-            client_ip = client_ip.split(",")[0].strip()
+        # Rate limiting check (using remote_addr securely resolved via ProxyFix if configured)
+        client_ip = request.remote_addr or "127.0.0.1"
 
         # Stricter rate limit for /api/insights
         if request.path.startswith("/api/insights"):
@@ -163,7 +182,16 @@ def create_app(config: Optional[dict] = None) -> Flask:
         # Security Headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
         response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:;"
+
+        # Cache-Control Headers
+        if request.path in ("/api/predict", "/api/insights/query"):
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+        elif request.path.startswith("/api/") and request.method == "GET":
+            if not response.headers.get("Cache-Control"):
+                response.headers["Cache-Control"] = "public, max-age=3600"
 
         # Performance & Tracking Headers
         duration_ms = round((time.time() - getattr(g, "start_time", time.time())) * 1000, 2)

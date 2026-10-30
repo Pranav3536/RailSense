@@ -154,7 +154,7 @@ export function ModelLabPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Average Precision (AP)"
-          value={finalTest.pr_auc ? finalTest.pr_auc.toFixed(4) : '0.8525'}
+          value={finalTest.pr_auc ? finalTest.pr_auc.toFixed(4) : '0.8482'}
           subtitle="Area under PR curve on test split"
           icon={Award}
           change="+72.4% vs baseline"
@@ -162,7 +162,7 @@ export function ModelLabPage() {
         />
         <StatCard
           label="ROC-AUC Score"
-          value={finalTest.roc_auc ? finalTest.roc_auc.toFixed(4) : '0.8602'}
+          value={finalTest.roc_auc ? finalTest.roc_auc.toFixed(4) : '0.8592'}
           subtitle="Discrimination across all thresholds"
           icon={TrendingUp}
         />
@@ -274,7 +274,7 @@ export function ModelLabPage() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="overflow-x-auto rounded-lg border border-slate-200">
+          <div tabIndex={0} role="region" aria-label="Data table" className="overflow-x-auto rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-400">
             <table className="w-full text-xs text-left">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                 <tr>
@@ -337,7 +337,7 @@ export function ModelLabPage() {
                         ) : isEnRoute ? (
                           <span className="text-purple-700 font-medium">Telemetry Benchmark</span>
                         ) : (
-                          <span className="text-slate-400">Baseline Benchmark</span>
+                          <span className="text-slate-600 font-medium">Baseline Benchmark</span>
                         )}
                       </td>
                     </tr>
@@ -366,7 +366,7 @@ export function ModelLabPage() {
               <div>
                 <CardTitle>Precision-Recall (PR) Curve</CardTitle>
                 <CardDescription>
-                  Evaluates ranking quality across operating thresholds. AP = 0.8525 (Baseline = 0.492).
+                  Evaluates ranking quality across operating thresholds. AP = 0.8482 (Baseline = 0.492).
                 </CardDescription>
               </div>
               <ChartTableToggle
@@ -677,7 +677,7 @@ export function ModelLabPage() {
                 <tbody className="divide-y divide-slate-100">
                   {topFeatures.map((f, idx) => (
                     <tr key={f.rawName} className="hover:bg-slate-50">
-                      <td className="py-2 px-3 font-mono text-slate-400 font-bold">{idx + 1}</td>
+                      <td className="py-2 px-3 font-mono text-slate-600 font-bold">{idx + 1}</td>
                       <td className="py-2 px-3 font-medium text-slate-900">{f.fullName}</td>
                       <td className="py-2 px-3 font-mono text-slate-500">{f.rawName}</td>
                       <td className="py-2 px-3 font-mono font-bold">{formatNumber(Math.round(f.importance_gain))}</td>
@@ -784,7 +784,7 @@ export function ModelLabPage() {
           </CardHeader>
 
           <CardContent>
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
+            <div tabIndex={0} role="region" aria-label="Data table" className="overflow-x-auto rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-400">
               <table className="w-full text-xs text-left">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                   <tr>

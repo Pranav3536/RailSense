@@ -1,0 +1,1773 @@
+{
+  "timestamp": "2026-10-30T21:40:54.453432",
+  "total_comparisons": 211,
+  "passed": 211,
+  "failed": 0,
+  "sections": {
+    "overview_kpis": {
+      "total": 9,
+      "passed": 9,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "total_records",
+          "status": "PASS",
+          "expected": 2805574,
+          "actual": 2805574,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "distinct_train_numbers",
+          "status": "PASS",
+          "expected": 10743,
+          "actual": 10743,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "distinct_stations",
+          "status": "PASS",
+          "expected": 8584,
+          "actual": 8584,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "total_runs",
+          "status": "PASS",
+          "expected": 147367,
+          "actual": 147367,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "eligible_stops_count",
+          "status": "PASS",
+          "expected": 1773068,
+          "actual": 1773068,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "fleet_delayed_rate",
+          "status": "PASS",
+          "expected": 49.91,
+          "actual": 49.91,
+          "tolerance": 0.1,
+          "details": null
+        },
+        {
+          "test_name": "fleet_mean_delay_min",
+          "status": "PASS",
+          "expected": 38.1,
+          "actual": 38.1,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "fleet_median_delay_min",
+          "status": "PASS",
+          "expected": 15.0,
+          "actual": 15.0,
+          "tolerance": 0.1,
+          "details": null
+        },
+        {
+          "test_name": "fleet_early_arrival_pct",
+          "status": "PASS",
+          "expected": 8.56,
+          "actual": 8.56,
+          "tolerance": 0.1,
+          "details": null
+        }
+      ]
+    },
+    "delay_distribution_8tiers": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "tier_<-30_count",
+          "status": "PASS",
+          "expected": 7010,
+          "actual": 7010,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_-30..-5_count",
+          "status": "PASS",
+          "expected": 69678,
+          "actual": 69678,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_-5..5_count",
+          "status": "PASS",
+          "expected": 404190,
+          "actual": 404190,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_5..15_count",
+          "status": "PASS",
+          "expected": 407232,
+          "actual": 407232,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_15..30_count",
+          "status": "PASS",
+          "expected": 323363,
+          "actual": 323363,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_30..60_count",
+          "status": "PASS",
+          "expected": 263620,
+          "actual": 263620,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_60..180_count",
+          "status": "PASS",
+          "expected": 226138,
+          "actual": 226138,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "tier_>180_count",
+          "status": "PASS",
+          "expected": 71837,
+          "actual": 71837,
+          "tolerance": null,
+          "details": null
+        }
+      ]
+    },
+    "patterns_hourly": {
+      "total": 72,
+      "passed": 72,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "hour_0_count",
+          "status": "PASS",
+          "expected": 39906,
+          "actual": 39906,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_0_delayed_rate",
+          "status": "PASS",
+          "expected": 57.7,
+          "actual": 57.7,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_0_mean_delay",
+          "status": "PASS",
+          "expected": 49.1,
+          "actual": 49.1,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_1_count",
+          "status": "PASS",
+          "expected": 33417,
+          "actual": 33417,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_1_delayed_rate",
+          "status": "PASS",
+          "expected": 60.6,
+          "actual": 60.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_1_mean_delay",
+          "status": "PASS",
+          "expected": 53.0,
+          "actual": 53.0,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_2_count",
+          "status": "PASS",
+          "expected": 33340,
+          "actual": 33340,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_2_delayed_rate",
+          "status": "PASS",
+          "expected": 62.2,
+          "actual": 62.2,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_2_mean_delay",
+          "status": "PASS",
+          "expected": 56.7,
+          "actual": 56.7,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_3_count",
+          "status": "PASS",
+          "expected": 37071,
+          "actual": 37071,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_3_delayed_rate",
+          "status": "PASS",
+          "expected": 56.4,
+          "actual": 56.5,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_3_mean_delay",
+          "status": "PASS",
+          "expected": 50.4,
+          "actual": 50.4,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_4_count",
+          "status": "PASS",
+          "expected": 50636,
+          "actual": 50636,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_4_delayed_rate",
+          "status": "PASS",
+          "expected": 47.2,
+          "actual": 47.2,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_4_mean_delay",
+          "status": "PASS",
+          "expected": 41.6,
+          "actual": 41.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_5_count",
+          "status": "PASS",
+          "expected": 73244,
+          "actual": 73244,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_5_delayed_rate",
+          "status": "PASS",
+          "expected": 41.8,
+          "actual": 41.8,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_5_mean_delay",
+          "status": "PASS",
+          "expected": 33.4,
+          "actual": 33.4,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_6_count",
+          "status": "PASS",
+          "expected": 91762,
+          "actual": 91762,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_6_delayed_rate",
+          "status": "PASS",
+          "expected": 42.2,
+          "actual": 42.2,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_6_mean_delay",
+          "status": "PASS",
+          "expected": 30.8,
+          "actual": 30.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_7_count",
+          "status": "PASS",
+          "expected": 107943,
+          "actual": 107943,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_7_delayed_rate",
+          "status": "PASS",
+          "expected": 44.4,
+          "actual": 44.4,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_7_mean_delay",
+          "status": "PASS",
+          "expected": 29.9,
+          "actual": 29.9,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_8_count",
+          "status": "PASS",
+          "expected": 108445,
+          "actual": 108445,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_8_delayed_rate",
+          "status": "PASS",
+          "expected": 46.8,
+          "actual": 46.8,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_8_mean_delay",
+          "status": "PASS",
+          "expected": 31.1,
+          "actual": 31.1,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_9_count",
+          "status": "PASS",
+          "expected": 99283,
+          "actual": 99283,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_9_delayed_rate",
+          "status": "PASS",
+          "expected": 47.9,
+          "actual": 47.9,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_9_mean_delay",
+          "status": "PASS",
+          "expected": 33.1,
+          "actual": 33.0,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_10_count",
+          "status": "PASS",
+          "expected": 88365,
+          "actual": 88365,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_10_delayed_rate",
+          "status": "PASS",
+          "expected": 50.3,
+          "actual": 50.3,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_10_mean_delay",
+          "status": "PASS",
+          "expected": 36.5,
+          "actual": 36.5,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_11_count",
+          "status": "PASS",
+          "expected": 76290,
+          "actual": 76290,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_11_delayed_rate",
+          "status": "PASS",
+          "expected": 51.0,
+          "actual": 51.0,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_11_mean_delay",
+          "status": "PASS",
+          "expected": 37.7,
+          "actual": 37.7,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_12_count",
+          "status": "PASS",
+          "expected": 68041,
+          "actual": 68041,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_12_delayed_rate",
+          "status": "PASS",
+          "expected": 49.2,
+          "actual": 49.1,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_12_mean_delay",
+          "status": "PASS",
+          "expected": 39.2,
+          "actual": 39.2,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_13_count",
+          "status": "PASS",
+          "expected": 63944,
+          "actual": 63944,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_13_delayed_rate",
+          "status": "PASS",
+          "expected": 49.0,
+          "actual": 49.0,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_13_mean_delay",
+          "status": "PASS",
+          "expected": 39.3,
+          "actual": 39.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_14_count",
+          "status": "PASS",
+          "expected": 66573,
+          "actual": 66573,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_14_delayed_rate",
+          "status": "PASS",
+          "expected": 49.6,
+          "actual": 49.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_14_mean_delay",
+          "status": "PASS",
+          "expected": 39.5,
+          "actual": 39.5,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_15_count",
+          "status": "PASS",
+          "expected": 76106,
+          "actual": 76106,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_15_delayed_rate",
+          "status": "PASS",
+          "expected": 49.6,
+          "actual": 49.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_15_mean_delay",
+          "status": "PASS",
+          "expected": 39.1,
+          "actual": 39.1,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_16_count",
+          "status": "PASS",
+          "expected": 82291,
+          "actual": 82291,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_16_delayed_rate",
+          "status": "PASS",
+          "expected": 48.4,
+          "actual": 48.4,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_16_mean_delay",
+          "status": "PASS",
+          "expected": 38.8,
+          "actual": 38.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_17_count",
+          "status": "PASS",
+          "expected": 88379,
+          "actual": 88379,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_17_delayed_rate",
+          "status": "PASS",
+          "expected": 48.8,
+          "actual": 48.8,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_17_mean_delay",
+          "status": "PASS",
+          "expected": 37.3,
+          "actual": 37.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_18_count",
+          "status": "PASS",
+          "expected": 101443,
+          "actual": 101443,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_18_delayed_rate",
+          "status": "PASS",
+          "expected": 50.4,
+          "actual": 50.4,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_18_mean_delay",
+          "status": "PASS",
+          "expected": 37.0,
+          "actual": 37.0,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_19_count",
+          "status": "PASS",
+          "expected": 101988,
+          "actual": 101988,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_19_delayed_rate",
+          "status": "PASS",
+          "expected": 54.6,
+          "actual": 54.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_19_mean_delay",
+          "status": "PASS",
+          "expected": 40.9,
+          "actual": 40.9,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_20_count",
+          "status": "PASS",
+          "expected": 90696,
+          "actual": 90696,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_20_delayed_rate",
+          "status": "PASS",
+          "expected": 54.6,
+          "actual": 54.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_20_mean_delay",
+          "status": "PASS",
+          "expected": 42.6,
+          "actual": 42.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_21_count",
+          "status": "PASS",
+          "expected": 79138,
+          "actual": 79138,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_21_delayed_rate",
+          "status": "PASS",
+          "expected": 53.0,
+          "actual": 53.0,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_21_mean_delay",
+          "status": "PASS",
+          "expected": 42.0,
+          "actual": 42.0,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_22_count",
+          "status": "PASS",
+          "expected": 64044,
+          "actual": 64044,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_22_delayed_rate",
+          "status": "PASS",
+          "expected": 52.5,
+          "actual": 52.5,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_22_mean_delay",
+          "status": "PASS",
+          "expected": 43.6,
+          "actual": 43.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "hour_23_count",
+          "status": "PASS",
+          "expected": 50723,
+          "actual": 50723,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "hour_23_delayed_rate",
+          "status": "PASS",
+          "expected": 53.1,
+          "actual": 53.1,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "hour_23_mean_delay",
+          "status": "PASS",
+          "expected": 30.4,
+          "actual": 30.4,
+          "tolerance": 0.5,
+          "details": null
+        }
+      ]
+    },
+    "patterns_dow": {
+      "total": 14,
+      "passed": 14,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "dow_Monday_count",
+          "status": "PASS",
+          "expected": 204875,
+          "actual": 204875,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Monday_delayed_rate",
+          "status": "PASS",
+          "expected": 49.6,
+          "actual": 49.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Tuesday_count",
+          "status": "PASS",
+          "expected": 202913,
+          "actual": 202913,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Tuesday_delayed_rate",
+          "status": "PASS",
+          "expected": 48.4,
+          "actual": 48.4,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Wednesday_count",
+          "status": "PASS",
+          "expected": 212368,
+          "actual": 212368,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Wednesday_delayed_rate",
+          "status": "PASS",
+          "expected": 49.6,
+          "actual": 49.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Thursday_count",
+          "status": "PASS",
+          "expected": 288063,
+          "actual": 288063,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Thursday_delayed_rate",
+          "status": "PASS",
+          "expected": 49.6,
+          "actual": 49.6,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Friday_count",
+          "status": "PASS",
+          "expected": 300846,
+          "actual": 300846,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Friday_delayed_rate",
+          "status": "PASS",
+          "expected": 51.0,
+          "actual": 51.0,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Saturday_count",
+          "status": "PASS",
+          "expected": 297236,
+          "actual": 297236,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Saturday_delayed_rate",
+          "status": "PASS",
+          "expected": 51.0,
+          "actual": 51.0,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "dow_Sunday_count",
+          "status": "PASS",
+          "expected": 266767,
+          "actual": 266767,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "dow_Sunday_delayed_rate",
+          "status": "PASS",
+          "expected": 49.4,
+          "actual": 49.4,
+          "tolerance": 0.2,
+          "details": null
+        }
+      ]
+    },
+    "patterns_position": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "pos_Deep (>50)_count",
+          "status": "PASS",
+          "expected": 32197,
+          "actual": 32197,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "pos_Deep (>50)_delayed_rate",
+          "status": "PASS",
+          "expected": 77.3,
+          "actual": 77.2,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "pos_Early (2-3)_count",
+          "status": "PASS",
+          "expected": 185293,
+          "actual": 185293,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "pos_Early (2-3)_delayed_rate",
+          "status": "PASS",
+          "expected": 26.3,
+          "actual": 26.3,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "pos_Late (26-50)_count",
+          "status": "PASS",
+          "expected": 238778,
+          "actual": 238778,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "pos_Late (26-50)_delayed_rate",
+          "status": "PASS",
+          "expected": 64.8,
+          "actual": 64.8,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "pos_Mid (11-25)_count",
+          "status": "PASS",
+          "expected": 719558,
+          "actual": 719558,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "pos_Mid (11-25)_delayed_rate",
+          "status": "PASS",
+          "expected": 54.5,
+          "actual": 54.5,
+          "tolerance": 0.2,
+          "details": null
+        },
+        {
+          "test_name": "pos_Mid-Early (4-10)_count",
+          "status": "PASS",
+          "expected": 597242,
+          "actual": 597242,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "pos_Mid-Early (4-10)_delayed_rate",
+          "status": "PASS",
+          "expected": 44.3,
+          "actual": 44.3,
+          "tolerance": 0.2,
+          "details": null
+        }
+      ]
+    },
+    "hotspots_stations": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "top1_station_code",
+          "status": "PASS",
+          "expected": "BTL",
+          "actual": "BTL",
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "top1_station_stops",
+          "status": "PASS",
+          "expected": 191,
+          "actual": 191,
+          "tolerance": null,
+          "details": null
+        }
+      ]
+    },
+    "train_consistency": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "train_02542_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_02543_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_02549_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_02550_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_06173_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00112_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00131_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00132_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00432_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00434_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00461_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00462_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00909_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00910_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00961_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_00962_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_01023_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_01024_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_01143_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "train_01144_name_present",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        }
+      ]
+    },
+    "station_consistency": {
+      "total": 25,
+      "passed": 25,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "station_DDJ_delayed_rate",
+          "status": "PASS",
+          "expected": 14.6,
+          "actual": 14.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_SDAH_delayed_rate",
+          "status": "PASS",
+          "expected": 5.8,
+          "actual": 5.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_KYN_delayed_rate",
+          "status": "PASS",
+          "expected": 55.8,
+          "actual": 55.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_HWH_delayed_rate",
+          "status": "PASS",
+          "expected": 15.6,
+          "actual": 15.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_LLH_delayed_rate",
+          "status": "PASS",
+          "expected": 20.0,
+          "actual": 20.0,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_BEQ_delayed_rate",
+          "status": "PASS",
+          "expected": 18.8,
+          "actual": 18.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_SRP_delayed_rate",
+          "status": "PASS",
+          "expected": 18.3,
+          "actual": 18.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_SHE_delayed_rate",
+          "status": "PASS",
+          "expected": 16.5,
+          "actual": 16.5,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_MS_delayed_rate",
+          "status": "PASS",
+          "expected": 4.9,
+          "actual": 4.9,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_BDC_delayed_rate",
+          "status": "PASS",
+          "expected": 15.7,
+          "actual": 15.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_UPA_delayed_rate",
+          "status": "PASS",
+          "expected": 14.4,
+          "actual": 14.4,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_KOG_delayed_rate",
+          "status": "PASS",
+          "expected": 14.8,
+          "actual": 14.8,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_RIS_delayed_rate",
+          "status": "PASS",
+          "expected": 16.2,
+          "actual": 16.2,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_BLY_delayed_rate",
+          "status": "PASS",
+          "expected": 16.4,
+          "actual": 16.4,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_TBM_delayed_rate",
+          "status": "PASS",
+          "expected": 12.7,
+          "actual": 12.7,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_SPR_delayed_rate",
+          "status": "PASS",
+          "expected": 1.3,
+          "actual": 1.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_SEP_delayed_rate",
+          "status": "PASS",
+          "expected": 21.2,
+          "actual": 21.2,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_BLH_delayed_rate",
+          "status": "PASS",
+          "expected": 23.6,
+          "actual": 23.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_MPK_delayed_rate",
+          "status": "PASS",
+          "expected": 2.6,
+          "actual": 2.6,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_AVD_delayed_rate",
+          "status": "PASS",
+          "expected": 16.4,
+          "actual": 16.4,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_STM_delayed_rate",
+          "status": "PASS",
+          "expected": 1.3,
+          "actual": 1.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_PV_delayed_rate",
+          "status": "PASS",
+          "expected": 1.1,
+          "actual": 1.1,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_MKK_delayed_rate",
+          "status": "PASS",
+          "expected": 1.0,
+          "actual": 0.9,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_CNB_delayed_rate",
+          "status": "PASS",
+          "expected": 54.3,
+          "actual": 54.3,
+          "tolerance": 0.5,
+          "details": null
+        },
+        {
+          "test_name": "station_TGH_delayed_rate",
+          "status": "PASS",
+          "expected": 21.2,
+          "actual": 21.2,
+          "tolerance": 0.5,
+          "details": null
+        }
+      ]
+    },
+    "model_lab_benchmarks": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "majority_test_ap",
+          "status": "PASS",
+          "expected": 0.492,
+          "actual": 0.492,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "category_prior_test_ap",
+          "status": "PASS",
+          "expected": 0.5972,
+          "actual": 0.5972,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "train_history_test_ap",
+          "status": "PASS",
+          "expected": 0.8082,
+          "actual": 0.8082,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "lightgbm_test_ap",
+          "status": "PASS",
+          "expected": 0.8482,
+          "actual": 0.8482,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "en_route_test_ap",
+          "status": "PASS",
+          "expected": 0.9289,
+          "actual": 0.9289,
+          "tolerance": 0.001,
+          "details": null
+        }
+      ]
+    },
+    "predict_offline": {
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "predict_71405_KDG_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_71405_KDG_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_12968_BPQ_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_12968_BPQ_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_77213_PKD_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_77213_PKD_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_12809_NN_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_12809_NN_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_69212_BLDK_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_69212_BLDK_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_18236_DMO_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_18236_DMO_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_12036_BRY_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_12036_BRY_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_19343_RCJ_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_19343_RCJ_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_03288_BXR_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_03288_BXR_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_74603_TTO_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_74603_TTO_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_22651_POY_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_22651_POY_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_14733_BNW_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_14733_BNW_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_64171_CPA_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_64171_CPA_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_12498_JUC_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_12498_JUC_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_37257_RIS_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_37257_RIS_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_19207_PLM_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_19207_PLM_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_15910_MNE_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_15910_MNE_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_20676_MYA_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_20676_MYA_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_18420_VSU_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_18420_VSU_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        },
+        {
+          "test_name": "predict_64074_PWL_prob_valid",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": null
+        },
+        {
+          "test_name": "predict_64074_PWL_threshold",
+          "status": "PASS",
+          "expected": 0.41,
+          "actual": 0.41,
+          "tolerance": 0.001,
+          "details": null
+        }
+      ]
+    },
+    "stale_values_frontend_src": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "checks": [
+        {
+          "test_name": "stale_threshold_0.420_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        },
+        {
+          "test_name": "stale_ap_0.8525_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        },
+        {
+          "test_name": "stale_confusion_tn_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        },
+        {
+          "test_name": "stale_confusion_tp_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        },
+        {
+          "test_name": "stale_rss_4.20mb_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        },
+        {
+          "test_name": "stale_tab_label_absent",
+          "status": "PASS",
+          "expected": true,
+          "actual": true,
+          "tolerance": null,
+          "details": []
+        }
+      ]
+    }
+  }
+}

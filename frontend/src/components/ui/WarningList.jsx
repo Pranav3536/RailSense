@@ -27,7 +27,7 @@ export function WarningList({
         <div className="flex items-start gap-2.5 p-3 rounded-lg bg-indigo-50/80 border border-indigo-200/80 text-indigo-950 text-xs">
           <Info size={16} className="text-indigo-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p className="leading-relaxed font-normal">
-            <strong className="font-semibold">In-Sample Demonstration:</strong> This date is inside the data window the model learned from. Treat the result as an illustration, not an accuracy check.
+            <strong className="font-semibold">In-Sample Demonstration:</strong> The deployment model was fitted on Oct 08–22, 2026 (Train + Validation partitions), and rolling historical lookup tables cover Oct 08–24, 2026. This journey date ({journeyDate}) is inside the observation window; treat the result as an illustration of in-sample statistical associations, not a prospective generalization check.
           </p>
         </div>
       )}
@@ -37,7 +37,7 @@ export function WarningList({
         <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-950 text-xs">
           <Calendar size={16} className="text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p className="leading-relaxed font-normal">
-            <strong className="font-semibold">Prospective Date Notice:</strong> Journey date ({journeyDate}) is outside the historical training partition (Oct 7–25, 2026). Prediction assumes identical operating schedules and conditions without seasonality adjustments.
+            <strong className="font-semibold">Prospective Date Notice:</strong> Journey date ({journeyDate}) is outside the recorded dataset observation window (Oct 07–25, 2026). Prediction assumes identical operating schedules and conditions without seasonality adjustments.
           </p>
         </div>
       )}

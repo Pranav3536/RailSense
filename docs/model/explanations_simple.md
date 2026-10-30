@@ -11,15 +11,15 @@ Our LightGBM model looks at four major categories of timetable and historical in
 
 ### 1. Train Historical Performance (`train_hist_delay_rate`, `train_hist_mean_delay`)
 - **What it means:** How often this exact train was late over the previous 7 completed days.
-- **Why it matters:** In Indian Railways, certain rakes (train compositions) run consecutive daily schedules across congested corridors. A train with a history of persistent delays has a substantially higher probability of facing schedule disruptions today.
+- **Why it matters:** In Indian Railways, certain rakes (train compositions) run consecutive daily schedules across high-density corridors. A train with a history of persistent delays has a substantially higher probability of facing schedule disruptions today.
 
-### 2. Station Operational Congestion (`station_hist_delay_rate`, `station_hist_mean_delay`)
+### 2. Station Historical Delay Records (`station_hist_delay_rate`, `station_hist_mean_delay`)
 - **What it means:** The observed historical delay frequency at your arrival station.
-- **Why it matters:** Major junction stations handle intersecting trunk lines, passenger connections, and platform bottlenecks. High-traffic junction stations are observed delay hotspots.
+- **Why it matters:** Major junction stations handle intersecting trunk lines, passenger connections, and platform dwell constraints. High-traffic junction stations are observed delay hotspots.
 
 ### 3. Train Category & Track Priority (`category`, `category_prior_rate`)
-- **What it means:** The official classification of the service (Suburban `SUB`, Vande Bharat `VNDB`, Superfast `SUF`, Express `MEX`, Special `TOD`).
-- **Why it matters:** Indian Railways dispatchers operate under strict operational path precedence:
+- **What it means:** The service classification of the service (Suburban `SUB`, Vande Bharat `VNDB`, Superfast `SUF`, Express `MEX`, Special `TOD`).
+- **Why it matters:** Indian Railways dispatchers operate under structured timetable scheduling:
   - **Suburban (`SUB`):** Dedicated tracks and strict suburban schedules mean Suburban trains arrive punctually 83% of the time.
   - **Special / Holiday (`TOD`):** Unscheduled holiday specials receive lower line priority and are observed late 76% of the time.
 
@@ -37,4 +37,4 @@ Our LightGBM model looks at four major categories of timetable and historical in
 
 2. **Model Limitations & Weaknesses:**
    - **Cold-Start Trains:** Rare, newly numbered holiday specials with zero 7-day prior history rely strictly on category-level priors.
-   - **Early-Morning Long Hauls:** Express trains scheduled between 02:00 and 05:00 IST exhibit high variance due to overnight freight interleaving.
+   - **Early-Morning Long Hauls:** Express trains scheduled between 02:00 and 05:00 IST exhibit high variance associated with overnight schedule variance.

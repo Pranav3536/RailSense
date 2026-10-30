@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, TrainFront } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { RailwayWatermarks } from '../watermarks/RailwayWatermarks';
+import { WakeUpNotice } from '../ui/WakeUpNotice';
 import { APP_CONFIG } from '../../config/app';
 
 /**
@@ -96,6 +97,7 @@ export function AppShell() {
           tabIndex="-1"
           className="flex-1 px-4 sm:px-6 lg:px-8 xl:px-10 py-8 max-w-7xl w-full mx-auto outline-none"
         >
+          <WakeUpNotice />
           <Outlet />
         </main>
 

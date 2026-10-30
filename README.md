@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 9 of 11 complete — All 6 Tabs (Overview, Train Explorer, Delay Prediction, Model Lab, Delay Patterns, Smart Insights) connected live to REST API, 64 Vitest tests, 133 backend pytest passing.**
+> **Status: Phase 10 of 11 complete — Integration QA, security hardening, accessibility, and deployment readiness verified. 154 backend pytest passing, 67 Vitest passing, 27 Playwright browser E2E tests passing with 0 WCAG AA accessibility violations.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 
@@ -22,22 +22,26 @@ RailSense is a portfolio Data Science + ML project that turns a real Indian Rail
 ## Architecture
 
 ```
-TiDB Cloud (MySQL-compatible)
-      │
-      │  TLS/SSL, port 4000
-      ▼
-Python / Flask Backend (Render or similar)
-      │  SQLAlchemy + PyMySQL
-      │  Pandas EDA  |  sklearn / LightGBM ML  |  SHAP  |  TF-IDF NLP
-      │
-      │  REST JSON API (HTTPS)
-      ▼
+[ Precomputed Serving Store ]
+  ├── backend/serving/serving.sqlite (Read-Only URI mode, 10.7k trains catalog & stop stats)
+  ├── backend/serving/*.json (Overview, patterns, and model lab static aggregates)
+  └── backend/models/*.joblib (LightGBM Booster + Calibrator + Feature Normalizer)
+           │
+           ▼
+Python / Flask Backend (Render / Waitress / WSGI)
+  ├── Thread-safe sliding-window Rate Limiter (120 req/min API, 30 req/min NLP)
+  ├── Reverse ProxyFix middleware (TRUSTED_PROXY_COUNT anti-spoofing)
+  ├── Local LightGBM Inference (< 2 ms) & Local TF-IDF NLP (< 2 ms, zero LLMs)
+  └── Security hardening (nosniff, DENY, CSP, 1MB max payload, 415 media check)
+           │
+           ▼  REST JSON API (HTTPS)
 React + Vite Frontend (Vercel)
-      │  Recharts + Lucide + Tailwind
-      └─ 6-tab dashboard
+  ├── 6-tab dashboard (Overview, Explorer, Predictor, Model Lab, Patterns, Insights)
+  ├── Recharts + Lucide + Tailwind CSS
+  └── WCAG 2.1 AA accessible, responsive across 360px - 1920px viewports
 ```
 
-**Security principle:** The React app never speaks directly to TiDB. All DB access is through the Flask API. Credentials exist only as server-side environment variables.
+**Security & Isolation Principle:** TiDB Cloud is **NOT a runtime dependency** (permanently removed in Phase 8.5). All runtime data comes from local, immutable serving files. The React app connects strictly to the Flask REST API. Zero database credentials exist at runtime.
 
 ---
 
@@ -193,3 +197,11 @@ See [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) for full benchmark documentation,
 ## Author
 
 **Creator & Maintainer** — GitHub: [Pranav3536](https://github.com/Pranav3536)
+
+---
+
+## Dataset Attribution & Licensing
+
+- **Dataset Provenance:** Observed Indian Railways historical delay dataset hosted on Hugging Face: [`pjay-in/indian-railways-delays`](https://huggingface.co/datasets/pjay-in/indian-railways-delays) (Apache 2.0 / Open Data).
+- **Dataset Coverage:** 2,805,574 stop records, 10,743 trains, 8,584 stations across 19 days (2026-10-07 to 2026-10-25).
+- **Codebase License:** [MIT License](LICENSE).

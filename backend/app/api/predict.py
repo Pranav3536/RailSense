@@ -31,6 +31,14 @@ def predict_delay():
             }
         }), 503
 
+    if not request.is_json:
+        return jsonify({
+            "error": {
+                "code": "UNSUPPORTED_MEDIA_TYPE",
+                "message": "Content-Type must be application/json."
+            }
+        }), 415
+
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
         return jsonify({

@@ -1,218 +1,218 @@
-{"q": "What is the overall punctuality of Indian Railways?", "intent": "fleet_summary", "entities": {}}
-{"q": "How many total trains and stations are tracked?", "intent": "fleet_summary", "entities": {}}
-{"q": "Give me a summary of total network delay rate", "intent": "fleet_summary", "entities": {}}
-{"q": "What percentage of trains are delayed across the country?", "intent": "fleet_summary", "entities": {}}
-{"q": "Average delay time for all train arrivals", "intent": "fleet_summary", "entities": {}}
-{"q": "Total runs and total stops in the database", "intent": "fleet_summary", "entities": {}}
-{"q": "Overall delay statistics for the entire railway", "intent": "fleet_summary", "entities": {}}
-{"q": "Kitni train late chalti hain total?", "intent": "fleet_summary", "entities": {}}
-{"q": "Indian Railways ka overall delay percentage kitna hai?", "intent": "fleet_summary", "entities": {}}
-{"q": "Pura fleet overview batao", "intent": "fleet_summary", "entities": {}}
-{"q": "Overall punctuality summary", "intent": "fleet_summary", "entities": {}}
-{"q": "What is the mean delay across all eligible stops?", "intent": "fleet_summary", "entities": {}}
-{"q": "What dates are included in this dataset?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "How do you define a delayed train arrival?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "What is the delay cutoff in minutes for RailSense?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Explain the 15-minute delay rule", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Which days are partial or edge days in the data?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Are negative delays allowed for early arrivals?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "What is the label eligibility condition?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Dataset ka date range kya hai bhai?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "15 minute se zyada delay par late maante ho kya?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Kitne din ka data audit hua hai?", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Explain why origin stations are excluded from delay", "intent": "data_coverage_and_definition", "entities": {}}
-{"q": "Which train category is most delayed?", "intent": "category_ranking", "entities": {"order": "top"}}
-{"q": "Rank all train service classes by punctuality", "intent": "category_ranking", "entities": {}}
-{"q": "Which train categories have the best on-time rate?", "intent": "category_ranking", "entities": {"order": "bottom"}}
-{"q": "Compare punctuality ranking of all train types", "intent": "category_ranking", "entities": {}}
-{"q": "Worst train categories by delay percentage", "intent": "category_ranking", "entities": {"order": "top"}}
-{"q": "Most reliable train classification in India", "intent": "category_ranking", "entities": {"order": "bottom"}}
-{"q": "Kaun si train category sabse zyada delay hoti hai?", "intent": "category_ranking", "entities": {"order": "top"}}
-{"q": "Sabse punctual category kaun si hai?", "intent": "category_ranking", "entities": {"order": "bottom"}}
-{"q": "Train categories ki punctuality list dikhao", "intent": "category_ranking", "entities": {}}
-{"q": "Order categories by mean arrival delay", "intent": "category_ranking", "entities": {}}
-{"q": "Which category has lowest delayed rate?", "intent": "category_ranking", "entities": {"order": "bottom"}}
-{"q": "Kaun se type ki train hamesha time pe aati hai?", "intent": "category_ranking", "entities": {"order": "bottom"}}
-{"q": "How punctual are Suburban trains?", "intent": "category_detail", "entities": {"category": "SUB"}}
-{"q": "What is the delay rate for Vande Bharat services?", "intent": "category_detail", "entities": {"category": "VNDB"}}
-{"q": "Tell me about Mail Express train delays", "intent": "category_detail", "entities": {"category": "MEX"}}
-{"q": "How do Superfast trains perform on time?", "intent": "category_detail", "entities": {"category": "SUF"}}
-{"q": "Punctuality statistics for Shatabdi Express", "intent": "category_detail", "entities": {"category": "SHT"}}
-{"q": "Performance metrics for Passenger trains", "intent": "category_detail", "entities": {"category": "PAS"}}
-{"q": "What is the average delay for Rajdhani trains?", "intent": "category_detail", "entities": {"category": "RAJ"}}
-{"q": "Holiday special TOD train delay percentage", "intent": "category_detail", "entities": {"category": "TOD"}}
-{"q": "Vande Bharat kitni late hoti hai average?", "intent": "category_detail", "entities": {"category": "VNDB"}}
-{"q": "Local train suburban ka delay rate kya hai?", "intent": "category_detail", "entities": {"category": "SUB"}}
-{"q": "Express trains kitna time late aati hain?", "intent": "category_detail", "entities": {"category": "MEX"}}
-{"q": "MEMU trains ka punctuality record batao", "intent": "category_detail", "entities": {"category": "MEMU"}}
-{"q": "Compare Suburban and Express trains", "intent": "compare_categories", "entities": {"category": "SUB"}}
-{"q": "Is Vande Bharat more punctual than Shatabdi?", "intent": "compare_categories", "entities": {"category": "VNDB"}}
-{"q": "Suburban vs Superfast delay comparison", "intent": "compare_categories", "entities": {"category": "SUB"}}
-{"q": "Compare Mail Express with Passenger trains", "intent": "compare_categories", "entities": {"category": "MEX"}}
-{"q": "Rajdhani vs Vande Bharat punctuality difference", "intent": "compare_categories", "entities": {"category": "RAJ"}}
-{"q": "Are Superfast trains really more punctual than Express?", "intent": "compare_categories", "entities": {"category": "SUF"}}
-{"q": "Suburban aur Express train me kya farak hai delay ka?", "intent": "compare_categories", "entities": {"category": "SUB"}}
-{"q": "Vande Bharat aur Shatabdi me kaun si train better hai?", "intent": "compare_categories", "entities": {"category": "VNDB"}}
-{"q": "Compare TOD specials with regular Mail Express", "intent": "compare_categories", "entities": {"category": "TOD"}}
-{"q": "Compare two categories", "intent": "compare_categories", "entities": {}}
-{"q": "Difference in delay rate between MEX and SUF", "intent": "compare_categories", "entities": {"category": "MEX"}}
-{"q": "What time of day are train delays highest?", "intent": "hour_pattern", "entities": {}}
-{"q": "Show me the hourly delay profile across the network", "intent": "hour_pattern", "entities": {}}
-{"q": "Are morning trains more punctual than evening trains?", "intent": "hour_pattern", "entities": {"time_of_day": "morning"}}
-{"q": "How does delay rate change by scheduled arrival hour?", "intent": "hour_pattern", "entities": {}}
-{"q": "Which hours of the day have minimum delays?", "intent": "hour_pattern", "entities": {}}
-{"q": "What is the delay pattern late at night?", "intent": "hour_pattern", "entities": {"time_of_day": "night"}}
-{"q": "Afternoon departure delay rate", "intent": "hour_pattern", "entities": {"time_of_day": "afternoon"}}
-{"q": "Raat ko trains kitni late pahunchti hain?", "intent": "hour_pattern", "entities": {"time_of_day": "night"}}
-{"q": "Subah ke time delay kam hota hai kya?", "intent": "hour_pattern", "entities": {"time_of_day": "morning"}}
-{"q": "Kis ghante me sabse kam delay hota hai?", "intent": "hour_pattern", "entities": {}}
-{"q": "Time of day hourly punctuality curve", "intent": "hour_pattern", "entities": {}}
-{"q": "Evening rush hour train delays", "intent": "hour_pattern", "entities": {"time_of_day": "evening"}}
-{"q": "Which day of the week has the highest train delays?", "intent": "dow_pattern", "entities": {}}
-{"q": "Are weekend trains more delayed than weekday trains?", "intent": "dow_pattern", "entities": {}}
-{"q": "Day of week delay breakdown for Indian Railways", "intent": "dow_pattern", "entities": {}}
-{"q": "How do train delays compare on Sunday vs Monday?", "intent": "dow_pattern", "entities": {"weekday": "Sunday"}}
-{"q": "Friday delay rate across the fleet", "intent": "dow_pattern", "entities": {"weekday": "Friday"}}
-{"q": "Is Wednesday a bad day for train punctuality?", "intent": "dow_pattern", "entities": {"weekday": "Wednesday"}}
-{"q": "Which weekday is most punctual?", "intent": "dow_pattern", "entities": {}}
-{"q": "Sunday ko trains zyada late hoti hain kya?", "intent": "dow_pattern", "entities": {"weekday": "Sunday"}}
-{"q": "Somwar ko delay kaisa rehta hai?", "intent": "dow_pattern", "entities": {"weekday": "Monday"}}
-{"q": "Weekend vs weekday delay comparison", "intent": "dow_pattern", "entities": {}}
-{"q": "Weekly delay trend by day", "intent": "dow_pattern", "entities": {}}
-{"q": "Kis din sabse kam train late hoti hai?", "intent": "dow_pattern", "entities": {}}
-{"q": "How do delays increase as the journey progresses?", "intent": "position_pattern", "entities": {}}
-{"q": "Are trains late at origin or near destination?", "intent": "position_pattern", "entities": {}}
-{"q": "Delay accumulation by stop sequence number", "intent": "position_pattern", "entities": {}}
-{"q": "Early stops vs deep journey delay progression", "intent": "position_pattern", "entities": {}}
-{"q": "Does a train get more delayed at later stops?", "intent": "position_pattern", "entities": {}}
-{"q": "Delay percentage for stops past sequence 30", "intent": "position_pattern", "entities": {}}
-{"q": "Route progression and delay cascade curve", "intent": "position_pattern", "entities": {}}
-{"q": "Train aage chalte hue late kyun hoti jati hai?", "intent": "position_pattern", "entities": {}}
-{"q": "Starting stops pe train time pe rehti hai kya?", "intent": "position_pattern", "entities": {}}
-{"q": "Journey position delay correlation", "intent": "position_pattern", "entities": {}}
-{"q": "Deep journey stops delay rate", "intent": "position_pattern", "entities": {}}
-{"q": "Which stations have the worst delays in India?", "intent": "station_hotspots", "entities": {"order": "top"}}
-{"q": "Top 10 station delay hotspots", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 10}}
-{"q": "What are the most punctual railway stations?", "intent": "station_hotspots", "entities": {"order": "bottom"}}
-{"q": "Stations with highest arrival delays min support 100", "intent": "station_hotspots", "entities": {"order": "top"}}
-{"q": "Worst 5 stations by delay rate", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 5}}
-{"q": "Most on-time arrival stations across the country", "intent": "station_hotspots", "entities": {"order": "bottom"}}
-{"q": "Kaun se station par trains sabse zyada late hoti hain?", "intent": "station_hotspots", "entities": {"order": "top"}}
-{"q": "Sabse punctual stations kaun se hain network me?", "intent": "station_hotspots", "entities": {"order": "bottom"}}
-{"q": "Top delay hotspot stations list", "intent": "station_hotspots", "entities": {"order": "top"}}
-{"q": "Station delay rankings top 10", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 10}}
-{"q": "Which junctions have highest delay rates?", "intent": "station_hotspots", "entities": {"order": "top"}}
-{"q": "Sabse best punctuality wale railway stations", "intent": "station_hotspots", "entities": {"order": "bottom"}}
-{"q": "Which trains are the most delayed in India?", "intent": "train_hotspots", "entities": {"order": "top"}}
-{"q": "Top 10 worst delayed trains across the country", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 10}}
-{"q": "What are the most punctual trains in the dataset?", "intent": "train_hotspots", "entities": {"order": "bottom"}}
-{"q": "Most reliable trains with lowest delay rate", "intent": "train_hotspots", "entities": {"order": "bottom"}}
-{"q": "Which express trains have 100 percent delay rate?", "intent": "train_hotspots", "entities": {"order": "top", "category": "MEX"}}
-{"q": "Worst 5 trains by average delay time", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 5}}
-{"q": "Sabse zyada late chalne wali train kaun si hai?", "intent": "train_hotspots", "entities": {"order": "top"}}
-{"q": "Sabse punctual train kaun si hai pure desh me?", "intent": "train_hotspots", "entities": {"order": "bottom"}}
-{"q": "Kaun si train hamesha late aati hai?", "intent": "train_hotspots", "entities": {"order": "top"}}
-{"q": "Top 10 late trains list batao", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 10}}
-{"q": "Most delayed superfast trains", "intent": "train_hotspots", "entities": {"order": "top", "category": "SUF"}}
-{"q": "Sabse kam delay wali trains", "intent": "train_hotspots", "entities": {"order": "bottom"}}
-{"q": "Tell me about train 12951", "intent": "train_summary", "entities": {"train_number": "12951"}}
-{"q": "Performance details for train 12301", "intent": "train_summary", "entities": {"train_number": "12301"}}
-{"q": "How punctual is train 12002 Bhopal Shatabdi?", "intent": "train_summary", "entities": {"train_number": "12002"}}
-{"q": "What is the delay history of train 22691?", "intent": "train_summary", "entities": {"train_number": "22691"}}
-{"q": "Timetable and delay stats for train 12431", "intent": "train_summary", "entities": {"train_number": "12431"}}
-{"q": "Is train 12952 usually on time?", "intent": "train_summary", "entities": {"train_number": "12952"}}
-{"q": "Train 12951 kitni late chalti hai average?", "intent": "train_summary", "entities": {"train_number": "12951"}}
-{"q": "Train number 12302 ka delay record dikhao", "intent": "train_summary", "entities": {"train_number": "12302"}}
-{"q": "12951 Mumbai Rajdhani performance summary", "intent": "train_summary", "entities": {"train_number": "12951"}}
-{"q": "Tell me route and delay for train 12626", "intent": "train_summary", "entities": {"train_number": "12626"}}
-{"q": "Punctuality stats for train 00149", "intent": "train_summary", "entities": {"train_number": "00149"}}
-{"q": "Train 12004 ki details batao", "intent": "train_summary", "entities": {"train_number": "12004"}}
-{"q": "What are the worst stops for train 12951?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}}
-{"q": "Where does train 12951 get delayed most?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}}
-{"q": "Which stations have the worst delays on train 12301 route?", "intent": "train_worst_stops", "entities": {"train_number": "12301"}}
-{"q": "At which station does train 12002 lose maximum time?", "intent": "train_worst_stops", "entities": {"train_number": "12002"}}
-{"q": "Top delayed stops for train 22691", "intent": "train_worst_stops", "entities": {"train_number": "22691"}}
-{"q": "Train 12951 ke sabse late stations kaun se hain?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}}
-{"q": "Train 12951 kahan sabse zyada late hoti hai?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}}
-{"q": "Worst stops on train 12432 timetable", "intent": "train_worst_stops", "entities": {"train_number": "12432"}}
-{"q": "Stations with highest delay for train 12626", "intent": "train_worst_stops", "entities": {"train_number": "12626"}}
-{"q": "Where does train 12302 get stuck?", "intent": "train_worst_stops", "entities": {"train_number": "12302"}}
-{"q": "Train 12951 high delay stations list", "intent": "train_worst_stops", "entities": {"train_number": "12951"}}
-{"q": "What is the delay rate at NDLS station?", "intent": "station_summary", "entities": {"station_code": "NDLS"}}
-{"q": "Tell me about station BRC punctuality", "intent": "station_summary", "entities": {"station_code": "BRC"}}
-{"q": "How punctual are trains arriving at HWH?", "intent": "station_summary", "entities": {"station_code": "HWH"}}
-{"q": "Performance and calling trains at CSTM", "intent": "station_summary", "entities": {"station_code": "CSTM"}}
-{"q": "How many trains call at PUNE station?", "intent": "station_summary", "entities": {"station_code": "PUNE"}}
-{"q": "Delay statistics for station BSB", "intent": "station_summary", "entities": {"station_code": "BSB"}}
-{"q": "NDLS par trains kitni late aati hain?", "intent": "station_summary", "entities": {"station_code": "NDLS"}}
-{"q": "BRC railway station ka delay rate kya hai?", "intent": "station_summary", "entities": {"station_code": "BRC"}}
-{"q": "HWH station details and mean delay", "intent": "station_summary", "entities": {"station_code": "HWH"}}
-{"q": "Station summary for KOTA", "intent": "station_summary", "entities": {"station_code": "KOTA"}}
-{"q": "How many trains stop at CNB station?", "intent": "station_summary", "entities": {"station_code": "CNB"}}
-{"q": "Station BPL delay performance", "intent": "station_summary", "entities": {"station_code": "BPL"}}
-{"q": "Compare train 12951 and 12953", "intent": "compare_trains", "entities": {"train_number": "12951"}}
-{"q": "Which train is more punctual between 12951 and 12953?", "intent": "compare_trains", "entities": {"train_number": "12951"}}
-{"q": "Compare 12301 vs 12302", "intent": "compare_trains", "entities": {"train_number": "12301"}}
-{"q": "Is train 12002 better than train 12004 for punctuality?", "intent": "compare_trains", "entities": {"train_number": "12002"}}
-{"q": "Compare performance of train 12951 and 12952", "intent": "compare_trains", "entities": {"train_number": "12951"}}
-{"q": "12951 aur 12953 me se kaun si train kam late hoti hai?", "intent": "compare_trains", "entities": {"train_number": "12951"}}
-{"q": "Train 12301 vs 12305 delay comparison", "intent": "compare_trains", "entities": {"train_number": "12301"}}
-{"q": "Which train should I book between 12951 and 12953 for less delay?", "intent": "compare_trains", "entities": {"train_number": "12951"}}
-{"q": "Compare two trains performance", "intent": "compare_trains", "entities": {}}
-{"q": "Difference in delay between 12001 and 12003", "intent": "compare_trains", "entities": {"train_number": "12001"}}
-{"q": "Train 12431 vs 12433 punctuality comparison", "intent": "compare_trains", "entities": {"train_number": "12431"}}
-{"q": "How did train delays trend over time?", "intent": "daily_trend", "entities": {}}
-{"q": "Show me daily delay rate trend across the 19 days", "intent": "daily_trend", "entities": {}}
-{"q": "Did delay rates improve or worsen in October 2026?", "intent": "daily_trend", "entities": {}}
-{"q": "What was the delay rate on October 15?", "intent": "daily_trend", "entities": {}}
-{"q": "Daily punctuality progression graph", "intent": "daily_trend", "entities": {}}
-{"q": "Were delays higher in early October compared to late October?", "intent": "daily_trend", "entities": {}}
-{"q": "Rozana delay rate kaisa tha October me?", "intent": "daily_trend", "entities": {}}
-{"q": "Har din ka delay trend dikhao", "intent": "daily_trend", "entities": {}}
-{"q": "19 din me train delay kaise badla?", "intent": "daily_trend", "entities": {}}
-{"q": "Which single date had the worst delays?", "intent": "daily_trend", "entities": {}}
-{"q": "Daily delay percentage line chart", "intent": "daily_trend", "entities": {}}
-{"q": "How does the machine learning delay model work?", "intent": "model_overview", "entities": {}}
-{"q": "What features does the LightGBM model use?", "intent": "model_overview", "entities": {}}
-{"q": "What is the model accuracy and Average Precision score?", "intent": "model_overview", "entities": {}}
-{"q": "Explain the decision threshold in the model", "intent": "model_overview", "entities": {}}
-{"q": "How was probability calibration done?", "intent": "model_overview", "entities": {}}
-{"q": "Tell me about the model evaluation metrics on test split", "intent": "model_overview", "entities": {}}
-{"q": "Does the predictor use SHAP values for feature importance?", "intent": "model_overview", "entities": {}}
-{"q": "ML model kaise predict karta hai delay?", "intent": "model_overview", "entities": {}}
-{"q": "Model kitna accurate hai test set par?", "intent": "model_overview", "entities": {}}
-{"q": "LightGBM model parameters and ROC-AUC", "intent": "model_overview", "entities": {}}
-{"q": "How reliable are the calibrated probabilities?", "intent": "model_overview", "entities": {}}
-{"q": "Will train 12951 be late tomorrow?", "intent": "predict_redirect", "entities": {"train_number": "12951"}}
-{"q": "Predict delay for train 12301 on Friday", "intent": "predict_redirect", "entities": {"train_number": "12301"}}
-{"q": "Will my train be delayed next Monday?", "intent": "predict_redirect", "entities": {}}
-{"q": "Is train 12002 going to be late at Kota tomorrow morning?", "intent": "predict_redirect", "entities": {"train_number": "12002", "station_code": "KOTA"}}
-{"q": "Can you forecast delay for train 22691 tomorrow?", "intent": "predict_redirect", "entities": {"train_number": "22691"}}
-{"q": "Predict if train 12951 will arrive late at Delhi", "intent": "predict_redirect", "entities": {"train_number": "12951"}}
-{"q": "Kya kal meri train late hogi?", "intent": "predict_redirect", "entities": {}}
-{"q": "Kal train 12951 time pe pahunchegi kya?", "intent": "predict_redirect", "entities": {"train_number": "12951"}}
-{"q": "Train 12301 kal kitne baje aayegi?", "intent": "predict_redirect", "entities": {"train_number": "12301"}}
-{"q": "Will train 12951 reach BRC on time tomorrow evening?", "intent": "predict_redirect", "entities": {"train_number": "12951", "station_code": "BRC"}}
-{"q": "Forecast delay for my upcoming journey", "intent": "predict_redirect", "entities": {}}
-{"q": "Why are Indian trains always late?", "intent": "causal_refusal", "entities": {}}
-{"q": "Why was train 12951 delayed yesterday?", "intent": "causal_refusal", "entities": {"train_number": "12951"}}
-{"q": "What caused the train delay at NDLS station?", "intent": "causal_refusal", "entities": {"station_code": "NDLS"}}
-{"q": "Is train delay caused by fog or signal failure?", "intent": "causal_refusal", "entities": {}}
-{"q": "Why is there track congestion on Indian Railways?", "intent": "causal_refusal", "entities": {}}
-{"q": "What is the physical reason for delayed arrivals?", "intent": "causal_refusal", "entities": {}}
-{"q": "Train late kyun hoti hai reason kya hai?", "intent": "causal_refusal", "entities": {}}
-{"q": "Fog ki wajah se train kitni late hoti hai?", "intent": "causal_refusal", "entities": {}}
-{"q": "Signal problem ki wajah se train delay hoti hai kya?", "intent": "causal_refusal", "entities": {}}
-{"q": "Why do trains get stuck outside junction platforms?", "intent": "causal_refusal", "entities": {}}
-{"q": "What causes severe delays on express routes?", "intent": "causal_refusal", "entities": {}}
-{"q": "How can I book a ticket on IRCTC?", "intent": "out_of_scope", "entities": {}}
-{"q": "Check my PNR status please", "intent": "out_of_scope", "entities": {}}
-{"q": "Can you book a lower berth in train 12951?", "intent": "out_of_scope", "entities": {"train_number": "12951"}}
-{"q": "How to cancel my train ticket and get refund?", "intent": "out_of_scope", "entities": {}}
-{"q": "What is the pantry food menu in Rajdhani?", "intent": "out_of_scope", "entities": {}}
-{"q": "Is tatkal booking open right now?", "intent": "out_of_scope", "entities": {}}
-{"q": "What is the weather in New Delhi today?", "intent": "out_of_scope", "entities": {}}
-{"q": "Ticket cancel kaise karein IRCTC par?", "intent": "out_of_scope", "entities": {}}
-{"q": "PNR check karna hai seat confirm hui kya?", "intent": "out_of_scope", "entities": {}}
-{"q": "Tatkal ticket booking timing kya hai?", "intent": "out_of_scope", "entities": {}}
-{"q": "Who is the CEO of Indian Railways?", "intent": "out_of_scope", "entities": {}}
+{"q": "Sabse punctual stations kaun se hain network me?", "intent": "station_hotspots", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "PNR check karna hai seat confirm hui kya?", "intent": "out_of_scope", "entities": {}, "split": "dev"}
+{"q": "Train 12951 high delay stations list", "intent": "train_worst_stops", "entities": {"train_number": "12951"}, "split": "dev"}
+{"q": "How was probability calibration done?", "intent": "model_overview", "entities": {}, "split": "dev"}
+{"q": "Explain the 15-minute delay rule", "intent": "data_coverage_and_definition", "entities": {}, "split": "dev"}
+{"q": "Compare 12301 vs 12302", "intent": "compare_trains", "entities": {"train_number": "12301"}, "split": "dev"}
+{"q": "Har din ka delay trend dikhao", "intent": "daily_trend", "entities": {}, "split": "dev"}
+{"q": "How do train delays compare on Sunday vs Monday?", "intent": "dow_pattern", "entities": {"weekday": "Sunday"}, "split": "dev"}
+{"q": "How can I book a ticket on IRCTC?", "intent": "out_of_scope", "entities": {}, "split": "dev"}
+{"q": "What is the delay rate at NDLS station?", "intent": "station_summary", "entities": {"station_code": "NDLS"}, "split": "dev"}
+{"q": "Can you forecast delay for train 22691 tomorrow?", "intent": "predict_redirect", "entities": {"train_number": "22691"}, "split": "dev"}
+{"q": "Sabse punctual category kaun si hai?", "intent": "category_ranking", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "What is the pantry food menu in Rajdhani?", "intent": "out_of_scope", "entities": {}, "split": "dev"}
+{"q": "Pura fleet overview batao", "intent": "fleet_summary", "entities": {}, "split": "dev"}
+{"q": "Kis ghante me sabse kam delay hota hai?", "intent": "hour_pattern", "entities": {}, "split": "dev"}
+{"q": "Explain the decision threshold in the model", "intent": "model_overview", "entities": {}, "split": "dev"}
+{"q": "Daily delay percentage line chart", "intent": "daily_trend", "entities": {}, "split": "dev"}
+{"q": "What is the label eligibility condition?", "intent": "data_coverage_and_definition", "entities": {}, "split": "dev"}
+{"q": "Is train 12002 better than train 12004 for punctuality?", "intent": "compare_trains", "entities": {"train_number": "12002"}, "split": "dev"}
+{"q": "Subah ke time delay kam hota hai kya?", "intent": "hour_pattern", "entities": {"time_of_day": "morning"}, "split": "dev"}
+{"q": "Kal train 12951 time pe pahunchegi kya?", "intent": "predict_redirect", "entities": {"train_number": "12951"}, "split": "dev"}
+{"q": "Performance and calling trains at CSTM", "intent": "station_summary", "entities": {"station_code": "CSTM"}, "split": "dev"}
+{"q": "Weekend vs weekday delay comparison", "intent": "dow_pattern", "entities": {}, "split": "dev"}
+{"q": "Which train categories have the best on-time rate?", "intent": "category_ranking", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "Kaun si train hamesha late aati hai?", "intent": "train_hotspots", "entities": {"order": "top"}, "split": "dev"}
+{"q": "BRC railway station ka delay rate kya hai?", "intent": "station_summary", "entities": {"station_code": "BRC"}, "split": "dev"}
+{"q": "What is the model accuracy and Average Precision score?", "intent": "model_overview", "entities": {}, "split": "dev"}
+{"q": "Which days are partial or edge days in the data?", "intent": "data_coverage_and_definition", "entities": {}, "split": "dev"}
+{"q": "Express trains kitna time late aati hain?", "intent": "category_detail", "entities": {"category": "MEX"}, "split": "dev"}
+{"q": "Compare train 12951 and 12953", "intent": "compare_trains", "entities": {"train_number": "12951"}, "split": "dev"}
+{"q": "Which express trains have 100 percent delay rate?", "intent": "train_hotspots", "entities": {"order": "top", "category": "MEX"}, "split": "dev"}
+{"q": "Compare TOD specials with regular Mail Express", "intent": "compare_categories", "entities": {"category": "TOD"}, "split": "dev"}
+{"q": "What is the weather in New Delhi today?", "intent": "out_of_scope", "entities": {}, "split": "dev"}
+{"q": "Will train 12951 reach BRC on time tomorrow evening?", "intent": "predict_redirect", "entities": {"train_number": "12951", "station_code": "BRC"}, "split": "dev"}
+{"q": "Most reliable trains with lowest delay rate", "intent": "train_hotspots", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "Train 12431 vs 12433 punctuality comparison", "intent": "compare_trains", "entities": {"train_number": "12431"}, "split": "dev"}
+{"q": "Is Wednesday a bad day for train punctuality?", "intent": "dow_pattern", "entities": {"weekday": "Wednesday"}, "split": "dev"}
+{"q": "Worst stops on train 12432 timetable", "intent": "train_worst_stops", "entities": {"train_number": "12432"}, "split": "dev"}
+{"q": "How punctual is train 12002 Bhopal Shatabdi?", "intent": "train_summary", "entities": {"train_number": "12002"}, "split": "dev"}
+{"q": "Fog ki wajah se train kitni late hoti hai?", "intent": "causal_refusal", "entities": {}, "split": "dev"}
+{"q": "Stations with highest arrival delays min support 100", "intent": "station_hotspots", "entities": {"order": "top"}, "split": "dev"}
+{"q": "Will train 12951 be late tomorrow?", "intent": "predict_redirect", "entities": {"train_number": "12951"}, "split": "dev"}
+{"q": "Performance details for train 12301", "intent": "train_summary", "entities": {"train_number": "12301"}, "split": "dev"}
+{"q": "Which stations have the worst delays in India?", "intent": "station_hotspots", "entities": {"order": "top"}, "split": "dev"}
+{"q": "Delay accumulation by stop sequence number", "intent": "position_pattern", "entities": {}, "split": "dev"}
+{"q": "What are the most punctual railway stations?", "intent": "station_hotspots", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "Sabse zyada late chalne wali train kaun si hai?", "intent": "train_hotspots", "entities": {"order": "top"}, "split": "dev"}
+{"q": "12951 Mumbai Rajdhani performance summary", "intent": "train_summary", "entities": {"train_number": "12951"}, "split": "dev"}
+{"q": "Does a train get more delayed at later stops?", "intent": "position_pattern", "entities": {}, "split": "dev"}
+{"q": "Show me daily delay rate trend across the 19 days", "intent": "daily_trend", "entities": {}, "split": "dev"}
+{"q": "Sabse best punctuality wale railway stations", "intent": "station_hotspots", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "How do Superfast trains perform on time?", "intent": "category_detail", "entities": {"category": "SUF"}, "split": "dev"}
+{"q": "Rank all train service classes by punctuality", "intent": "category_ranking", "entities": {}, "split": "dev"}
+{"q": "Daily punctuality progression graph", "intent": "daily_trend", "entities": {}, "split": "dev"}
+{"q": "Check my PNR status please", "intent": "out_of_scope", "entities": {}, "split": "dev"}
+{"q": "Kaun si train category sabse zyada delay hoti hai?", "intent": "category_ranking", "entities": {"order": "top"}, "split": "dev"}
+{"q": "Dataset ka date range kya hai bhai?", "intent": "data_coverage_and_definition", "entities": {}, "split": "dev"}
+{"q": "Evening rush hour train delays", "intent": "hour_pattern", "entities": {"time_of_day": "evening"}, "split": "dev"}
+{"q": "Worst 5 stations by delay rate", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 5}, "split": "dev"}
+{"q": "Are morning trains more punctual than evening trains?", "intent": "hour_pattern", "entities": {"time_of_day": "morning"}, "split": "dev"}
+{"q": "Time of day hourly punctuality curve", "intent": "hour_pattern", "entities": {}, "split": "dev"}
+{"q": "Total runs and total stops in the database", "intent": "fleet_summary", "entities": {}, "split": "dev"}
+{"q": "Stations with highest delay for train 12626", "intent": "train_worst_stops", "entities": {"train_number": "12626"}, "split": "dev"}
+{"q": "Compare two categories", "intent": "compare_categories", "entities": {}, "split": "dev"}
+{"q": "Top delay hotspot stations list", "intent": "station_hotspots", "entities": {"order": "top"}, "split": "dev"}
+{"q": "At which station does train 12002 lose maximum time?", "intent": "train_worst_stops", "entities": {"train_number": "12002"}, "split": "dev"}
+{"q": "How do delays increase as the journey progresses?", "intent": "position_pattern", "entities": {}, "split": "dev"}
+{"q": "Raat ko trains kitni late pahunchti hain?", "intent": "hour_pattern", "entities": {"time_of_day": "night"}, "split": "dev"}
+{"q": "Where does train 12302 get stuck?", "intent": "train_worst_stops", "entities": {"train_number": "12302"}, "split": "dev"}
+{"q": "How reliable are the calibrated probabilities?", "intent": "model_overview", "entities": {}, "split": "dev"}
+{"q": "Train categories ki punctuality list dikhao", "intent": "category_ranking", "entities": {}, "split": "dev"}
+{"q": "What dates are included in this dataset?", "intent": "data_coverage_and_definition", "entities": {}, "split": "dev"}
+{"q": "How punctual are Suburban trains?", "intent": "category_detail", "entities": {"category": "SUB"}, "split": "dev"}
+{"q": "Most reliable train classification in India", "intent": "category_ranking", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "Holiday special TOD train delay percentage", "intent": "category_detail", "entities": {"category": "TOD"}, "split": "dev"}
+{"q": "Difference in delay between 12001 and 12003", "intent": "compare_trains", "entities": {"train_number": "12001"}, "split": "dev"}
+{"q": "Sabse punctual train kaun si hai pure desh me?", "intent": "train_hotspots", "entities": {"order": "bottom"}, "split": "dev"}
+{"q": "HWH station details and mean delay", "intent": "station_summary", "entities": {"station_code": "HWH"}, "split": "dev"}
+{"q": "Rajdhani vs Vande Bharat punctuality difference", "intent": "compare_categories", "entities": {"category": "RAJ"}, "split": "dev"}
+{"q": "Is train 12952 usually on time?", "intent": "train_summary", "entities": {"train_number": "12952"}, "split": "dev"}
+{"q": "What features does the LightGBM model use?", "intent": "model_overview", "entities": {}, "split": "dev"}
+{"q": "Which weekday is most punctual?", "intent": "dow_pattern", "entities": {}, "split": "dev"}
+{"q": "What is the average delay for Rajdhani trains?", "intent": "category_detail", "entities": {"category": "RAJ"}, "split": "dev"}
+{"q": "What is the physical reason for delayed arrivals?", "intent": "causal_refusal", "entities": {}, "split": "dev"}
+{"q": "Somwar ko delay kaisa rehta hai?", "intent": "dow_pattern", "entities": {"weekday": "Monday"}, "split": "dev"}
+{"q": "Train 12004 ki details batao", "intent": "train_summary", "entities": {"train_number": "12004"}, "split": "dev"}
+{"q": "Compare punctuality ranking of all train types", "intent": "category_ranking", "entities": {}, "split": "dev"}
+{"q": "How many trains call at PUNE station?", "intent": "station_summary", "entities": {"station_code": "PUNE"}, "split": "test"}
+{"q": "What is the delay history of train 22691?", "intent": "train_summary", "entities": {"train_number": "22691"}, "split": "test"}
+{"q": "Tell me route and delay for train 12626", "intent": "train_summary", "entities": {"train_number": "12626"}, "split": "test"}
+{"q": "Give me a summary of total network delay rate", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Sunday ko trains zyada late hoti hain kya?", "intent": "dow_pattern", "entities": {"weekday": "Sunday"}, "split": "test"}
+{"q": "MEMU trains ka punctuality record batao", "intent": "category_detail", "entities": {"category": "MEMU"}, "split": "test"}
+{"q": "Which train is more punctual between 12951 and 12953?", "intent": "compare_trains", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Signal problem ki wajah se train delay hoti hai kya?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "Starting stops pe train time pe rehti hai kya?", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Early stops vs deep journey delay progression", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "NDLS par trains kitni late aati hain?", "intent": "station_summary", "entities": {"station_code": "NDLS"}, "split": "test"}
+{"q": "Most on-time arrival stations across the country", "intent": "station_hotspots", "entities": {"order": "bottom"}, "split": "test"}
+{"q": "What is the delay rate for Vande Bharat services?", "intent": "category_detail", "entities": {"category": "VNDB"}, "split": "test"}
+{"q": "Train 12951 kahan sabse zyada late hoti hai?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "How does delay rate change by scheduled arrival hour?", "intent": "hour_pattern", "entities": {}, "split": "test"}
+{"q": "Explain why origin stations are excluded from delay", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "How punctual are trains arriving at HWH?", "intent": "station_summary", "entities": {"station_code": "HWH"}, "split": "test"}
+{"q": "Most delayed superfast trains", "intent": "train_hotspots", "entities": {"order": "top", "category": "SUF"}, "split": "test"}
+{"q": "Which category has lowest delayed rate?", "intent": "category_ranking", "entities": {"order": "bottom"}, "split": "test"}
+{"q": "What is the mean delay across all eligible stops?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Is tatkal booking open right now?", "intent": "out_of_scope", "entities": {}, "split": "test"}
+{"q": "Which single date had the worst delays?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Overall delay statistics for the entire railway", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Worst train categories by delay percentage", "intent": "category_ranking", "entities": {"order": "top"}, "split": "test"}
+{"q": "ML model kaise predict karta hai delay?", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "Can you book a lower berth in train 12951?", "intent": "out_of_scope", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Is train delay caused by fog or signal failure?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "Average delay time for all train arrivals", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Order categories by mean arrival delay", "intent": "category_ranking", "entities": {}, "split": "test"}
+{"q": "Tell me about train 12951", "intent": "train_summary", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Forecast delay for my upcoming journey", "intent": "predict_redirect", "entities": {}, "split": "test"}
+{"q": "Train number 12302 ka delay record dikhao", "intent": "train_summary", "entities": {"train_number": "12302"}, "split": "test"}
+{"q": "Compare performance of train 12951 and 12952", "intent": "compare_trains", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Top 10 late trains list batao", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 10}, "split": "test"}
+{"q": "Overall punctuality summary", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Which hours of the day have minimum delays?", "intent": "hour_pattern", "entities": {}, "split": "test"}
+{"q": "Punctuality stats for train 00149", "intent": "train_summary", "entities": {"train_number": "00149"}, "split": "test"}
+{"q": "Train 12301 vs 12305 delay comparison", "intent": "compare_trains", "entities": {"train_number": "12301"}, "split": "test"}
+{"q": "Tatkal ticket booking timing kya hai?", "intent": "out_of_scope", "entities": {}, "split": "test"}
+{"q": "What is the overall punctuality of Indian Railways?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Why are Indian trains always late?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "Did delay rates improve or worsen in October 2026?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Which day of the week has the highest train delays?", "intent": "dow_pattern", "entities": {}, "split": "test"}
+{"q": "Were delays higher in early October compared to late October?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Afternoon departure delay rate", "intent": "hour_pattern", "entities": {"time_of_day": "afternoon"}, "split": "test"}
+{"q": "Local train suburban ka delay rate kya hai?", "intent": "category_detail", "entities": {"category": "SUB"}, "split": "test"}
+{"q": "Tell me about station BRC punctuality", "intent": "station_summary", "entities": {"station_code": "BRC"}, "split": "test"}
+{"q": "Performance metrics for Passenger trains", "intent": "category_detail", "entities": {"category": "PAS"}, "split": "test"}
+{"q": "Train 12951 kitni late chalti hai average?", "intent": "train_summary", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Which train category is most delayed?", "intent": "category_ranking", "entities": {"order": "top"}, "split": "test"}
+{"q": "How did train delays trend over time?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Which train should I book between 12951 and 12953 for less delay?", "intent": "compare_trains", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Kis din sabse kam train late hoti hai?", "intent": "dow_pattern", "entities": {}, "split": "test"}
+{"q": "Punctuality statistics for Shatabdi Express", "intent": "category_detail", "entities": {"category": "SHT"}, "split": "test"}
+{"q": "Model kitna accurate hai test set par?", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "Compare Suburban and Express trains", "intent": "compare_categories", "entities": {"category": "SUB"}, "split": "test"}
+{"q": "Top 10 station delay hotspots", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 10}, "split": "test"}
+{"q": "19 din me train delay kaise badla?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Vande Bharat kitni late hoti hai average?", "intent": "category_detail", "entities": {"category": "VNDB"}, "split": "test"}
+{"q": "Delay statistics for station BSB", "intent": "station_summary", "entities": {"station_code": "BSB"}, "split": "test"}
+{"q": "How many trains stop at CNB station?", "intent": "station_summary", "entities": {"station_code": "CNB"}, "split": "test"}
+{"q": "What percentage of trains are delayed across the country?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Which trains are the most delayed in India?", "intent": "train_hotspots", "entities": {"order": "top"}, "split": "test"}
+{"q": "Suburban aur Express train me kya farak hai delay ka?", "intent": "compare_categories", "entities": {"category": "SUB"}, "split": "test"}
+{"q": "Top delayed stops for train 22691", "intent": "train_worst_stops", "entities": {"train_number": "22691"}, "split": "test"}
+{"q": "Why was train 12951 delayed yesterday?", "intent": "causal_refusal", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "LightGBM model parameters and ROC-AUC", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "What causes severe delays on express routes?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "Suburban vs Superfast delay comparison", "intent": "compare_categories", "entities": {"category": "SUB"}, "split": "test"}
+{"q": "Weekly delay trend by day", "intent": "dow_pattern", "entities": {}, "split": "test"}
+{"q": "Kaun se type ki train hamesha time pe aati hai?", "intent": "category_ranking", "entities": {"order": "bottom"}, "split": "test"}
+{"q": "Kitni train late chalti hain total?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Worst 5 trains by average delay time", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 5}, "split": "test"}
+{"q": "Journey position delay correlation", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Are trains late at origin or near destination?", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Train 12301 kal kitne baje aayegi?", "intent": "predict_redirect", "entities": {"train_number": "12301"}, "split": "test"}
+{"q": "What caused the train delay at NDLS station?", "intent": "causal_refusal", "entities": {"station_code": "NDLS"}, "split": "test"}
+{"q": "Train aage chalte hue late kyun hoti jati hai?", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Indian Railways ka overall delay percentage kitna hai?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "How do you define a delayed train arrival?", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "Show me the hourly delay profile across the network", "intent": "hour_pattern", "entities": {}, "split": "test"}
+{"q": "Predict delay for train 12301 on Friday", "intent": "predict_redirect", "entities": {"train_number": "12301"}, "split": "test"}
+{"q": "Which stations have the worst delays on train 12301 route?", "intent": "train_worst_stops", "entities": {"train_number": "12301"}, "split": "test"}
+{"q": "Are negative delays allowed for early arrivals?", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "What was the delay rate on October 15?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "Day of week delay breakdown for Indian Railways", "intent": "dow_pattern", "entities": {}, "split": "test"}
+{"q": "Predict if train 12951 will arrive late at Delhi", "intent": "predict_redirect", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Train 12951 ke sabse late stations kaun se hain?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Does the predictor use SHAP values for feature importance?", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "Why is there track congestion on Indian Railways?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "What is the delay pattern late at night?", "intent": "hour_pattern", "entities": {"time_of_day": "night"}, "split": "test"}
+{"q": "Vande Bharat aur Shatabdi me kaun si train better hai?", "intent": "compare_categories", "entities": {"category": "VNDB"}, "split": "test"}
+{"q": "What are the most punctual trains in the dataset?", "intent": "train_hotspots", "entities": {"order": "bottom"}, "split": "test"}
+{"q": "Compare Mail Express with Passenger trains", "intent": "compare_categories", "entities": {"category": "MEX"}, "split": "test"}
+{"q": "How does the machine learning delay model work?", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "Ticket cancel kaise karein IRCTC par?", "intent": "out_of_scope", "entities": {}, "split": "test"}
+{"q": "Rozana delay rate kaisa tha October me?", "intent": "daily_trend", "entities": {}, "split": "test"}
+{"q": "What time of day are train delays highest?", "intent": "hour_pattern", "entities": {}, "split": "test"}
+{"q": "Is Vande Bharat more punctual than Shatabdi?", "intent": "compare_categories", "entities": {"category": "VNDB"}, "split": "test"}
+{"q": "Route progression and delay cascade curve", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Kitne din ka data audit hua hai?", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "Difference in delay rate between MEX and SUF", "intent": "compare_categories", "entities": {"category": "MEX"}, "split": "test"}
+{"q": "Compare two trains performance", "intent": "compare_trains", "entities": {}, "split": "test"}
+{"q": "How to cancel my train ticket and get refund?", "intent": "out_of_scope", "entities": {}, "split": "test"}
+{"q": "Will my train be delayed next Monday?", "intent": "predict_redirect", "entities": {}, "split": "test"}
+{"q": "Kya kal meri train late hogi?", "intent": "predict_redirect", "entities": {}, "split": "test"}
+{"q": "What are the worst stops for train 12951?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Tell me about Mail Express train delays", "intent": "category_detail", "entities": {"category": "MEX"}, "split": "test"}
+{"q": "12951 aur 12953 me se kaun si train kam late hoti hai?", "intent": "compare_trains", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Why do trains get stuck outside junction platforms?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "How many total trains and stations are tracked?", "intent": "fleet_summary", "entities": {}, "split": "test"}
+{"q": "Are Superfast trains really more punctual than Express?", "intent": "compare_categories", "entities": {"category": "SUF"}, "split": "test"}
+{"q": "Station summary for KOTA", "intent": "station_summary", "entities": {"station_code": "KOTA"}, "split": "test"}
+{"q": "Where does train 12951 get delayed most?", "intent": "train_worst_stops", "entities": {"train_number": "12951"}, "split": "test"}
+{"q": "Station BPL delay performance", "intent": "station_summary", "entities": {"station_code": "BPL"}, "split": "test"}
+{"q": "Which junctions have highest delay rates?", "intent": "station_hotspots", "entities": {"order": "top"}, "split": "test"}
+{"q": "Kaun se station par trains sabse zyada late hoti hain?", "intent": "station_hotspots", "entities": {"order": "top"}, "split": "test"}
+{"q": "Sabse kam delay wali trains", "intent": "train_hotspots", "entities": {"order": "bottom"}, "split": "test"}
+{"q": "Delay percentage for stops past sequence 30", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Train late kyun hoti hai reason kya hai?", "intent": "causal_refusal", "entities": {}, "split": "test"}
+{"q": "Friday delay rate across the fleet", "intent": "dow_pattern", "entities": {"weekday": "Friday"}, "split": "test"}
+{"q": "Timetable and delay stats for train 12431", "intent": "train_summary", "entities": {"train_number": "12431"}, "split": "test"}
+{"q": "Who is the CEO of Indian Railways?", "intent": "out_of_scope", "entities": {}, "split": "test"}
+{"q": "15 minute se zyada delay par late maante ho kya?", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "Is train 12002 going to be late at Kota tomorrow morning?", "intent": "predict_redirect", "entities": {"train_number": "12002", "station_code": "KOTA"}, "split": "test"}
+{"q": "Are weekend trains more delayed than weekday trains?", "intent": "dow_pattern", "entities": {}, "split": "test"}
+{"q": "Top 10 worst delayed trains across the country", "intent": "train_hotspots", "entities": {"order": "top", "top_n": 10}, "split": "test"}
+{"q": "What is the delay cutoff in minutes for RailSense?", "intent": "data_coverage_and_definition", "entities": {}, "split": "test"}
+{"q": "Deep journey stops delay rate", "intent": "position_pattern", "entities": {}, "split": "test"}
+{"q": "Tell me about the model evaluation metrics on test split", "intent": "model_overview", "entities": {}, "split": "test"}
+{"q": "Station delay rankings top 10", "intent": "station_hotspots", "entities": {"order": "top", "top_n": 10}, "split": "test"}

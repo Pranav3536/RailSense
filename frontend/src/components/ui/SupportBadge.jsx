@@ -32,7 +32,7 @@ export function SupportBadge({ count, threshold = LOW_SUPPORT_THRESHOLD, unit = 
       title={`Sample size: ${countStr} eligible ${unit}`}
     >
       <span>{countStr}</span>
-      <span className="text-slate-500">{unit}</span>
+      <span className="text-slate-600">{unit}</span>
     </span>
   );
 }

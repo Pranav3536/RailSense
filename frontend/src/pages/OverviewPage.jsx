@@ -225,6 +225,8 @@ export function OverviewPage() {
           subtitle="Fleet-level operational delay intelligence and high-level performance metrics."
         />
         <ErrorState
+          code={error?.status}
+          requestId={error?.requestId}
           title="Failed to Load Overview Intelligence"
           message={error?.message || 'Unable to retrieve fleet overview metrics from the precomputed serving store.'}
           onRetry={refetch}
@@ -762,7 +764,7 @@ export function OverviewPage() {
 
       {/* 6. Provenance Footer */}
       {provenance && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-slate-100 text-slate-500 text-xs border border-slate-200">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-slate-100 text-slate-600 text-xs border border-slate-200">
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-slate-400" aria-hidden="true" />
             <span>

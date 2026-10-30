@@ -140,9 +140,9 @@ export function Sidebar({ onNavigate, className = '' }) {
             <TrainFront size={24} aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold tracking-tight text-white leading-none truncate">
+            <span className="block text-xl font-bold tracking-tight text-white leading-none truncate">
               {APP_CONFIG.name}
-            </h1>
+            </span>
             <span className="text-xs text-blue-300 font-mono tracking-tight inline-block mt-1.5 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700/60">
               {APP_CONFIG.versionPill}
             </span>

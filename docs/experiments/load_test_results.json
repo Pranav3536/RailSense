@@ -1,0 +1,35 @@
+{
+  "benchmark_metadata": {
+    "timestamp": "2026-10-30T23:25:00+05:30",
+    "concurrency": 20,
+    "target_duration_seconds": 20,
+    "actual_duration_seconds": 20.05,
+    "workload_endpoints": 11
+  },
+  "performance_metrics": {
+    "total_requests": 11510,
+    "throughput_rps": 574.04,
+    "status_codes": {
+      "200": 8402,
+      "404": 1046,
+      "422": 1046,
+      "429": 1016
+    },
+    "failure_count": 0,
+    "failure_rate_pct": 0.0
+  },
+  "latency_percentiles_ms": {
+    "mean": 34.67,
+    "p50": 17.21,
+    "p90": 66.11,
+    "p95": 198.95,
+    "p99": 317.41,
+    "max": 549.96
+  },
+  "memory_profile_mb": {
+    "start_rss_mb": 174.31,
+    "peak_rss_mb": 184.28,
+    "final_rss_mb": 184.31,
+    "delta_rss_mb": 10.0
+  }
+}

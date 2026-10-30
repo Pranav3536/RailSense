@@ -1,3 +1,4 @@
+import { WAKE_UP_TIMEOUT_MS } from '../config/constants';
 /**
  * RailSense — Fetch API Client (src/api/client.js)
  * 
@@ -8,6 +9,38 @@
  * - In-memory client-side GET caching with configurable TTL (respects 120 req/min rate limit)
  * - Uniform error extraction preserving backend {code, message, details, request_id}
  */
+
+// Wake-up notice state management for free-tier spin-down
+let activeRequestCount = 0;
+let wakeUpTimeoutId = null;
+
+function notifyWakeUpState(isWakingUp) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('railsense:wakeup', { detail: { isWakingUp } }));
+  }
+}
+
+function onFetchStart() {
+  activeRequestCount += 1;
+  if (activeRequestCount === 1 && !wakeUpTimeoutId) {
+    wakeUpTimeoutId = setTimeout(() => {
+      if (activeRequestCount > 0) {
+        notifyWakeUpState(true);
+      }
+    }, WAKE_UP_TIMEOUT_MS);
+  }
+}
+
+function onFetchEnd() {
+  activeRequestCount = Math.max(0, activeRequestCount - 1);
+  if (activeRequestCount === 0) {
+    if (wakeUpTimeoutId) {
+      clearTimeout(wakeUpTimeoutId);
+      wakeUpTimeoutId = null;
+    }
+    notifyWakeUpState(false);
+  }
+}
 
 const DEFAULT_BASE_URL = 'http://localhost:5000/api';
 const DEFAULT_TIMEOUT_MS = 15000;
@@ -122,6 +155,7 @@ export async function apiRequest(endpoint, options = {}) {
       externalSignal.addEventListener('abort', () => controller.abort());
     }
 
+    onFetchStart();
     try {
       const response = await fetch(fullUrl, {
         method,
@@ -207,6 +241,7 @@ export async function apiRequest(endpoint, options = {}) {
         'NETWORK_ERROR'
       );
     } finally {
+      onFetchEnd();
       if (method === 'GET') {
         inFlightRequests.delete(fullUrl);
       }

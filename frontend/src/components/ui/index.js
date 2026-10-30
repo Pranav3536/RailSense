@@ -23,3 +23,4 @@ export { WarningList } from './WarningList';
 export { ConfusionMatrix } from './ConfusionMatrix';
 export { LiftBar } from './LiftBar';
 export { MetricTooltip } from './MetricTooltip';
+export { WakeUpNotice } from './WakeUpNotice';

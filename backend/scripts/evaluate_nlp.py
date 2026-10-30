@@ -297,15 +297,7 @@ def run_benchmark():
     print(f"Total Evaluation Questions: {len(EVAL_QUESTIONS):,}")
     print("=" * 70)
 
-    # 1. Save questions to eval/questions.jsonl
-    EVAL_DIR.mkdir(parents=True, exist_ok=True)
-    q_file = EVAL_DIR / "questions.jsonl"
-    with open(q_file, "w", encoding="utf-8") as f:
-        for q in EVAL_QUESTIONS:
-            f.write(json.dumps(q) + "\n")
-    print(f"Saved {len(EVAL_QUESTIONS)} benchmark questions to {q_file}")
-
-    # 2. Split into Dev (40%) and Test (60%) deterministic split
+    # 1. Split into Dev (40%) and Held-Out Test (60%) deterministic split
     np.random.seed(42)
     indices = np.arange(len(EVAL_QUESTIONS))
     np.random.shuffle(indices)
@@ -313,9 +305,17 @@ def run_benchmark():
     dev_idx = indices[:split_point]
     test_idx = indices[split_point:]
 
-    dev_set = [EVAL_QUESTIONS[i] for i in dev_idx]
-    test_set = [EVAL_QUESTIONS[i] for i in test_idx]
-    print(f"Split: Dev Set = {len(dev_set)} questions, Test Set = {len(test_set)} questions")
+    dev_set = [{**EVAL_QUESTIONS[i], "split": "dev"} for i in dev_idx]
+    test_set = [{**EVAL_QUESTIONS[i], "split": "test"} for i in test_idx]
+    print(f"Split: Dev Set = {len(dev_set)} questions, Test Set = {len(test_set)} questions (Total = {len(EVAL_QUESTIONS)})")
+
+    # 2. Save questions to eval/questions.jsonl with explicit split tags
+    EVAL_DIR.mkdir(parents=True, exist_ok=True)
+    q_file = EVAL_DIR / "questions.jsonl"
+    with open(q_file, "w", encoding="utf-8") as f:
+        for q in dev_set + test_set:
+            f.write(json.dumps(q) + "\n")
+    print(f"Saved {len(dev_set) + len(test_set)} benchmark questions with explicit split tags to {q_file}")
 
     # Load Training Corpus from intents.json
     intents_path = BACKEND_DIR / "app" / "nlp" / "intents.json"

@@ -324,7 +324,7 @@ export function TrainExplorerPage() {
           />
 
           <Card className="border-slate-200 bg-white overflow-hidden">
-            <div className="overflow-x-auto">
+            <div tabIndex={0} role="region" aria-label="Train catalog table" className="overflow-x-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>
@@ -497,7 +497,7 @@ export function TrainExplorerPage() {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto max-h-[380px] overflow-y-auto">
+              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto max-h-[380px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                     <tr>
@@ -608,7 +608,7 @@ export function TrainExplorerPage() {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto max-h-[380px] overflow-y-auto">
+              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto max-h-[380px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                     <tr>
@@ -777,7 +777,7 @@ export function TrainExplorerPage() {
           />
         ) : (
           <Card className="border-slate-200 bg-white overflow-hidden">
-            <div className="overflow-x-auto">
+            <div tabIndex={0} role="region" aria-label="Train catalog table" className="overflow-x-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>

@@ -231,7 +231,7 @@ export function SmartInsightsPage() {
               </label>
               <span
                 className={`text-xs font-mono font-medium ${
-                  isOverLimit ? 'text-rose-600 font-bold' : charCount > 250 ? 'text-amber-600' : 'text-slate-400'
+                  isOverLimit ? 'text-rose-600 font-bold' : charCount > 250 ? 'text-amber-600' : 'text-slate-600'
                 }`}
               >
                 {charCount} / {MAX_QUESTION_CHARS}
@@ -258,6 +258,7 @@ export function SmartInsightsPage() {
               />
               <button
                 type="submit"
+                aria-label="Ask question"
                 disabled={isLoading || !questionText.trim() || isOverLimit || cooldownSeconds > 0}
                 className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
               >
@@ -265,7 +266,7 @@ export function SmartInsightsPage() {
                   <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <>
-                    <span>Submit</span>
+                    <span>Ask</span>
                     <Send size={13} />
                   </>
                 )}
@@ -321,7 +322,7 @@ export function SmartInsightsPage() {
 
       {/* 5. Primary Answer Card */}
       {currentResult && (
-        <section aria-labelledby="answer-heading" aria-live="polite" className="space-y-4">
+        <section role="region" aria-labelledby="answer-heading" aria-live="polite" className="space-y-4">
           <SectionHeader
             id="answer-heading"
             title="Analysis Result"

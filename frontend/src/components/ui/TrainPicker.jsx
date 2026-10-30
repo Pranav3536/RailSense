@@ -109,9 +109,7 @@ export function TrainPicker({
           className="absolute left-3.5 text-slate-400 pointer-events-none"
           aria-hidden="true"
         />
-        <input
-          type="text"
-          value={searchTerm}
+        <input type="text" aria-label={placeholder || "Search train by number or name"} value={searchTerm}
           onChange={handleInputChange}
           onFocus={() => {
             if (searchTerm.trim().length >= 2) setIsOpen(true);

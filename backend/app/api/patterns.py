@@ -62,12 +62,15 @@ def get_pattern(kind: str):
         }), 400
 
     try:
+        ov_data = serving_client.get_overview_json()
+        fleet_delayed_rate = ov_data.get("delay_summary", {}).get("fleet_delayed_rate", 49.91)
+
         if target_key == 'category':
-            ov_data = serving_client.get_overview_json()
             kind_data = ov_data.get("category_breakdown", [])
             return jsonify({
                 "kind": clean_kind,
                 "data": kind_data,
+                "fleet_delayed_rate": fleet_delayed_rate,
                 "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
                 "data_as_of": "2026-10-25"
             }), 200
@@ -138,6 +141,7 @@ def get_pattern(kind: str):
         return jsonify({
             "kind": clean_kind,
             "data": raw_kind_data,
+            "fleet_delayed_rate": fleet_delayed_rate,
             "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
             "data_as_of": "2026-10-25"
         }), 200

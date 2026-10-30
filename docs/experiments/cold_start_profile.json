@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-10-30T23:25:00+05:30",
+  "train_catalog_count": 10743,
+  "serving_store_init_ms": 69.13,
+  "lightgbm_model_load_ms": 160.43,
+  "nlp_classifier_init_ms": 261.43,
+  "full_flask_factory_ms": 401.17,
+  "cold_start_under_2_seconds": true
+}

@@ -323,7 +323,7 @@ export function DelayPatternsPage() {
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
                 All metrics on this page represent empirical frequency calculations across{' '}
-                <span className="font-semibold text-slate-800 font-mono">1,773,607</span> label-eligible stop arrivals recorded between{' '}
+                <span className="font-semibold text-slate-800 font-mono">1,773,068</span> label-eligible stop arrivals recorded between{' '}
                 <span className="font-semibold text-slate-800 font-mono">2026-10-07</span> and{' '}
                 <span className="font-semibold text-slate-800 font-mono">2026-10-25</span>.
                 These distributions demonstrate observed historical patterns, not forward journey predictions or operational causation.
@@ -362,7 +362,7 @@ export function DelayPatternsPage() {
           title="Observed Delays by Scheduled Hour of Day"
           description="Empirical delay rate progression across the 24-hour cycle based on scheduled arrival hour in Indian Standard Time (IST)."
           icon={Clock}
-          badge={<SupportBadge count={1773607} label="arrivals" />}
+          badge={<SupportBadge count={1773068} label="arrivals" />}
         />
 
         {hourError ? (
@@ -377,7 +377,7 @@ export function DelayPatternsPage() {
         ) : (
           <ChartCard
             title="Hourly Delayed Arrival Frequency"
-            subtitle="Scheduled arrival hour (IST). Dotted line marks fleet average (50.4%)."
+            subtitle={`Scheduled arrival hour (IST). Dotted line marks fleet average (${(hourData?.fleetDelayedRate || 49.91).toFixed(1)}%).`}
             action={<ChartTableToggle view={hourView} onViewChange={setHourView} />}
             footer={
               <p className="text-xs text-slate-500">
@@ -408,10 +408,10 @@ export function DelayPatternsPage() {
                     />
                     <Tooltip content={<HourTooltip />} />
                     <ReferenceLine
-                      y={50.44}
+                      y={hourData?.fleetDelayedRate || 49.91}
                       stroke="#94a3b8"
                       strokeDasharray="4 4"
-                      label={{ value: 'Fleet Avg (50.4%)', position: 'top', fill: '#64748b', fontSize: 12 }}
+                      label={{ value: `Fleet Avg (${(hourData?.fleetDelayedRate || 49.91).toFixed(1)}%)`, position: 'top', fill: '#64748b', fontSize: 12 }}
                     />
                     <Bar dataKey="delayedRate" radius={[4, 4, 0, 0]} maxBarSize={28}>
                       {hourData.map((entry) => (
@@ -769,10 +769,12 @@ export function DelayPatternsPage() {
 
               {/* Order Control */}
               <div className="space-y-1.5 min-w-[150px]">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                <label htmlFor="hotspot-order-select" className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Ranking Order
                 </label>
                 <select
+                  id="hotspot-order-select"
+                  aria-label="Ranking Order"
                   value={hotspotOrder}
                   onChange={(e) => setHotspotOrder(e.target.value)}
                   className="w-full text-xs font-medium bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
@@ -784,10 +786,12 @@ export function DelayPatternsPage() {
 
               {/* Min Support Input */}
               <div className="space-y-1.5 min-w-[120px]">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                <label htmlFor="hotspot-min-support-input" className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Min Support ({hotspotLevel === 'station' ? '>=100' : '>=50'})
                 </label>
                 <input
+                  id="hotspot-min-support-input"
+                  aria-label="Minimum observation support"
                   type="number"
                   min={hotspotLevel === 'station' ? 100 : 50}
                   max={2000}
@@ -800,10 +804,12 @@ export function DelayPatternsPage() {
 
               {/* Limit Input */}
               <div className="space-y-1.5 min-w-[90px]">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                <label htmlFor="hotspot-limit-select" className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Limit
                 </label>
                 <select
+                  id="hotspot-limit-select"
+                  aria-label="Result limit"
                   value={limitInput}
                   onChange={(e) => setLimitInput(Number(e.target.value))}
                   className="w-full text-xs font-medium bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
@@ -852,18 +858,18 @@ export function DelayPatternsPage() {
                   Ranked by Wilson 95% confidence interval bounds.
                 </CardDescription>
               </div>
-              <span className="text-xs font-mono text-slate-400">
+              <span className="text-xs font-mono text-slate-600">
                 Window: 2026-10-07 to 2026-10-25
               </span>
             </CardHeader>
 
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
+              <div tabIndex={0} role="region" aria-label="Hotspots data table" className="overflow-x-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 text-xs font-semibold text-slate-600 border-b border-slate-200">
                     <tr>
                       <th className="py-2.5 px-4 w-12 text-center">#</th>
-                      <th className="py-2.5 px-4">
+                      <th scope="col" className="py-2.5 px-4">
                         {hotspotLevel === 'station' ? 'Station Code' : 'Train'}
                       </th>
                       <th className="py-2.5 px-4">Observed Delayed Rate</th>
@@ -879,7 +885,7 @@ export function DelayPatternsPage() {
                         key={item.stationCode || item.trainNumber}
                         className="hover:bg-blue-50/40 transition-colors"
                       >
-                        <td className="py-3 px-4 text-center text-slate-400 font-bold">{item.rank}</td>
+                        <td className="py-3 px-4 text-center text-slate-600 font-bold">{item.rank}</td>
                         <td className="py-3 px-4 font-bold text-slate-900">
                           {hotspotLevel === 'station' ? (
                             <button

@@ -232,10 +232,11 @@ export function DelayPredictionPage() {
 
               {/* Stop Selector by Seq */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                <label htmlFor="target-stop-select" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
                   Target Arrival Stop
                 </label>
                 <select
+                  id="target-stop-select"
                   value={selectedSeq}
                   onChange={(e) => setSelectedSeq(e.target.value)}
                   disabled={!trainDetail || loadingTrain}
@@ -268,20 +269,14 @@ export function DelayPredictionPage() {
               {/* Journey Date Input */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label htmlFor="journey-date-input" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
                     Journey Start Date
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => setJourneyDate('')}
-                    className="text-xs text-primary-600 hover:text-primary-800 font-medium"
-                    title="Fill latest date in dataset window (2026-10-25)"
-                  >
-                    Use latest data date
-                  </button>
                 </div>
                 <div className="relative">
                   <input
+                    id="journey-date-input"
+                    aria-label="Journey Start Date"
                     type="date"
                     value={journeyDate}
                     onChange={(e) => setJourneyDate(e.target.value)}
