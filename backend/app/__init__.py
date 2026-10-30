@@ -17,7 +17,6 @@ from flask_cors import CORS
 from app.api import api_bp
 from app.serving_client import ServingClient
 from app.ml.predict import RailSensePredictor
-from app.db.engine import create_db_engine
 
 
 class InMemoryRateLimiter:
@@ -62,7 +61,6 @@ def create_app(config: Optional[dict] = None) -> Flask:
         "MAX_CONTENT_LENGTH": 1 * 1024 * 1024,  # 1MB max payload
         "JSON_SORT_KEYS": False,
         "API_MAX_PAGE_SIZE": int(os.environ.get("API_MAX_PAGE_SIZE", "100")),
-        "DB_QUERY_TIMEOUT_SECONDS": int(os.environ.get("DB_QUERY_TIMEOUT_SECONDS", "3")),
         "RATE_LIMIT_MAX": int(os.environ.get("RATE_LIMIT_MAX", "120")),
         "RATE_LIMIT_WINDOW": int(os.environ.get("RATE_LIMIT_WINDOW", "60")),
     })
@@ -87,27 +85,22 @@ def create_app(config: Optional[dict] = None) -> Flask:
     )
     app.config["RATE_LIMITER"] = limiter
 
-    # 3. Singletons: Serving Client, Predictor, DB Engine
-    try:
-        serving_client = ServingClient()
-        app.config["SERVING_CLIENT"] = serving_client
-    except Exception as e:
-        app.logger.warning(f"Serving store client init deferred: {e}")
-        app.config["SERVING_CLIENT"] = None
+    # 3. Singletons: Serving Client, Predictor
+    if "SERVING_CLIENT" not in app.config:
+        try:
+            serving_client = ServingClient()
+            app.config["SERVING_CLIENT"] = serving_client
+        except Exception as e:
+            app.logger.warning(f"Serving store client init deferred: {e}")
+            app.config["SERVING_CLIENT"] = None
 
-    try:
-        predictor = RailSensePredictor().load()
-        app.config["PREDICTOR"] = predictor
-    except Exception as e:
-        app.logger.warning(f"Predictor model loading deferred: {e}")
-        app.config["PREDICTOR"] = None
-
-    try:
-        db_engine = create_db_engine()
-        app.config["DB_ENGINE"] = db_engine
-    except Exception as e:
-        app.logger.warning(f"TiDB engine initialization deferred: {e}")
-        app.config["DB_ENGINE"] = None
+    if "PREDICTOR" not in app.config:
+        try:
+            predictor = RailSensePredictor().load()
+            app.config["PREDICTOR"] = predictor
+        except Exception as e:
+            app.logger.warning(f"Predictor model loading deferred: {e}")
+            app.config["PREDICTOR"] = None
 
     # 4. Request Lifecycle Middlewares
     @app.before_request

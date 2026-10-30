@@ -1,14 +1,16 @@
 """
 RailSense — Read-Only Serving Store Client (backend/app/serving_client.py)
 Provides thread-safe, sub-millisecond query access to precomputed SQLite catalogs
-and JSON analytics documents without executing heavy runtime aggregations on TiDB.
+and JSON analytics documents without executing heavy runtime aggregations or remote database queries.
 """
 
 import json
 import sqlite3
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple, Union
 import rapidfuzz
+from rapidfuzz import process, fuzz
 
 DEFAULT_SERVING_DIR = Path(__file__).resolve().parent.parent / "serving"
 
@@ -16,11 +18,36 @@ DEFAULT_SERVING_DIR = Path(__file__).resolve().parent.parent / "serving"
 class ServingClient:
     """
     Read-only SQLite query client and static JSON analytics loader.
+    Keeps high-frequency train catalog in-memory for sub-millisecond pagination and search.
     """
 
     def __init__(self, serving_dir: Optional[Path] = None):
         self.serving_dir = Path(serving_dir or DEFAULT_SERVING_DIR)
         self.sqlite_path = self.serving_dir / "serving.sqlite"
+        self._catalog_loaded = False
+        self._trains_all: List[Dict[str, Any]] = []
+        self._trains_by_cat: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        self._init_catalog_cache()
+
+    def _init_catalog_cache(self) -> None:
+        """Loads and indexes the 10,743 train catalog once at startup for instant sub-millisecond queries."""
+        if not self.sqlite_path.exists():
+            return
+        try:
+            conn = self.get_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM trains ORDER BY train_number ASC;")
+            self._trains_all = [dict(r) for r in cur.fetchall()]
+            conn.close()
+
+            self._trains_by_cat = defaultdict(list)
+            for t in self._trains_all:
+                cat = str(t.get("category", "")).upper().strip()
+                if cat:
+                    self._trains_by_cat[cat].append(t)
+            self._catalog_loaded = True
+        except Exception:
+            self._catalog_loaded = False
 
     def get_connection(self) -> sqlite3.Connection:
         """Opens a read-only SQLite connection using URI mode."""
@@ -48,11 +75,64 @@ class ServingClient:
         page: int = 1,
         page_size: int = 20
     ) -> Dict[str, Any]:
-        """Returns paginated train catalog with optional search and category filters."""
+        """
+        Returns paginated train catalog with sub-millisecond in-memory search and category filters.
+        Employs RapidFuzz for fuzzy matching when query is at least 2 characters.
+        """
         page = max(1, page)
         page_size = max(1, min(page_size, 100))
         offset = (page - 1) * page_size
 
+        if self._catalog_loaded:
+            cat_clean = category.upper().strip() if category else None
+            pool = self._trains_by_cat.get(cat_clean, []) if cat_clean else self._trains_all
+
+            if not query or not query.strip():
+                matched = pool
+            else:
+                q_clean = query.strip()
+                if q_clean.isdigit():
+                    # Prefix match on train number
+                    matched = [t for t in pool if t["train_number"].startswith(q_clean)]
+                    if not matched:
+                        matched = [t for t in pool if q_clean in t["train_number"]]
+                else:
+                    # Name matching: direct substring first, then RapidFuzz
+                    q_up = q_clean.upper()
+                    sub_matches = [t for t in pool if q_up in str(t.get("train_name", "")).upper()]
+                    if len(sub_matches) >= page_size or len(q_clean) < 2:
+                        matched = sub_matches
+                    else:
+                        # RapidFuzz search across pool names
+                        pool_names = {i: str(t.get("train_name", "")).upper() for i, t in enumerate(pool)}
+                        fuzzy_results = rapidfuzz.process.extract(
+                            q_up,
+                            pool_names,
+                            scorer=fuzz.partial_ratio,
+                            limit=max(page_size * 2, 50),
+                            score_cutoff=70
+                        )
+                        sub_set = set(id(t) for t in sub_matches)
+                        fuzzy_matches = [pool[idx] for _, score, idx in fuzzy_results if id(pool[idx]) not in sub_set]
+                        matched = sub_matches + fuzzy_matches
+
+            total_items = len(matched)
+            total_pages = max(1, (total_items + page_size - 1) // page_size)
+            items = matched[offset : offset + page_size]
+
+            return {
+                "items": items,
+                "pagination": {
+                    "total": total_items,
+                    "page": page,
+                    "page_size": page_size,
+                    "total_pages": total_pages,
+                    "has_next": page < total_pages,
+                    "has_prev": page > 1
+                }
+            }
+
+        # Fallback to SQLite direct queries if catalog is not cached in memory
         conn = self.get_connection()
         cur = conn.cursor()
 
@@ -65,7 +145,6 @@ class ServingClient:
 
         if query:
             q_clean = query.strip()
-            # If query is digits, match prefix of train_number
             if q_clean.isdigit():
                 conditions.append("train_number LIKE ?")
                 params.append(f"{q_clean}%")
@@ -75,11 +154,9 @@ class ServingClient:
 
         where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
 
-        # Total count
         cur.execute(f"SELECT COUNT(*) FROM trains {where_clause};", params)
         total_items = cur.fetchone()[0]
 
-        # Paginated items
         cur.execute(
             f"SELECT * FROM trains {where_clause} ORDER BY train_number ASC LIMIT ? OFFSET ?;",
             params + [page_size, offset]

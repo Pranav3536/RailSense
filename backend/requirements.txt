@@ -1,44 +1,27 @@
 # =============================================================================
-# RailSense — Backend Python Requirements (Pinned in Phase 2)
-# Environment: Python 3.10.11 on Windows
-# Verified: All packages successfully installed and imported in Phase 2.
+# RailSense — Backend Runtime Requirements (Phase 8.5)
+# Minimal runtime dependencies for the deployed Flask prediction & analytics API.
+# Zero TiDB/database credentials, zero remote database drivers.
 # =============================================================================
 
 # --- Web framework ---
 flask==3.1.3
 flask-cors==6.0.5
 
-# --- Database ---
-sqlalchemy==2.0.55
-pymysql==2.2.8
-cryptography==50.0.2
+# --- WSGI Server ---
+waitress==3.0.2
 
 # --- Configuration ---
 python-dotenv==1.2.4
 
-# --- Data processing ---
+# --- Data processing & Feature transforms ---
 pandas==2.3.3
 numpy==2.2.6
-pyarrow==25.0.1
 
-# --- Machine Learning ---
+# --- Machine Learning Inference ---
 scikit-learn==1.7.2
 lightgbm==4.7.0
 joblib==1.6.0
 
-# --- Visualisation (server-side EDA plots) ---
-matplotlib==3.10.9
-seaborn==0.13.2
-
-# --- NLP / fuzzy matching ---
+# --- Fast Search & String Matching ---
 rapidfuzz==3.14.5
-
-# --- Explainability ---
-shap==0.49.1
-
-# --- Certificates & TLS ---
-certifi==2026.10.23
-
-# --- Testing & Benchmarking ---
-pytest==9.2.0
-psutil==7.2.2

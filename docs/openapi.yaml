@@ -19,7 +19,7 @@ paths:
   /api/health/ready:
     get:
       summary: Readiness Probe
-      description: Validates model artifact readiness, serving store connectivity, and live TiDB Cloud connectivity (with 3-second timeout).
+      description: Validates local model artifact readiness, precomputed serving store accessibility, and static JSON analytics availability (cached 5s, zero remote DB dependencies).
       responses:
         '200':
           description: All subsystems ready

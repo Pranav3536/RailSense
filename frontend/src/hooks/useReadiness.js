@@ -1,11 +1,11 @@
 /**
  * RailSense — Readiness & Status Polling Hook (src/hooks/useReadiness.js)
  * 
- * Truthfully evaluates service and database connectivity:
+ * Truthfully evaluates local service and artifact readiness:
  * - "Checking..." (neutral)
- * - "Database connected" (success)
- * - "Database unavailable" (warning)
- * - "API unreachable" (danger)
+ * - "API ready" (success; precomputed local snapshot active)
+ * - "API degraded" (warning; one or more components unready)
+ * - "API unreachable" (danger; backend offline or unreachable)
  * 
  * Pauses automatic polling when browser tab is hidden to conserve bandwidth & battery.
  */
@@ -17,19 +17,20 @@ const POLL_INTERVAL_MS = 60000; // 60 seconds
 
 export const READINESS_STATES = {
   CHECKING: 'checking',
-  CONNECTED: 'connected',
-  DB_UNAVAILABLE: 'db_unavailable',
+  READY: 'ready',
+  DEGRADED: 'degraded',
   UNREACHABLE: 'unreachable',
 };
 
 export function useReadiness() {
   const [state, setState] = useState({
-    status: 'checking', // 'checking' | 'connected' | 'db_unavailable' | 'unreachable'
+    status: 'checking', // 'checking' | 'ready' | 'degraded' | 'unreachable'
     label: 'Checking...',
     modelVersion: null,
     dataAsOf: null,
-    servingStore: null,
-    tidbStatus: null,
+    dataSource: null,
+    components: null,
+    degradedReason: null,
     lastChecked: null,
     rawError: null,
   });
@@ -41,16 +42,20 @@ export function useReadiness() {
       const data = await getReadiness();
       if (!mountedRef.current) return;
 
-      const tidbStatus = data?.components?.tidb_cloud;
-      const isConnected = (tidbStatus === 'connected');
+      const isReady = (data?.status === 'ready');
+      const comps = data?.components || {};
+      const failedComps = Object.entries(comps)
+        .filter(([, s]) => s !== 'ready')
+        .map(([c, s]) => `${c} (${s})`);
 
       setState({
-        status: isConnected ? 'connected' : 'db_unavailable',
-        label: isConnected ? 'Database connected' : 'Database unavailable',
+        status: isReady ? 'ready' : 'degraded',
+        label: isReady ? 'API ready' : 'API degraded',
         modelVersion: data?.model_version || '1.0.0',
         dataAsOf: data?.data_as_of || '2026-10-25',
-        servingStore: data?.components?.serving_store || 'unknown',
-        tidbStatus: tidbStatus || 'unavailable',
+        dataSource: data?.data_source || 'precomputed_local',
+        components: comps,
+        degradedReason: failedComps.length > 0 ? failedComps.join(', ') : null,
         lastChecked: new Date(),
         rawError: null,
       });
@@ -59,13 +64,19 @@ export function useReadiness() {
 
       // Check if it returned a 503 response with JSON details
       if (err.status === 503 && err.details?.components) {
+        const comps = err.details.components || {};
+        const failedComps = Object.entries(comps)
+          .filter(([, s]) => s !== 'ready')
+          .map(([c, s]) => `${c} (${s})`);
+
         setState({
-          status: 'db_unavailable',
-          label: 'Database unavailable',
+          status: 'degraded',
+          label: 'API degraded',
           modelVersion: err.details?.model_version || '1.0.0',
           dataAsOf: err.details?.data_as_of || '2026-10-25',
-          servingStore: err.details?.components?.serving_store || 'ready',
-          tidbStatus: 'unavailable',
+          dataSource: err.details?.data_source || 'precomputed_local',
+          components: comps,
+          degradedReason: failedComps.length > 0 ? failedComps.join(', ') : 'Components unavailable',
           lastChecked: new Date(),
           rawError: err,
         });
@@ -76,8 +87,9 @@ export function useReadiness() {
           label: 'API unreachable',
           modelVersion: null,
           dataAsOf: null,
-          servingStore: null,
-          tidbStatus: null,
+          dataSource: null,
+          components: null,
+          degradedReason: null,
           lastChecked: new Date(),
           rawError: err,
         });
@@ -89,29 +101,17 @@ export function useReadiness() {
     mountedRef.current = true;
     checkStatus();
 
-    let intervalId = null;
-
-    const startPolling = () => {
-      if (!intervalId) {
-        intervalId = setInterval(checkStatus, POLL_INTERVAL_MS);
+    const intervalId = setInterval(() => {
+      // Pause polling if document is not visible
+      if (document.visibilityState === 'visible') {
+        checkStatus();
       }
-    };
+    }, POLL_INTERVAL_MS);
 
-    const stopPolling = () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
-    };
-
-    startPolling();
-
+    // Refresh immediately when tab becomes visible again
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         checkStatus();
-        startPolling();
-      } else {
-        stopPolling();
       }
     };
 
@@ -119,7 +119,7 @@ export function useReadiness() {
 
     return () => {
       mountedRef.current = false;
-      stopPolling();
+      clearInterval(intervalId);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [checkStatus]);
@@ -127,5 +127,6 @@ export function useReadiness() {
   return {
     ...state,
     checkNow: checkStatus,
+    refresh: checkStatus,
   };
 }

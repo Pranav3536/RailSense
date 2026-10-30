@@ -3,7 +3,7 @@
 > **Base URL:** `http://localhost:5000/api`  
 > **Interactive Documentation:** `http://localhost:5000/api/docs`  
 > **OpenAPI 3.0 Specification:** `http://localhost:5000/api/openapi.json` | `docs/openapi.yaml`  
-> **Architecture Principle:** Sub-millisecond read access via precomputed serving store (`backend/serving/serving.sqlite`); zero heavy runtime queries on TiDB Cloud.
+> **Architecture Principle:** Sub-millisecond read access via precomputed serving store (`backend/serving/serving.sqlite`); zero runtime database credentials or remote queries (precomputed local SQLite and static JSON analytics).
 
 ---
 
@@ -53,7 +53,7 @@ curl -s http://localhost:5000/api/health
 ```
 
 #### `GET /api/health/ready`
-Comprehensive readiness probe verifying serving store accessibility, model artifact loading, and live TiDB Cloud connectivity (with a bounded 3-second `SELECT 1` check).
+Comprehensive truthful readiness probe verifying local precomputed serving store accessibility, model artifact loading, and static JSON analytics availability. Completely free of remote database credentials or network socket dependencies (cached for 5 seconds).
 ```bash
 curl -s http://localhost:5000/api/health/ready
 ```
@@ -62,14 +62,15 @@ curl -s http://localhost:5000/api/health/ready
   "status": "ready",
   "service": "RailSense API",
   "version": "1.0.0",
+  "model_version": "1.0.0",
+  "data_as_of": "2026-10-25",
+  "data_source": "precomputed_local",
   "components": {
     "serving_store": "ready",
     "prediction_engine": "ready",
-    "tidb_cloud": "connected"
+    "json_analytics": "ready"
   },
-  "data_as_of": "2026-10-25",
-  "model_version": "1.0.0",
-  "timestamp": "2026-10-29 21:00:00 UTC"
+  "timestamp": "2026-10-30 16:55:07 UTC"
 }
 ```
 

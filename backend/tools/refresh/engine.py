@@ -14,7 +14,10 @@ import certifi
 import sqlalchemy as sa
 from sqlalchemy.engine import Engine, Connection
 from sqlalchemy.sql import text
-from app.db.config import DBConfig, load_db_config
+try:
+    from tools.refresh.config import DBConfig, load_db_config
+except ImportError:
+    from backend.tools.refresh.config import DBConfig, load_db_config
 
 HARD_ROW_CAP = 300_000
 

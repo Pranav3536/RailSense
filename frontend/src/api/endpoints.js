@@ -20,8 +20,8 @@ export function getHealth() {
 
 /**
  * Truthful Readiness Probe:
- * Returns { status, components: { serving_store, prediction_engine, tidb_cloud }, data_as_of, model_version }
- * Note: Never cached so status card accurately tracks live connectivity.
+ * Returns { status, components: { serving_store, prediction_engine, json_analytics }, data_source, data_as_of, model_version }
+ * Note: Never cached by client so status card accurately tracks live health.
  */
 export function getReadiness() {
   return apiRequest('/health/ready', { ttlMs: 0 });

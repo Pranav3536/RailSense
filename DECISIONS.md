@@ -564,3 +564,55 @@ No test metrics are ever reported for the deployment model.
 
 
 
+
+
+---
+
+## D-41 — Permanent Removal of TiDB Cloud as a Runtime Dependency
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** The full historical dataset (2,805,574 rows across 147,367 runs) was already extracted into `backend/data_cache/` in Phase 3. TiDB Cloud is permanently removed from the application runtime path. The deployed Flask API, WSGI server, and React frontend require zero database credentials (`TIDB_*`), open zero database connections, and import no database drivers at runtime. TiDB Cloud remains strictly an optional, isolated offline data refresh source.
+
+---
+
+## D-42 — Local Component Readiness Contract with In-Memory Caching
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** The `/api/health/ready` probe is redefined as an honest, local-only component health monitor. It inspects: (1) precomputed SQLite store read access, (2) LightGBM model artifact readiness, and (3) static JSON analytics document availability. It returns `data_source: "precomputed_local"`, removes all `tidb_cloud` keys, and caches the check for 5 seconds to prevent polling from slowing active user requests.
+
+---
+
+## D-43 — Split Requirements Architecture
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** Backend dependencies are split into three mutually exclusive, pinned tiers:
+1. `backend/requirements.txt`: Minimal runtime dependencies for the deployed Flask API (`flask`, `flask-cors`, `waitress`, `pandas`, `numpy`, `scikit-learn`, `lightgbm`, `joblib`, `rapidfuzz`, `python-dotenv`). Zero database or visualization packages.
+2. `backend/requirements-dev.txt`: Development, evaluation, testing, and EDA (`pytest`, `pyarrow`, `shap`, `matplotlib`, `seaborn`, `psutil`).
+3. `backend/requirements-refresh.txt`: Offline TiDB refresh tooling only (`sqlalchemy`, `pymysql`, `cryptography`, `certifi`).
+
+---
+
+## D-44 — Refresh Tooling Package Isolation (`backend/tools/refresh/`)
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** The read-only SQLAlchemy engine, TLS configuration loader, and `ReadOnlyQueryGuard` are moved out of `backend/app/db/` and relocated to `backend/tools/refresh/`. The `backend/app/` package contains zero database drivers, imports no refresh tools, and reads no `TIDB_*` environment variables.
+
+---
+
+## D-45 — In-Memory Train Catalog Caching & Search Acceleration (Bugfix)
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** The open Train Explorer 15-second timeout bug was caused by a combination of single-threaded dev server queuing behind blocking remote database probes and unindexed SQL `LIKE '%q%'` queries. Resolved by: (1) caching the 10,743 train catalog in memory at startup inside `ServingClient` (~2 MB RAM), (2) slicing empty queries in < 1ms, (3) matching numbers via prefix scan in < 2ms, (4) employing RapidFuzz partial ratio scoring only for text queries $\ge 2$ characters, and (5) serving local requests via multithreaded Waitress WSGI (`threads=4`).
+
+---
+
+## D-46 — Known Risk: Offline Data Refresh Changes Prediction Windows
+
+**Date decided:** 2026-10-30 (Phase 8.5)
+
+**Decision:** The offline refresh tool (`backend/tools/refresh/`) can extract new data from TiDB Cloud when credentials are provided. However, running a data refresh shifts the historical observation window, modifies feature distributions, and may invalidate calibrated decision thresholds (0.420) and model artifacts. A refresh must be treated as a full retraining milestone, not a routine runtime task.

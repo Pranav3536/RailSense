@@ -19,8 +19,8 @@ backend_dir = Path(__file__).resolve().parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 
-from app.db.config import load_db_config
-from app.db.engine import create_db_engine, execute_read_only_query
+from tools.refresh.config import load_db_config
+from tools.refresh.engine import create_db_engine, execute_read_only_query
 
 CACHE_DIR = backend_dir / "data_cache"
 

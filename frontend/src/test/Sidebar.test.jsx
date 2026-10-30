@@ -71,14 +71,17 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     expect(tidbLink).toHaveAttribute('href', expect.stringContaining('tidbcloud.com'));
   });
 
-  it('displays "Database connected" when /api/health/ready reports healthy TiDB', async () => {
+  it('displays "API ready" when /api/health/ready reports healthy local components', async () => {
     global.fetch = vi.fn().mockResolvedValue(
       createMockResponse({
         status: 'ready',
         model_version: '1.0.0',
+        data_as_of: '2026-10-25',
+        data_source: 'precomputed_local',
         components: {
-          tidb_cloud: 'connected',
-          serving_store: 'ready'
+          serving_store: 'ready',
+          prediction_engine: 'ready',
+          json_analytics: 'ready'
         }
       })
     );
@@ -90,9 +93,35 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Database connected')).toBeInTheDocument();
+      expect(screen.getByText('API ready')).toBeInTheDocument();
     });
-    expect(screen.getByText('TiDB Cloud online')).toBeInTheDocument();
+    expect(screen.getByText('Data: precomputed local snapshot')).toBeInTheDocument();
+  });
+
+  it('displays "API degraded" when a component is not ready', async () => {
+    global.fetch = vi.fn().mockResolvedValue(
+      createMockResponse({
+        status: 'degraded',
+        model_version: '1.0.0',
+        data_as_of: '2026-10-25',
+        data_source: 'precomputed_local',
+        components: {
+          serving_store: 'ready',
+          prediction_engine: 'unavailable',
+          json_analytics: 'ready'
+        }
+      })
+    );
+
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }} initialEntries={['/overview']}>
+        <Sidebar />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('API degraded')).toBeInTheDocument();
+    });
   });
 
   it('displays "API unreachable" when fetch fails due to network or server offline', async () => {

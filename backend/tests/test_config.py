@@ -3,7 +3,7 @@ Unit tests for database configuration loader and validator (app.db.config).
 """
 
 import pytest
-from app.db.config import DBConfig, DatabaseConfigError, load_db_config
+from tools.refresh.config import DBConfig, DatabaseConfigError, load_db_config
 
 
 def test_valid_db_config():

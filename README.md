@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 8 of 11 complete — Tab 1 (Overview), Tab 2 (Train Explorer), Tab 3 (Delay Prediction), and Tab 4 (Model Lab) connected live to REST API, 48 Vitest tests, 103 backend pytest passing.**
+> **Status: Phase 8.5 of 11 complete — Tab 1 (Overview), Tab 2 (Train Explorer), Tab 3 (Delay Prediction), and Tab 4 (Model Lab) connected live to REST API, 48 Vitest tests, 103 backend pytest passing.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 
@@ -12,8 +12,8 @@ RailSense is a portfolio Data Science + ML project that turns a real Indian Rail
 |-----|---------|--------|
 | 1 — Overview ("Railway at a Glance") | Fleet KPIs, 8-tier delay distribution histogram, category comparison, 19-day daily trendline with boundary caveats | **COMPLETE (Phase 7)** |
 | 2 — Train Explorer ("Single Train Deep Dive") | Search catalog, canonical timetable keyed strictly by `seq`, stop delay progression, per-date history | **COMPLETE (Phase 7)** |
-| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.420 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8)** |
-| 4 — Model Lab ("Model Evaluation & Transparency") | Multi-model benchmark comparison table with Test/Val split toggle, PR curve, Calibration reliability diagram, ROC curve, test partition confusion matrix, feature importance, and Formulation 2 research benchmark | **COMPLETE (Phase 8)** |
+| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.420 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8.5)** |
+| 4 — Model Lab ("Model Evaluation & Transparency") | Multi-model benchmark comparison table with Test/Val split toggle, PR curve, Calibration reliability diagram, ROC curve, test partition confusion matrix, feature importance, and Formulation 2 research benchmark | **COMPLETE (Phase 8.5)** |
 | 5 — Delay Patterns ("Historical Analytics") | Category, station, time-of-day and day-of-week breakdown | Planned (Phase 9) |
 | 6 — Smart Insights ("Natural Language Analytics") | Free-text query → parameterised SQL → chart/table (local NLP, no LLM) | Planned (Phase 9) |
 
@@ -108,32 +108,37 @@ railsense/
 git clone <repo-url>
 cd railsense
 
-# 2. Create your local environment file
-Copy-Item .env.example backend/.env
-# Edit backend/.env and fill in TIDB_USER and TIDB_PASSWORD (keep private!)
-
-# 3. Set up Python environment (from backend/)
+# 2. Set up Python environment (runtime requires ZERO database credentials!)
 cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1      # Windows
 pip install -r requirements.txt
 
-# 4. Verify TiDB Cloud connectivity & TLS encryption
-python scripts/check_connection.py
+# 3. Run API smoke test & runtime independence verification (23 endpoints)
+python scripts/smoke_api.py
 
-# 5. Build or refresh the precomputed serving store (SQLite & JSONs from 2.8M rows)
-python backend/scripts/build_serving_data.py
+# 4. Start local Flask API with multi-threaded Waitress WSGI server
+python wsgi.py
+# Server runs at: http://127.0.0.1:5000 (Swagger UI at http://127.0.0.1:5000/api/docs)
 
-# 6. Run API smoke test & latency profiler (21 endpoints)
-python backend/scripts/smoke_api.py
-
-# 7. Start local Flask API development server
-python backend/wsgi.py
-# Server runs at: http://localhost:5000 (Swagger UI at http://localhost:5000/api/docs)
-
-# 8. Run full test suite (103 passed, 4 skipped in ~5s)
-pytest backend/tests -v -m "not db_live"
+# 5. Run full test suite (107 passed, 4 skipped in ~8s)
+pytest tests -v
 ```
+
+---
+
+## Optional Data Refresh (Offline, Not Part of App)
+
+The deployed application runs completely offline using local precomputed SQLite and JSON stores. To perform an optional offline data extraction from TiDB Cloud:
+
+```powershell
+pip install -r requirements-refresh.txt
+# Set TIDB_HOST, TIDB_USER, TIDB_PASSWORD in backend/.env
+python scripts/check_connection.py
+python scripts/extract_data.py
+python scripts/build_serving_data.py
+```
+*Note: Refreshing shifts the historical observation window and may require model retraining and threshold re-validation.*
 
 ---
 

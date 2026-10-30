@@ -37,13 +37,15 @@ def test_liveness_health(client):
 
 def test_readiness_health(client):
     res = client.get("/api/health/ready")
-    # In test environment, may return 200 (if connected) or 503 (if TiDB unreachable/mocked)
     assert res.status_code in (200, 503)
     data = res.get_json()
     assert "components" in data
     assert "serving_store" in data["components"]
     assert "prediction_engine" in data["components"]
-    assert "tidb_cloud" in data["components"]
+    assert "json_analytics" in data["components"]
+    assert data.get("data_source") == "precomputed_local"
+    assert "tidb_cloud" not in data["components"]
+    assert "tidb" not in json.dumps(data).lower()
 
 
 def test_root_landing(client):

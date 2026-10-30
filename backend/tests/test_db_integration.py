@@ -6,8 +6,8 @@ Skips cleanly if live database credentials are not configured or connection is u
 """
 
 import pytest
-from app.db.config import load_db_config, DatabaseConfigError
-from app.db.engine import create_db_engine, execute_read_only_query, ReadOnlyViolationError
+from tools.refresh.config import load_db_config, DatabaseConfigError
+from tools.refresh.engine import create_db_engine, execute_read_only_query, ReadOnlyViolationError
 
 
 @pytest.fixture(scope="module")

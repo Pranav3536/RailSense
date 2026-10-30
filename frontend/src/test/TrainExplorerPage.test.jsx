@@ -58,6 +58,34 @@ describe('TrainExplorerPage (Tab 2)', () => {
       fireEvent.change(searchInput, { target: { value: '129' } });
       expect(searchInput.value).toBe('129');
     });
+
+    it('displays error state with retry button when catalog request times out', async () => {
+      endpoints.getTrains.mockRejectedValueOnce(new Error('Request timed out after 15 seconds'));
+
+      render(
+        <MemoryRouter initialEntries={['/explorer']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <Routes>
+            <Route path="explorer" element={<TrainExplorerPage />} />
+            <Route path="explorer/:trainNumber" element={<TrainExplorerPage />} />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Failed to Search Trains')).toBeInTheDocument();
+      });
+
+      expect(screen.getByText(/Request timed out after 15 seconds/i)).toBeInTheDocument();
+      const retryBtn = screen.getByRole('button', { name: /try again/i });
+      expect(retryBtn).toBeInTheDocument();
+
+      endpoints.getTrains.mockResolvedValueOnce(trainsListFixture);
+      fireEvent.click(retryBtn);
+
+      await waitFor(() => {
+        expect(endpoints.getTrains).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 
   describe('Single Train Detail View (/explorer/:trainNumber)', () => {

@@ -30,11 +30,11 @@ const ICON_MAP = {
 };
 
 /**
- * Truthful Database & API Status Card
- * Evaluates live connectivity from /api/health/ready into 4 unambiguous states.
+ * Truthful Local API & Artifact Status Card
+ * Evaluates live health from /api/health/ready into 4 unambiguous states.
  */
-function DatabaseStatusCard() {
-  const { status, rawError, checkNow } = useReadiness();
+function ApiStatusCard() {
+  const { status, modelVersion, dataAsOf, degradedReason, rawError, checkNow } = useReadiness();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -48,26 +48,26 @@ function DatabaseStatusCard() {
 
   let statusConfig = {
     title: 'Checking...',
-    desc: 'Verifying backend & database...',
+    desc: 'Verifying local artifacts...',
     color: 'text-slate-400',
     dotBg: 'bg-slate-400',
     icon: Loader2,
     badgeVariant: 'neutral'
   };
 
-  if (status === READINESS_STATES.CONNECTED) {
+  if (status === READINESS_STATES.READY) {
     statusConfig = {
-      title: 'Database connected',
-      desc: 'TiDB Cloud online',
+      title: 'API ready',
+      desc: 'Data: precomputed local snapshot',
       color: 'text-emerald-400',
       dotBg: 'bg-emerald-400',
       icon: CheckCircle2,
       badgeVariant: 'success'
     };
-  } else if (status === READINESS_STATES.DB_UNAVAILABLE) {
+  } else if (status === READINESS_STATES.DEGRADED) {
     statusConfig = {
-      title: 'Database unavailable',
-      desc: rawError?.details?.components?.tidb_cloud || 'Database offline',
+      title: 'API degraded',
+      desc: degradedReason || 'Component degraded',
       color: 'text-amber-400',
       dotBg: 'bg-amber-400',
       icon: AlertTriangle,
@@ -104,8 +104,8 @@ function DatabaseStatusCard() {
           onClick={handleRefresh}
           disabled={isChecking}
           className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/60 transition-colors disabled:opacity-50 flex-shrink-0"
-          aria-label="Refresh database status"
-          title="Refresh connection status"
+          aria-label="Refresh API readiness status"
+          title="Refresh readiness status"
         >
           <RefreshCw size={15} className={isChecking ? 'animate-spin' : ''} />
         </button>
@@ -114,6 +114,11 @@ function DatabaseStatusCard() {
       <p className="text-xs text-slate-400 truncate font-mono">
         {statusConfig.desc}
       </p>
+      {status === READINESS_STATES.READY && (
+        <p className="text-xs text-slate-500 font-mono mt-0.5 truncate">
+          v{modelVersion || '1.0.0'} • As of {dataAsOf || '2026-10-25'}
+        </p>
+      )}
     </div>
   );
 }
@@ -176,11 +181,11 @@ export function Sidebar({ onNavigate, className = '' }) {
         })}
       </nav>
 
-      {/* Pinned Footer (Database Status + Creator Cards) */}
+      {/* Pinned Footer (API Readiness + Creator Cards) */}
       <div className="flex-shrink-0 border-t border-slate-800 bg-navy-950/40">
         {/* Truthful Status Card */}
         <div className="p-3.5">
-          <DatabaseStatusCard />
+          <ApiStatusCard />
         </div>
 
         {/* Creator & Maintainer Card */}

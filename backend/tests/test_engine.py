@@ -3,7 +3,7 @@ Unit tests for database engine and read-only query guard (app.db.engine).
 """
 
 import pytest
-from app.db.engine import validate_read_only_query, ReadOnlyViolationError
+from tools.refresh.engine import validate_read_only_query, ReadOnlyViolationError
 
 
 class TestReadOnlyQueryGuard:
