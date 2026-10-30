@@ -467,13 +467,29 @@ pytest backend/tests/test_api_integration.py -v
 - Frontend test suite (Vitest + Testing Library): **30 passed across 5 files (0 failures)**, ESLint: **0 errors, 0 warnings**, production bundle: 198 kB.
 - Backend pytest suite intact: **103 passed, 4 skipped**.
 
-**Next Milestone: Phase 7 — Overview Dashboard & Train Explorer Tabs**
-In Phase 7, the session will:
-1. Connect Tab 1 (Overview Dashboard) to `GET /api/overview` and `GET /api/health/ready`.
-2. Build fleet-level KPI stat cards, macro delay distribution histogram, category breakdown chart, and daily delay trendline using Recharts and `CHART_THEME`.
-3. Connect Tab 2 (Train Explorer) to `GET /api/trains` and `GET /api/trains/<train_number>`.
-4. Build train search autocomplete, route canonical stop timeline, stop-level delay probabilities, and historical run performance cards.
-5. Guarantee graceful error, loading skeletons, and empty state handling across all components.
+**Phase 7 Status: COMPLETE (Verified)**
+- Tab 1 Overview Dashboard ("Railway at a Glance") connected live to `/api/overview` via `adaptOverview`.
+  - 5 Macro Volume StatCards: Total Stops (`2,805,574` / `28,05,574`), Runs (`147,367`), Trains (`10,743`), Stations (`8,584`), Span (`19 Days`).
+  - 5 Delay Performance StatCards: Observed Delayed Rate (`49.9%`), Median Delay (`+15 min`), Mean Delay (`+38 min`), Early Arrivals (`8.6%`), Label Coverage (`63.2%`).
+  - Daily Trendline Recharts LineChart with 49.9% fleet baseline, partial date styling, accessible text takeaways, and view-as-table toggle.
+  - Delay Distribution Recharts BarChart with 8 tiers from `<-30` to `>180`, tier color coding, accessible takeaways, and table toggle.
+  - Category Breakdown horizontal BarChart with low-support muting (< 30 stops) and table toggle.
+  - Collapsible educational guide on label eligibility, early arrivals, partial dates, and non-causal language.
+- Tab 2 Train Explorer ("Single Train Deep Dive") connected live to `/api/trains` and `/api/trains/<train_number>` with deep linking (`/explorer` & `/explorer/:trainNumber`).
+  - Debounced (300ms) catalog search by train number/name, category dropdown, quick explore pills, pagination controls.
+  - Selected Train Header with train number, name, category badge, route origin/terminus, runs, halts, overall delay rate bar, mean delay, and disabled Phase 8 prediction button.
+  - Stop Timetable ordered strictly by sequence number `seq` (verified support for 200 circular/loop routes).
+  - Stop delay progression line chart and per-date run performance chart with boundary indicators.
+- Normalization adapters (`src/api/adapters.js`) enforcing percentage uniformity (0–100 scale), safe null handling, and low-support annotation.
+- Zero causal terms ("bottleneck", "congestion", "fog", "caused by") and zero "probability" wording on overview/explorer tabs.
+- Full verification: Vitest **43 passed across 8 test files**, ESLint **0 errors / 0 warnings**, Vite build: **199 kB clean bundle**, Backend pytest: **103 passed, 4 skipped**.
+
+**Next Milestone: Phase 8 — Delay Prediction Tab (Pre-Departure Inference Engine)**
+In Phase 8, the session will:
+1. Connect Tab 3 (Delay Prediction) to `POST /api/predict`.
+2. Build schedule-time inference input form (train number, start date, station, scheduled arrival/departure).
+3. Display predicted delay probability (calibrated via isotonic regression), risk band assignment (Low / Medium / High), decision threshold indicator (0.420 / 0.410), and top SHAP local feature attributions.
+4. Guarantee pre-departure safety (banning en-route actual arrival/departure inputs from request-time feature extraction).
 
 ---
 

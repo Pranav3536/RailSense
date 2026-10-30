@@ -39,7 +39,11 @@ export function StatCard({
         </div>
         {Icon && (
           <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 flex-shrink-0">
-            <Icon size={20} aria-hidden="true" />
+            {typeof Icon === 'function' ? (
+              <Icon size={20} aria-hidden="true" />
+            ) : (
+              Icon
+            )}
           </div>
         )}
       </div>

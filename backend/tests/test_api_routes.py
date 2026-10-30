@@ -69,6 +69,10 @@ def test_overview_endpoint(client):
     assert "category_breakdown" in data
     assert "delay_summary" in data
     assert "definition" in data["delay_summary"]
+    assert "delay_distribution" in data
+    assert len(data["delay_distribution"]) == 8
+    assert data["delay_distribution"][0]["bucket"] == "<-30"
+    assert data["delay_distribution"][-1]["bucket"] == ">180"
 
 
 # ---------------------------------------------------------------------

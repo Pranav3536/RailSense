@@ -47,6 +47,14 @@ export function App() {
               }
             />
             <Route
+              path="explorer/:trainNumber"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <TrainExplorerPage />
+                </Suspense>
+              }
+            />
+            <Route
               path="predict"
               element={
                 <Suspense fallback={<PageFallback />}>

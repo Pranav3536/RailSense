@@ -32,7 +32,7 @@ export const NAV_ITEMS = [
     iconName: 'Route',
     phase: 'Phase 7',
     endpoints: ['/api/trains', '/api/trains/<train_number>'],
-    description: 'Interactive train route timetable explorer with canonical stops, sequence numbers, stop-level delay probabilities, and historical run performance.'
+    description: 'Interactive train route timetable explorer with canonical stops, sequence numbers, stop-level observed delayed rates, and historical run performance.'
   },
   {
     path: '/predict',

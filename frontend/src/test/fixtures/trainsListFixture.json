@@ -1,0 +1,53 @@
+{
+  "data_as_of": "2026-10-25",
+  "definition": "Delay is classified as arrival_delay_min > 15 minutes evaluated strictly on label-eligible stops.",
+  "items": [
+    {
+      "train_number": "12951",
+      "train_name": "NDLS TEJAS RAJ",
+      "category": "RAJ",
+      "runs_count": 18,
+      "days_observed": 18,
+      "stops_count": 8,
+      "origin_station_code": "MMCT",
+      "terminus_station_code": "NDLS",
+      "delayed_rate": 20.49,
+      "mean_delay": 25.4,
+      "eligible_stops_count": 126
+    },
+    {
+      "train_number": "12002",
+      "train_name": "BHOPAL SHATABDI",
+      "category": "SHT",
+      "runs_count": 19,
+      "days_observed": 19,
+      "stops_count": 10,
+      "origin_station_code": "NDLS",
+      "terminus_station_code": "RKMP",
+      "delayed_rate": 18.25,
+      "mean_delay": 22.1,
+      "eligible_stops_count": 171
+    },
+    {
+      "train_number": "00112",
+      "train_name": "SGTY-AJNI RAPID PARCEL",
+      "category": "PEXP",
+      "runs_count": 1,
+      "days_observed": 1,
+      "stops_count": 3,
+      "origin_station_code": "SGTY",
+      "terminus_station_code": "AJNI",
+      "delayed_rate": 0.0,
+      "mean_delay": 0.0,
+      "eligible_stops_count": 0
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "page_size": 15,
+    "total": 10743,
+    "total_pages": 717,
+    "has_next": true,
+    "has_prev": false
+  }
+}

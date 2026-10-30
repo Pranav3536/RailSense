@@ -377,6 +377,29 @@ def build_serving_store():
             "median_delay_min": round(med_delay, 2)
         })
 
+    # Delay distribution histogram on label-eligible stops
+    arr = df_eligible['arrival_delay_min']
+    b1 = int((arr < -30).sum())
+    b2 = int(((arr >= -30) & (arr < -5)).sum())
+    b3 = int(((arr >= -5) & (arr <= 5)).sum())
+    b4 = int(((arr > 5) & (arr <= 15)).sum())
+    b5 = int(((arr > 15) & (arr <= 30)).sum())
+    b6 = int(((arr > 30) & (arr <= 60)).sum())
+    b7 = int(((arr > 60) & (arr <= 180)).sum())
+    b8 = int((arr > 180).sum())
+    n_eligible_total = len(df_eligible)
+
+    delay_distribution = [
+        {"bucket": "<-30", "label": "Early (>30m)", "stops_count": b1, "percentage": round(b1 / n_eligible_total * 100, 2), "classification": "early"},
+        {"bucket": "-30..-5", "label": "Early (5-30m)", "stops_count": b2, "percentage": round(b2 / n_eligible_total * 100, 2), "classification": "early"},
+        {"bucket": "-5..5", "label": "On-Time (±5m)", "stops_count": b3, "percentage": round(b3 / n_eligible_total * 100, 2), "classification": "ontime"},
+        {"bucket": "5..15", "label": "Minor (5-15m)", "stops_count": b4, "percentage": round(b4 / n_eligible_total * 100, 2), "classification": "minor"},
+        {"bucket": "15..30", "label": "Moderate (15-30m)", "stops_count": b5, "percentage": round(b5 / n_eligible_total * 100, 2), "classification": "moderate"},
+        {"bucket": "30..60", "label": "Significant (30-60m)", "stops_count": b6, "percentage": round(b6 / n_eligible_total * 100, 2), "classification": "significant"},
+        {"bucket": "60..180", "label": "Severe (1-3h)", "stops_count": b7, "percentage": round(b7 / n_eligible_total * 100, 2), "classification": "severe"},
+        {"bucket": ">180", "label": "Extreme (>3h)", "stops_count": b8, "percentage": round(b8 / n_eligible_total * 100, 2), "classification": "extreme"}
+    ]
+
     overview_data = {
         "provenance": {
             "built_at": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
@@ -406,6 +429,7 @@ def build_serving_store():
             "fleet_median_delay_min": round(float(df_eligible['arrival_delay_min'].median()), 2),
             "fleet_early_arrival_pct": round(float((df_eligible['arrival_delay_min'] < 0).sum() / len(df_eligible) * 100), 2)
         },
+        "delay_distribution": delay_distribution,
         "category_breakdown": sorted(cat_breakdown, key=lambda x: x['eligible_stops'], reverse=True),
         "per_date_trend": date_trend
     }

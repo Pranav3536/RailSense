@@ -41,6 +41,9 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-31 | Phase 6 Honest Placeholder Architecture & Zero Synthetic Claims | Phase 6 |
 | D-32 | Client-Side In-Flight Request Deduplication & TTL Caching | Phase 6 |
 | D-33 | Global UI Scale-Up (112.5% Root, Typography Tokens & Chart Theme) | Phase 6.1 |
+| D-34 | Overview & Train Explorer Real API Ingestion with Normalization Adapters | Phase 7 |
+| D-35 | Sequence Number (seq) Primary Keying for Stop Progression | Phase 7 |
+| D-36 | Boundary Days Temporal Marking (Left-Truncated & Right-Censored) | Phase 7 |
 
 ---
 
@@ -499,6 +502,30 @@ No test metrics are ever reported for the deployment model.
 3. Desktop navigation sidebar is widened to `w-72` (288px) on desktop and `w-80` (320px) on xl screens; nav items are minimum 48px tall with 22px icons.
 4. All interactive buttons, triggers, and links enforce a minimum 44×44px hit area.
 5. Recharts default constants (`CHART_THEME`) are established in `src/components/charts/chartTheme.js` enforcing 14px axis ticks, tooltips, and legends with a 360px standard container height.
+
+---
+
+## D-34 — Overview & Train Explorer Real API Ingestion with Normalization Adapters
+
+**Date decided:** 2026-10-30 (Phase 7)
+
+**Decision:** The frontend connects directly to live precomputed serving endpoints (`/api/overview`, `/api/trains`, `/api/trains/<train_number>`) through an adapter layer (`src/api/adapters.js`). All percentages from the backend are standardized to the 0–100 scale, null rates are gracefully handled without fabrication, and statistical low-support subsets (< 30 observations) are tagged and visually muted. Non-causal language ("observed delay hotspot", "associated with") is strictly enforced across all dashboard copy.
+
+---
+
+## D-35 — Sequence Number (seq) Primary Keying for Stop Progression
+
+**Date decided:** 2026-10-30 (Phase 7)
+
+**Decision:** Timetables and stop progression charts MUST use sequence index `seq` as their primary React key (`key={stop.seq}`), never `station_code`. An audit of the serving store revealed 200 circular and loop train routes in Indian Railways where trains call at the same station code multiple times in a single service run.
+
+---
+
+## D-36 — Boundary Days Temporal Marking (Left-Truncated & Right-Censored)
+
+**Date decided:** 2026-10-30 (Phase 7)
+
+**Decision:** All per-date charts and tables explicitly differentiate collection boundary days (October 7 left-truncated start, October 25 right-censored end) from complete middle observation days. These edge dates are styled with distinct visual markers, legend entries, and explanatory tooltips referencing `docs/validation_report.md` to prevent users from misinterpreting partial-day artifacts as operational delay trends.
 
 
 

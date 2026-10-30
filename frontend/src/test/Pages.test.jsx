@@ -1,40 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import OverviewPage from '../pages/OverviewPage';
-import TrainExplorerPage from '../pages/TrainExplorerPage';
 import DelayPredictionPage from '../pages/DelayPredictionPage';
 import ModelLabPage from '../pages/ModelLabPage';
 import DelayPatternsPage from '../pages/DelayPatternsPage';
 import SmartInsightsPage from '../pages/SmartInsightsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
-describe('Placeholder Pages Suite', () => {
-  it('renders OverviewPage with honest Phase 7 badge and planned endpoints', () => {
-    render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <OverviewPage />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText('Railway at a Glance')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 7')).toBeInTheDocument();
-    expect(screen.getByText('/api/overview')).toBeInTheDocument();
-    expect(screen.getByText('Integrity Note:')).toBeInTheDocument();
-  });
-
-  it('renders TrainExplorerPage with honest Phase 7 badge', () => {
-    render(
-      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <TrainExplorerPage />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText('Single Train Deep Dive')).toBeInTheDocument();
-    expect(screen.getByText('Planned in Phase 7')).toBeInTheDocument();
-    expect(screen.getByText('/api/trains')).toBeInTheDocument();
-  });
-
+describe('Placeholder Pages Suite (Phases 8-9)', () => {
   it('renders DelayPredictionPage with honest Phase 8 badge', () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>

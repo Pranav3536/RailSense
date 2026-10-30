@@ -78,7 +78,7 @@ curl -s http://localhost:5000/api/health/ready
 ### 2.2 Macro Dataset Overview
 
 #### `GET /api/overview`
-Returns global dataset counts (2.8M rows, 147k runs, 10.7k trains, 8.5k stations), label eligibility coverage, category-level delay distributions, and worst observed train and station hotspots.
+Returns global dataset counts (2.8M rows, 147k runs, 10.7k trains, 8.5k stations), label eligibility coverage, delay distribution histogram (8 buckets from `<-30` to `>180`), category-level delay distributions, and 19-day per-date trends.
 ```bash
 curl -s http://localhost:5000/api/overview
 ```

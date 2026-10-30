@@ -236,8 +236,13 @@ frontend/
 └── package.json
 ```
 
-### Design System (Implemented in Phase 6)
-Documented fully in `docs/UI_DESIGN_SYSTEM.md`. Follows the fixed design tokens: Sidebar Navy (`#0B132B`), Main Canvas (`#F8FAFC`), Card Surface (`#FFFFFF`), Primary (`#2563EB`), Danger (`#EF4444`), Warning (`#F59E0B`), and Success (`#10B981`). Uses plain JavaScript (JSX) exclusively (Decision D-11).
+### Design System (Implemented in Phase 6, Scaled in Phase 6.1)
+Documented fully in `docs/UI_DESIGN_SYSTEM.md`. Follows the fixed design tokens: Sidebar Navy (`#0B132B`), Main Canvas (`#F8FAFC`), Card Surface (`#FFFFFF`), Primary (`#2563EB`), Danger (`#EF4444`), Warning (`#F59E0B`), and Success (`#10B981`). Uses plain JavaScript (JSX) exclusively (Decision D-11) with an 18px base scale (112.5%).
+
+### Phase 7 Implementation Status: COMPLETE
+- **Tab 1: Overview Dashboard ("Railway at a Glance")**: Connected live to `/api/overview`. Features 5 macro volume StatCards, 5 delay performance StatCards, daily delayed rate trendline with 49.9% fleet baseline, 8-tier delay distribution histogram, category comparison chart with low-support annotations (< 30 stops), view-as-table toggles, and educational boundary principles collapsible.
+- **Tab 2: Train Explorer ("Single Train Deep Dive")**: Connected live to `/api/trains` and `/api/trains/<train_number>` with deep linking (`/explorer` & `/explorer/:trainNumber`). Features debounced search, category filter, paginated catalog, train summary header, timetable table keyed strictly by `seq` (handling 200 circular routes), stop delay progression line chart, and per-date run history chart with boundary markers.
+- **Frontend Test Suite**: 43 tests passing across 8 files in Vitest; ESLint 0 errors, 0 warnings; Vite production build passes cleanly.
 
 ---
 

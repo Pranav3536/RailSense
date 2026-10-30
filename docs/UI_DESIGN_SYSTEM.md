@@ -124,3 +124,22 @@ Because Recharts renders SVG vector graphics with explicit numeric pixel values 
 - `lg: 1024px` (fixed desktop sidebar at `w-72` / 288px; main canvas `lg:pl-72`)
 - `xl: 1280px` (expanded desktop sidebar at `w-80` / 320px; main canvas `xl:pl-80`, 4-column KPI cards)
 - Verified vertical fit at both 1280×720 and 1366×768 with zero clipping on pinned sidebar footer.
+
+---
+
+## 6. Phase 7 Domain Components & Chart Conventions
+
+1. **`SupportBadge` (`src/components/ui/SupportBadge.jsx`):**
+   - Renders observation counts with automated statistical reliability check (`LOW_SUPPORT_THRESHOLD = 30`).
+   - Counts < 30 render with amber border and an explicit "Low Support (<30)" warning badge.
+2. **`RateBar` (`src/components/ui/RateBar.jsx`):**
+   - Horizontal micro rate bar with color-coded tiers (< 25% emerald, 25–50% amber, > 50% rose).
+   - Gracefully renders unobserved / null rates as `— Unobserved`.
+3. **`PartialDayLegend` (`src/components/ui/PartialDayLegend.jsx`):**
+   - Explains the collection boundaries: 2026-10-07 (left-truncated start) and 2026-10-25 (right-censored cutoff).
+4. **`CategoryLabel` (`src/components/ui/CategoryLabel.jsx`):**
+   - Maps category codes (e.g. `MEX`, `SUB`, `RAJ`) to official railway service definitions from `docs/data_dictionary.md`.
+5. **`ChartTableToggle` (`src/components/ui/ChartTableToggle.jsx`):**
+   - Accessible toggle between Recharts visualization and HTML data table with ARIA attributes.
+6. **Keying Convention for Stops:**
+   - All timetables and stop sequence charts MUST use `seq` as their primary React key (`key={stop.seq}`) to support circular and loop routes.

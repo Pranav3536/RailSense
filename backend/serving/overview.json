@@ -380,5 +380,63 @@
       "is_partial": true,
       "partial_note": "Right-censored collection cut-off"
     }
+  ],
+  "delay_distribution": [
+    {
+      "bucket": "<-30",
+      "label": "Early (>30m)",
+      "stops_count": 7010,
+      "percentage": 0.4,
+      "classification": "early"
+    },
+    {
+      "bucket": "-30..-5",
+      "label": "Early (5-30m)",
+      "stops_count": 69678,
+      "percentage": 3.93,
+      "classification": "early"
+    },
+    {
+      "bucket": "-5..5",
+      "label": "On-Time (\u00b15m)",
+      "stops_count": 404190,
+      "percentage": 22.8,
+      "classification": "ontime"
+    },
+    {
+      "bucket": "5..15",
+      "label": "Minor (5-15m)",
+      "stops_count": 407232,
+      "percentage": 22.97,
+      "classification": "minor"
+    },
+    {
+      "bucket": "15..30",
+      "label": "Moderate (15-30m)",
+      "stops_count": 323363,
+      "percentage": 18.24,
+      "classification": "moderate"
+    },
+    {
+      "bucket": "30..60",
+      "label": "Significant (30-60m)",
+      "stops_count": 263620,
+      "percentage": 14.87,
+      "classification": "significant"
+    },
+    {
+      "bucket": "60..180",
+      "label": "Severe (1-3h)",
+      "stops_count": 226138,
+      "percentage": 12.75,
+      "classification": "severe"
+    },
+    {
+      "bucket": ">180",
+      "label": "Extreme (>3h)",
+      "stops_count": 71837,
+      "percentage": 4.05,
+      "classification": "extreme"
+    }
   ]
 }
