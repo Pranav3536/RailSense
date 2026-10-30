@@ -39,5 +39,6 @@ shap==0.49.1
 # --- Certificates & TLS ---
 certifi==2026.10.23
 
-# --- Testing ---
+# --- Testing & Benchmarking ---
 pytest==9.2.0
+psutil==7.2.2

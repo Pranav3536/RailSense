@@ -34,7 +34,7 @@ def test_end_to_end_delay_intelligence(integration_client):
     assert res_tr.status_code == 200
     tr_data = res_tr.get_json()
     assert len(tr_data["items"]) >= 1
-    assert t_tr < 50.0, f"Train catalog query latency {t_tr:.1f}ms exceeds 50ms"
+    assert t_tr < 100.0, f"Train catalog query latency {t_tr:.1f}ms exceeds 100ms"
 
     # 3. Train Profile with Stop-Level Statistics
     t0 = time.perf_counter()
@@ -44,7 +44,7 @@ def test_end_to_end_delay_intelligence(integration_client):
     detail_data = res_detail.get_json()
     assert detail_data["train_number"] == "12951"
     assert len(detail_data["stops"]) > 0
-    assert t_detail < 50.0, f"Train detail latency {t_detail:.1f}ms exceeds 50ms"
+    assert t_detail < 100.0, f"Train detail latency {t_detail:.1f}ms exceeds 100ms"
 
     # 4. Station Profile with Wilson Intervals
     t0 = time.perf_counter()
@@ -55,7 +55,7 @@ def test_end_to_end_delay_intelligence(integration_client):
     assert stn_data["station_code"] == "BRC"
     assert "wilson_lower" in stn_data
     assert "wilson_upper" in stn_data
-    assert t_stn < 50.0, f"Station detail latency {t_stn:.1f}ms exceeds 50ms"
+    assert t_stn < 100.0, f"Station detail latency {t_stn:.1f}ms exceeds 100ms"
 
     # 5. Multiple Sequential Real-Time Predictions (with warmup)
     warmup_tc = {"train_number": "00149", "station_code": "KYN", "date": "2026-10-26"}

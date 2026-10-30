@@ -1,6 +1,6 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 5 of 11 complete — Flask REST API, precomputed SQLite serving store, OpenAPI 3.0 docs, and test suite verified.**
+> **Status: Phase 6 of 11 complete — React design system, app shell, API client, truthful sidebar status, and 28 Vitest tests verified.**
 
 RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
 

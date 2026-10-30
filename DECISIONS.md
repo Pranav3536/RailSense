@@ -33,6 +33,13 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-23 | Probability Calibration via Isotonic Regression on Validation | Phase 4 |
 | D-24 | Evaluation Model vs Deployment Model Refitting Policy | Phase 4 |
 | D-25 | Formulation 2 En-Route Model Segregation | Phase 4 |
+| D-26 | Precomputed Read-Only SQLite Serving Store Architecture | Phase 5 |
+| D-27 | Average Precision (AP) Replaces Trapezoid PR-AUC for Constant Baselines | Phase 5 |
+| D-28 | Operational Threshold Policy: Balanced F1 (0.410) & High-Recall (0.455) | Phase 5 |
+| D-29 | Strict Non-Causal Attribution Phrasing Across API & Documentation | Phase 5 |
+| D-30 | Fixed UI Design System Palette & Surface Architecture | Phase 6 |
+| D-31 | Phase 6 Honest Placeholder Architecture & Zero Synthetic Claims | Phase 6 |
+| D-32 | Client-Side In-Flight Request Deduplication & TTL Caching | Phase 6 |
 
 ---
 
@@ -454,6 +461,31 @@ No test metrics are ever reported for the deployment model.
 **Date decided:** 2026-10-29 (Phase 5)
 
 **Decision:** All API responses, factor explanations, documentation, and error messages strictly enforce non-causal language. Terms like "bottleneck", "congestion causes", "delayed because of weather" are banned. Valid phrasing: "observed delay hotspot", "associated with elevated delay", "what the model uses".
+
+---
+
+## D-30 — Fixed UI Design System Palette & Surface Architecture
+
+**Date decided:** 2026-10-30 (Phase 6)
+
+**Decision:** The frontend adheres strictly to the fixed design system: Sidebar Navy (`#0B132B`), Main Canvas (`#F8FAFC`), Card Surface (`#FFFFFF`, `border-slate-200`, `shadow-sm`, `rounded-xl`), Primary Accent (`#2563EB`), Danger / Delayed (`#EF4444`), Warning / Moderate (`#F59E0B`), and Success / On-Time (`#10B981`). The dark palette proposal (`#0A192F` / `#112240` / `#CCD6F6`) is explicitly rejected. Decorative elements include subtle inline railway SVG watermarks at 4–6% opacity that never impair text readability.
+
+---
+
+## D-31 — Phase 6 Honest Placeholder Architecture & Zero Synthetic Claims
+
+**Date decided:** 2026-10-30 (Phase 6)
+
+**Decision:** Scope for Phase 6 is strictly limited to the design system, app shell, API client, and truthful status card. The 6 tab pages are implemented as honest placeholders clearly labeled "Planned in Phase N" with bulleted lists of planned analytical capabilities and preflight-verified API endpoints. Under no circumstances are mock numbers, unverified owner claims (e.g. 41.8%, 26.4 min), or synthetic placeholder charts rendered.
+
+---
+
+## D-32 — Client-Side In-Flight Request Deduplication & TTL Caching
+
+**Date decided:** 2026-10-30 (Phase 6)
+
+**Decision:** The frontend API fetch wrapper (`src/api/client.js`) implements an in-flight Promise map (`inFlightRequests`) to deduplicate simultaneous identical GET requests (mitigating React 18 StrictMode double-invocations), combined with configurable in-memory TTL caching. This protects the backend from superfluous requests and strictly respects the 120 req/min rate limit.
+
 
 
 

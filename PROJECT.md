@@ -211,31 +211,33 @@ All endpoints implemented, verified, and documented via OpenAPI 3.0 (`docs/opena
 
 ---
 
-## 11. Frontend Architecture & Folder Plan (Phase 6)
+## 11. Frontend Architecture & Folder Plan (Implemented in Phase 6)
 
 ```
 frontend/
 ├── src/
-│   ├── components/         ← Shared UI components (cards, charts, badges)
-│   ├── pages/              ← One folder per tab
-│   │   ├── Overview/
-│   │   ├── TrainExplorer/
-│   │   ├── DelayPrediction/
-│   │   ├── ModelLab/
-│   │   ├── DelayPatterns/
-│   │   └── SmartInsights/
-│   ├── hooks/              ← Custom React hooks (data fetching, etc.)
-│   ├── lib/                ← API client, utilities
-│   └── styles/             ← Tailwind config overrides
-├── public/                 ← Static assets (SVG watermarks)
+│   ├── api/                ← HTTP client, endpoints, error parsing
+│   ├── components/
+│   │   ├── layout/         ← Sidebar, AppShell, PageHeader
+│   │   ├── ui/             ← Card, StatCard, Badge, Skeleton, Spinner, ErrorState, EmptyState, DefinitionNote, ChartCard
+│   │   └── watermarks/     ← Subtle railway SVG vector watermarks (4-6% opacity)
+│   ├── config/             ← Application & creator attribution single sources of truth
+│   ├── hooks/              ← useApi, useReadiness (resilient polling & visibility awareness)
+│   ├── pages/              ← Overview, TrainExplorer, DelayPrediction, ModelLab, DelayPatterns, SmartInsights, DesignSystem, NotFound, ErrorBoundary
+│   ├── test/               ← Vitest unit & integration test suites
+│   ├── utils/              ← Indian localized formatters (formatNumber, formatPercent, formatMinutes, formatDate)
+│   ├── App.jsx             ← React Router v6 shell with lazy routing & suspense
+│   ├── main.jsx            ← React 18 root mount
+│   └── index.css           ← Tailwind CSS directives & accessibility resets
 ├── index.html
 ├── vite.config.js
 ├── tailwind.config.js
+├── postcss.config.js
 └── package.json
 ```
 
-### Design System (implement Phase 6)
-See `task.md` Section 2 for the full colour palette, watermark spec, sidebar layout, and brand identity rules.
+### Design System (Implemented in Phase 6)
+Documented fully in `docs/UI_DESIGN_SYSTEM.md`. Follows the fixed design tokens: Sidebar Navy (`#0B132B`), Main Canvas (`#F8FAFC`), Card Surface (`#FFFFFF`), Primary (`#2563EB`), Danger (`#EF4444`), Warning (`#F59E0B`), and Success (`#10B981`). Uses plain JavaScript (JSX) exclusively (Decision D-11).
 
 ---
 
