@@ -48,6 +48,12 @@ coverage.xml
 *.h5
 *.onnx
 
+# Explicit un-ignore for deployment runtime artifacts (total ~45.9 MB, under GitHub limits)
+!backend/models/deployment_model.joblib
+!backend/models/calibrator.joblib
+!backend/models/hist_transformer.joblib
+!backend/serving/manifest.json
+
 # Small model metadata JSON files ARE tracked (no rule to exclude them)
 
 # ---------- Handoff file (local AI agent context) ----------
@@ -61,6 +67,7 @@ docs/CLAUDE_HANDOFF.md
 *.sqlite
 *.sqlite3
 *.db
+!backend/serving/serving.sqlite
 data/
 raw/
 backend/data_cache/
