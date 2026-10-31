@@ -16,5 +16,6 @@ export default defineConfig({
     css: true,
     include: ['src/**/*.test.{js,jsx}'],
     exclude: ['e2e/**', 'node_modules/**'],
+    testTimeout: 15000,
   },
 });

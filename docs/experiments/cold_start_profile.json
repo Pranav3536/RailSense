@@ -1,9 +1,12 @@
 {
-  "timestamp": "2026-10-30T23:25:00+05:30",
-  "train_catalog_count": 10743,
-  "serving_store_init_ms": 69.13,
-  "lightgbm_model_load_ms": 160.43,
-  "nlp_classifier_init_ms": 261.43,
-  "full_flask_factory_ms": 401.17,
-  "cold_start_under_2_seconds": true
+  "timestamp": "2026-10-31T17:15:00+05:30",
+  "app_factory_ms": 3500.78,
+  "first_health_ready_ms": 21.71,
+  "first_predict_ms": 82.44,
+  "total_cold_start_ms": 3605.12,
+  "rss_start_mb": 16.65,
+  "rss_after_predict_mb": 176.69,
+  "ready_status": 200,
+  "predict_status": 200,
+  "first_predict_probability": null
 }

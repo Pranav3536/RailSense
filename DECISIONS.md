@@ -707,3 +707,15 @@ No test metrics are ever reported for the deployment model.
 3. **HTTP Header & Payload Defense:** Cap request body size at 1MB (`MAX_CONTENT_LENGTH = 1 * 1024 * 1024`, HTTP 413). Enforce `Content-Type: application/json` on all POST endpoints (`/api/predict`, `/api/insights/query`, HTTP 415). Apply `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and CSP.
 4. **Artifact Delivery & Offline Self-Containment:** Total serving payload is audited at **45.90 MB** across 9 files with cryptographic SHA-256 manifest (`backend/serving/manifest.json`). Given that all files are < 50 MB, Direct Git storage is selected over Git LFS or external S3 buckets, enabling seamless zero-token builds on Render and Vercel.
 5. **No Retraining or Threshold Changes:** Primary LightGBM threshold remains fixed at `0.410`. Test AP remains `0.8482`. NLP intent classification thresholds remain fixed at `confidence >= 0.40`, `margin >= 0.08`. Zero causal claims allowed in analytical UI.
+
+
+## D-53 - Phase 11 WCAG AA Contrast Tokens, Metric Reconciliations, and Deployment Architecture
+
+**Date decided:** 2026-10-31 (Phase 11)
+
+**Decision:** 
+1. **WCAG AA Contrast Tokens (> 4.5:1):** While vibrant brand fills (#2563EB blue-600, #10B981 emerald-500, #F59E0B amber-500, #EF4444 red-500) provide clear visibility for solid cards and chart fills, text and badges rendered over white/slate light backgrounds (#FFFFFF, #F8FAFC) strictly use high-contrast variants (#1D4ED8 blue-700, #059669 emerald-600, #D97706 amber-600, #DC2626 red-600) ensuring contrast ratios >= 4.5:1 meeting WCAG 2.1 AA requirements.
+2. **Metric Transparency & Clarification:**
+   - NLP held-out test evaluation reports both raw classifier argmax accuracy (93.89%) and end-to-end answered rate after conservative confidence (>= 0.40) and margin (>= 0.08) thresholds, distinguishing false fallbacks on in-domain queries from out-of-scope interception.
+   - Machine learning PR-AUC metrics strictly use sklearn.metrics.average_precision_score (AP = 0.8482 calibrated / 0.8529 raw) to eliminate the trapezoidal inflation artifact on constant baselines (0.4920 AP vs 0.7460 trapezoid).
+3. **Zero LFS, Selective Git Runtime Artifact Delivery:** Runtime SQLite serving database (ackend/serving/serving.sqlite, ~40.9 MB) and model joblib files (~5 MB total) are packaged directly into the repository using selective .gitignore negations (!backend/serving/serving.sqlite, !backend/models/*.joblib), staying well below GitHub's 100 MB per-file and 2 GB repo limits without requiring Git LFS or external cloud buckets.

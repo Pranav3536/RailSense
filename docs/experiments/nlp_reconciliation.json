@@ -1,0 +1,152 @@
+{
+  "execution_timestamp": "2026-10-31 17:10:00",
+  "held_out_test_metrics": {
+    "total_questions": 131,
+    "in_domain_questions": 120,
+    "out_of_scope_questions": 11,
+    "raw_classifier_argmax_accuracy_pct": 96.18,
+    "end_to_end_answered_correctly_pct": 97.5,
+    "in_domain_false_fallback_rate_pct": 10.0,
+    "in_domain_false_fallbacks_count": 12,
+    "out_of_scope_wrongly_answered_rate_pct": 0.0,
+    "top_3_suggestion_chip_hit_rate_pct": 91.67,
+    "top_3_suggestion_chip_hits_count": 11
+  },
+  "expanded_ood_benchmark": {
+    "total_questions": 42,
+    "safely_intercepted_count": 41,
+    "safely_intercepted_pct": 97.62,
+    "wrongly_answered_count": 1,
+    "wrongly_answered_pct": 2.38,
+    "sample_results": [
+      {
+        "question": "Can you book a 2A ticket on train 12951 for tomorrow?",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.4576,
+        "margin": 0.1227,
+        "is_fallback": false
+      },
+      {
+        "question": "Check PNR status 2847192837",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.6752,
+        "margin": 0.6523,
+        "is_fallback": false
+      },
+      {
+        "question": "How to cancel my confirm ticket on IRCTC website?",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.798,
+        "margin": 0.7785,
+        "is_fallback": false
+      },
+      {
+        "question": "Tatkal booking open timing for AC classes",
+        "safely_trapped": true,
+        "predicted_intent": "fallback",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.3477,
+        "margin": 0.2932,
+        "is_fallback": true
+      },
+      {
+        "question": "What is the refund amount for waitlisted ticket WL 12?",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.6819,
+        "margin": 0.6254,
+        "is_fallback": false
+      },
+      {
+        "question": "Can I transfer my train ticket to my brother?",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.6349,
+        "margin": 0.5409,
+        "is_fallback": false
+      },
+      {
+        "question": "IRCTC user ID password reset link",
+        "safely_trapped": true,
+        "predicted_intent": "fallback",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.2831,
+        "margin": 0.2293,
+        "is_fallback": true
+      },
+      {
+        "question": "How to get senior citizen concession on train tickets?",
+        "safely_trapped": true,
+        "predicted_intent": "fallback",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.1464,
+        "margin": 0.0001,
+        "is_fallback": true
+      },
+      {
+        "question": "Check coach position of B4 in train 12952",
+        "safely_trapped": true,
+        "predicted_intent": "fallback",
+        "raw_intent": "train_summary",
+        "confidence": 0.2316,
+        "margin": 0.1256,
+        "is_fallback": true
+      },
+      {
+        "question": "Current seat availability in Rajdhani express for next Monday",
+        "safely_trapped": true,
+        "predicted_intent": "out_of_scope",
+        "raw_intent": "out_of_scope",
+        "confidence": 0.4164,
+        "margin": 0.339,
+        "is_fallback": false
+      }
+    ]
+  },
+  "stress_test_benchmark": {
+    "total_questions": 42,
+    "correct_count": 15,
+    "accuracy_pct": 35.71,
+    "by_category": {
+      "typo": {
+        "total": 10,
+        "correct": 1,
+        "accuracy_pct": 10.0
+      },
+      "hinglish": {
+        "total": 10,
+        "correct": 2,
+        "accuracy_pct": 20.0
+      },
+      "word_order": {
+        "total": 8,
+        "correct": 3,
+        "accuracy_pct": 37.5
+      },
+      "adversarial": {
+        "total": 8,
+        "correct": 8,
+        "accuracy_pct": 100.0
+      },
+      "edge_case": {
+        "total": 6,
+        "correct": 1,
+        "accuracy_pct": 16.67
+      }
+    }
+  },
+  "side_by_side_comparison": {
+    "held_out_raw_argmax_acc_pct": 96.18,
+    "held_out_e2e_answered_pct": 97.5,
+    "stress_suite_e2e_acc_pct": 35.71,
+    "expanded_ood_trapped_pct": 97.62
+  }
+}

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: railsense-backend
+    env: python
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "python backend/wsgi.py"
+    healthCheckPath: /api/health/ready
+    envVars:
+      - key: RAILSENSE_ENV
+        value: production
+      - key: FLASK_HOST
+        value: "0.0.0.0"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: FLASK_THREADS
+        value: "4"
+      - key: CORS_ORIGINS
+        value: "*"
+      # Zero TIDB_* variables (TiDB is strictly detached from runtime)

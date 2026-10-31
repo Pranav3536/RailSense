@@ -102,9 +102,12 @@ export function AppShell() {
         </main>
 
         {/* Global Footer Note */}
-        <footer className="border-t border-slate-200/80 px-4 sm:px-6 lg:px-8 py-5 text-center text-sm text-slate-500 bg-white/70 backdrop-blur-sm">
+        <footer className="border-t border-slate-200/80 px-4 sm:px-6 lg:px-8 py-5 text-center text-sm text-slate-500 bg-white/70 backdrop-blur-sm space-y-1">
           <p>
             {APP_CONFIG.name} • {APP_CONFIG.versionPill} • {APP_CONFIG.delayDefinition}
+          </p>
+          <p className="text-xs text-slate-600">
+            Observed historical window: Oct 7–25, 2026. Pre-departure schedule-time estimates with zero real-time GPS tracking. Not affiliated with IRCTC or Indian Railways.
           </p>
         </footer>
       </div>

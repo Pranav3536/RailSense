@@ -1,0 +1,16 @@
+{
+  "rate_limit_tested": 30,
+  "total_requests_sent": 40,
+  "status_200_count": 30,
+  "status_429_count": 10,
+  "retry_after_header": null,
+  "error_envelope": {
+    "error": {
+      "code": "RATE_LIMIT_EXCEEDED",
+      "details": null,
+      "message": "Too many requests. Rate limit is 120 requests per minute.",
+      "request_id": "34292229-f25c-401b-9f38-e98ff7ec2e48"
+    }
+  },
+  "verified": true
+}

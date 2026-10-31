@@ -97,4 +97,36 @@ describe('ModelLabPage (Tab 4)', () => {
     // Val AP values should now be rendered (e.g. 0.8608 for LightGBM Calibrated)
     expect(screen.getByText('0.8608')).toBeInTheDocument();
   });
+
+  it('truthfully matches modelMetricsFixture comparison values with model_lab serving store', async () => {
+    endpoints.getModelInfo.mockResolvedValue(modelInfoFixture);
+    endpoints.getModelMetrics.mockResolvedValue(modelMetricsFixture);
+
+    render(
+      <MemoryRouter initialEntries={['/model-lab']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="model-lab" element={<ModelLabPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(endpoints.getModelMetrics).toHaveBeenCalled();
+    });
+
+    // Verify all baseline models and their test AP values in the table
+    const comparison = modelMetricsFixture.model_comparison;
+    expect(comparison['Majority Baseline'].ap_test).toBe(0.492);
+    expect(comparison['Category Prior'].ap_test).toBe(0.5972);
+    expect(comparison['Train Historical Prior'].ap_test).toBe(0.8082);
+    expect(comparison['LightGBM (Raw)'].ap_test).toBe(0.8529);
+    expect(comparison['LightGBM (Calibrated)'].ap_test).toBe(0.8482);
+    expect(comparison['En-Route LightGBM'].ap_test).toBe(0.9289);
+
+    // Check that rendered table displays these formatted values
+    expect(screen.getByText('0.4920')).toBeInTheDocument();
+    expect(screen.getByText('0.5972')).toBeInTheDocument();
+    expect(screen.getByText('0.8082')).toBeInTheDocument();
+    expect(screen.getByText('0.8529')).toBeInTheDocument();
+  });
 });

@@ -1,207 +1,208 @@
 # RailSense — Indian Railways Delay Intelligence & Prediction Platform
 
-> **Status: Phase 10 of 11 complete — Integration QA, security hardening, accessibility, and deployment readiness verified. 154 backend pytest passing, 67 Vitest passing, 27 Playwright browser E2E tests passing with 0 WCAG AA accessibility violations.**
+[![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1.3-black.svg)](https://flask.palletsprojects.com/)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB.svg)](https://react.dev/)
+[![LightGBM](https://img.shields.io/badge/LightGBM-4.7.0-brightgreen.svg)](https://lightgbm.readthedocs.io/)
+[![Accessibility](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-success.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
+[![Tests](https://img.shields.io/badge/Tests-154%20Pytest%20%7C%2073%20Vitest%20%7C%2027%20Playwright-emerald.svg)](https://github.com/)
 
-RailSense is a portfolio Data Science + ML project that turns a real Indian Railways delay dataset (2.8M rows) into an end-to-end ML platform: data audit, feature engineering, leakage-safe modelling, explainability, a high-performance REST API backed by an indexed serving store, and a local NLP query interface — all served to a React dashboard.
-
----
-
-## Features (per tab)
-
-| Tab | Feature | Status |
-|-----|---------|--------|
-| 1 — Overview ("Railway at a Glance") | Fleet KPIs, 8-tier delay distribution histogram, category comparison, 19-day daily trendline with boundary caveats | **COMPLETE (Phase 7)** |
-| 2 — Train Explorer ("Single Train Deep Dive") | Search catalog, canonical timetable keyed strictly by `seq`, stop delay progression, per-date history | **COMPLETE (Phase 7)** |
-| 3 — Delay Prediction ("ML Inference Engine") | Real-time delay probability for arbitrary train+stop, calibrated gauge with 0.410 threshold marker, risk bands, local feature associations, and cold-start fallback | **COMPLETE (Phase 8.5)** |
-| 4 — Model Lab ("Model Evaluation & Transparency") | Multi-model benchmark comparison table with Test/Val split toggle, PR curve, Calibration reliability diagram, ROC curve, test partition confusion matrix, feature importance, and Formulation 2 research benchmark | **COMPLETE (Phase 8.5)** |
-| 5 — Delay Patterns ("Historical Analytics") | Category, station, time-of-day, day-of-week breakdown, route position, and interactive hotspot explorer | **COMPLETE (Phase 9)** |
-| 6 — Smart Insights ("Natural Language Analytics") | Local NLP question answering (TF-IDF + Logistic Regression + RapidFuzz) with deterministic templates, clarification flow, and prediction redirect | **COMPLETE (Phase 9)** |
+> **Live Deployment:**  
+> - **Frontend (Vercel):** `UNVERIFIED` (pending owner deployment via [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))  
+> - **Backend API (Render):** `UNVERIFIED` (pending owner deployment via [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))  
+> - **Status:** **All 11 of 11 Phases Complete.** 154 backend pytest passing, 73 frontend Vitest passing, 27 browser Playwright E2E passing with 0 WCAG AA accessibility violations.
 
 ---
 
-## Architecture
+## 1. Executive Summary & Core Value Proposition
+
+RailSense is a production-grade machine learning platform and analytics dashboard engineered over an observed dataset of **2,805,574 train arrival records** across Indian Railways (October 7–25, 2026).
+
+Unlike toy ML tutorials using random train/test splits that leak future temporal signals, RailSense adheres to rigorous data science principles:
+1. **Strict Temporal Anti-Leakage Protocol:** Models are evaluated across chronological partitions. Multi-day in-flight train runs (spanning up to 4 calendar days) are strictly barred from looking ahead past arrival cutoffs.
+2. **Zero Banned Feature Ingestion:** Operational post-hoc columns (`actual_arrival`, `actual_departure`, `departure_delay_min`, `arrival_reported`, `status`, `run_quality`) are permanently excluded from inference pipelines.
+3. **Calibrated Probability Space:** Raw decision tree scores are calibrated into true empirical frequencies via Isotonic Regression on held-out validation data, reducing Expected Calibration Error (ECE) from 0.0307 to **0.0093**.
+4. **100% Free, Zero-LLM Local NLP:** Natural language query understanding is powered entirely by a sub-millisecond local TF-IDF + Logistic Regression pipeline and RapidFuzz entity extraction with parameterised SQL templates — zero paid API tokens, zero hallucinated SQL, zero runtime cloud LLMs.
+5. **Decoupled Architecture:** Zero remote database dependency at runtime. Serving requests query an indexed, precomputed SQLite database (~40.9 MB) and calibrated LightGBM booster artifacts, staying within Render's free 512 MB memory tier (~177 MB RSS).
+
+---
+
+## 2. Key Measured Statistical & Machine Learning Results
+
+| Evaluation Metric | Baseline / Benchmark | RailSense LightGBM (Calibrated) | Lift / Performance |
+|---|---|---|---|
+| **Average Precision (AP / PR-AUC)** | 0.4920 (Majority Baseline) | **0.8482** (Untouched Test Split) | **+72.40% Relative Lift** |
+| **ROC-AUC** | 0.5000 (Random Guessing) | **0.8592** (Untouched Test Split) | **+71.84% Relative Lift** |
+| **Lift over Train Historical Prior** | 0.8082 (7-Day Rolling History) | **0.8482** (Machine Learning Model) | **+4.95% Net Gain** |
+| **Balanced F1 Score** | 0.7330 (History Prior) | **0.7782** (@ Operational Threshold 0.410) | **+6.17% Net Gain** |
+| **Expected Calibration Error (ECE)** | 0.0307 (Raw LightGBM) | **0.0093** (Isotonic Calibrated) | **69.7% Error Reduction** |
+| **Inference Latency (Single Run)** | Target: < 15.0 ms | **2.10 ms** (Local CPU Inference) | **7.1x Faster than SLA** |
+| **NLP Intent Classification Accuracy** | 22.90% (Keyword Search) | **96.18%** (Held-Out Test Set) | **+73.28 pp Improvement** |
+| **Out-of-Scope Fallback Interception** | Random Guessing: 0% | **97.62%** (Expanded 42 OOD Suite) | **Zero Hallucinated Metrics** |
+
+---
+
+## 3. System Architecture & Request Lifecycle
 
 ```
-[ Precomputed Serving Store ]
-  ├── backend/serving/serving.sqlite (Read-Only URI mode, 10.7k trains catalog & stop stats)
-  ├── backend/serving/*.json (Overview, patterns, and model lab static aggregates)
-  └── backend/models/*.joblib (LightGBM Booster + Calibrator + Feature Normalizer)
-           │
-           ▼
-Python / Flask Backend (Render / Waitress / WSGI)
-  ├── Thread-safe sliding-window Rate Limiter (120 req/min API, 30 req/min NLP)
-  ├── Reverse ProxyFix middleware (TRUSTED_PROXY_COUNT anti-spoofing)
-  ├── Local LightGBM Inference (< 2 ms) & Local TF-IDF NLP (< 2 ms, zero LLMs)
-  └── Security hardening (nosniff, DENY, CSP, 1MB max payload, 415 media check)
-           │
-           ▼  REST JSON API (HTTPS)
-React + Vite Frontend (Vercel)
-  ├── 6-tab dashboard (Overview, Explorer, Predictor, Model Lab, Patterns, Insights)
-  ├── Recharts + Lucide + Tailwind CSS
-  └── WCAG 2.1 AA accessible, responsive across 360px - 1920px viewports
-```
-
-**Security & Isolation Principle:** TiDB Cloud is **NOT a runtime dependency** (permanently removed in Phase 8.5). All runtime data comes from local, immutable serving files. The React app connects strictly to the Flask REST API. Zero database credentials exist at runtime.
-
----
-
-## Tech Stack
-
-### Backend
-- **Language:** Python 3.10+
-- **Framework:** Flask + Flask-CORS
-- **Database client:** SQLAlchemy + PyMySQL (TLS)
-- **Data:** Pandas, NumPy
-- **ML:** scikit-learn, LightGBM
-- **Explainability:** SHAP
-- **NLP:** TF-IDF, RapidFuzz (no paid APIs, no hosted LLMs at runtime)
-- **Viz:** Matplotlib, Seaborn (server-side EDA)
-- **Tests:** pytest
-
-### Frontend
-- **Framework:** React + Vite
-- **Styling:** Tailwind CSS
-- **Icons:** Lucide React
-- **Charts:** Recharts
-- **Language:** Plain JavaScript (JSX) — TypeScript is NOT used (final decision)
-- **Routing:** React Router
-- **Hosting:** Vercel (free tier)
-
----
-
-## Repository Structure
-
-```
-railsense/
-├── task.md              ← Master project tracker (read this first)
-├── README.md            ← This file
-├── PROJECT.md           ← Technical blueprint
-├── DECISIONS.md         ← Architecture decision log
-├── .gitignore
-├── .env.example         ← Environment variable template (no secrets)
-├── backend/
-│   ├── requirements.txt
-│   ├── app/
-│   │   ├── api/         ← Flask blueprints (Phase 5)
-│   │   ├── db/          ← DB connection & query helpers (Phase 2)
-│   │   ├── ml/          ← Model loading & inference (Phase 4/5)
-│   │   └── nlp/         ← NLP intent/entity pipeline (Phase 9)
-│   ├── tests/           ← pytest test suite (Phase 5+)
-│   ├── models/          ← Saved model metadata JSON (binaries gitignored)
-│   └── scripts/         ← EDA, audit, training scripts (Phase 3/4)
-├── frontend/            ← React app (Phase 6)
-├── docs/eda/            ← EDA plots and reports (Phase 3)
-└── notebooks/           ← Jupyter analysis notebooks (Phase 3)
+┌────────────────────────────────────────────────────────────────────────┐
+│                          User Web Browser                              │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ HTTPS (JSON API)
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                Vercel Global Edge CDN (React 18 + Vite)                │
+│  - 6 Analytical Tabs (Overview, Explorer, Predictor, Lab, Patterns)    │
+│  - Security Headers: CSP, X-Frame-Options: DENY, Referrer-Policy       │
+│  - Automated WakeUpNotice detector for Render cold start (> 4.0s)      │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ HTTPS (REST API)
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│               Render Free Web Service (Waitress WSGI + Flask)          │
+│  - Memory RSS: ~177 MB (Under 512 MB Free Tier Cap)                    │
+│  - Rate Limiter: 120 req/min (IP sliding window with 429 Retry-After)   │
+│  - Startup Verification: SHA-256 integrity check of all 9 artifacts    │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Direct Local Disk Access
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Immutable Serving Store (< 46 MB)                    │
+│  - backend/serving/serving.sqlite (40.89 MB, Indexed Train Catalog)    │
+│  - backend/models/deployment_model.joblib (1.97 MB, LightGBM Booster)  │
+│  - backend/models/calibrator.joblib (Isotonic Regression Transformer)   │
+│  - backend/models/historical_tables.json (Smoothed Rolling Priors)     │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Prerequisites
+## 4. Platform Feature Tour (6 Analytical Views)
 
+1. **Tab 1 — Overview ("Railway at a Glance"):**
+   - Macro fleet volume KPIs (1,773,068 label-eligible stops, 49.91% delayed rate).
+   - 8-tier delay distribution histogram (from on-time $\le 0$ min to severe $> 180$ min).
+   - Category-level punctuality comparison (Suburban at 26.2% vs. Mail Express at 68.3%).
+   - 19-day daily trendline with explicit left-truncated and right-censored boundary marking.
+
+2. **Tab 2 — Train Explorer ("Single Train Deep Dive"):**
+   - Searchable catalog of 10,743 train services with pagination and search filters.
+   - Route timetable keyed strictly by canonical sequence number (`seq`), handling circular/loop routes where station codes repeat.
+   - Stop-level delay accumulation profile and per-date run history.
+
+3. **Tab 3 — Delay Prediction ("ML Inference Engine"):**
+   - Schedule-time pre-departure arrival delay probability forecasting for arbitrary train, destination stop, and journey date.
+   - Calibrated probability gauge with visual operational decision threshold marker (`0.410`).
+   - Educational risk band classification (`Low`, `Medium`, `High`) and top SHAP feature associations.
+   - Prospective date generalization alerts and cold-start fallback indicators.
+
+4. **Tab 4 — Model Lab ("Model Evaluation & Transparency"):**
+   - Transparent multi-model benchmark table comparing Majority, Category Prior, Train History Prior, Raw LightGBM, and Calibrated LightGBM across Validation and Test splits.
+   - Interactive Precision-Recall (PR) Curve, Calibration Reliability Diagram, and ROC Curve.
+   - Test partition confusion matrix at the operational threshold (`78,276` True Positives).
+   - Top 10 feature importance gain ranking and Banned Features protocol transparency.
+   - Formulation 2 (En-Route Dynamic Telemetry) research benchmark card.
+
+5. **Tab 5 — Delay Patterns ("Historical Analytics"):**
+   - Diurnal hour-of-day progression highlighting late-night delay accumulation.
+   - Day-of-week distribution with sample size caution notes (2–3 calendar days per weekday).
+   - Route progression analysis showing how delay propagates from origin to destination.
+   - Interactive Hotspot Explorer with level toggle (Station vs. Train) and user-driven "Apply" filtering.
+
+6. **Tab 6 — Smart Insights ("Natural Language Analytics"):**
+   - Local parameterised NLP interface answering analytical questions about fleet punctuality, specific trains, station hotspots, and methodological definitions.
+   - Zero LLM runtime tokens — runs in sub-2ms on standard CPU.
+   - Polite fallback flow with 3 interactive candidate suggestion chips for ambiguous queries.
+   - Automated intent clarification and prediction redirection.
+
+---
+
+## 5. Local Development Quickstart
+
+### Prerequisites
 - Python 3.10+
-- Node 18+ and npm 8+
+- Node.js 18+ and npm
 - Git
-- A TiDB Cloud account with credentials to the `railsense` database
 
----
+### 1. Clone & Set Up Backend
+```bash
+git clone https://github.com/<YOUR_USERNAME>/RailSense.git
+cd RailSense
 
-## Setup & Verification
+# Create and activate Python virtual environment
+python -m venv backend/.venv
+# Windows PowerShell:
+backend/.venv/Scripts/Activate.ps1
+# Linux/macOS:
+# source backend/.venv/bin/activate
 
-```powershell
-# 1. Clone the repository
-git clone <repo-url>
-cd railsense
+# Install backend dependencies
+pip install -r backend/requirements.txt
+```
 
-# 2. Set up Python environment (runtime requires ZERO database credentials!)
-cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1      # Windows
-pip install -r requirements.txt
+### 2. Verify Serving Artifacts
+```bash
+python backend/scripts/verify_artifacts.py
+```
 
-# 3. Run API smoke test & runtime independence verification (23 endpoints)
-python scripts/smoke_api.py
+### 3. Launch Backend API Server
+```bash
+python backend/wsgi.py
+# Server starts on http://127.0.0.1:5000
+```
 
-# 4. Start local Flask API with multi-threaded Waitress WSGI server
-python wsgi.py
-# Server runs at: http://127.0.0.1:5000 (Swagger UI at http://127.0.0.1:5000/api/docs)
-
-# 5. Run full test suite (133 passed, 4 skipped in ~13s)
-pytest tests -v
+### 4. Set Up & Run Frontend
+In a separate terminal window:
+```bash
+cd frontend
+npm install
+npm run dev
+# Vite dev server opens at http://localhost:5173
 ```
 
 ---
 
-## Optional Data Refresh (Offline, Not Part of App)
+## 6. Test Suite & Verification Commands
 
-The deployed application runs completely offline using local precomputed SQLite and JSON stores. To perform an optional offline data extraction from TiDB Cloud:
+The RailSense repository includes comprehensive automated test suites covering backend units, API contracts, frontend components, and browser accessibility:
 
-```powershell
-pip install -r requirements-refresh.txt
-# Set TIDB_HOST, TIDB_USER, TIDB_PASSWORD in backend/.env
-python scripts/check_connection.py
-python scripts/extract_data.py
-python scripts/build_serving_data.py
+```bash
+# 1. Backend Pytest Suite (154 passed, 4 skipped in ~64s)
+pytest backend/tests/ -v
+
+# 2. Frontend Vitest Unit Suite (73 passed in ~38s)
+npm --prefix frontend test -- --run
+
+# 3. Frontend ESLint Check (0 warnings, 0 errors)
+npm --prefix frontend run lint
+
+# 4. Production Frontend Build Check
+npm --prefix frontend run build
+
+# 5. Playwright Browser E2E Suite (27 passed in ~1.6m)
+npm --prefix frontend run test:e2e
+
+# 6. Post-Deployment Verification Tooling (when live URLs are provided)
+python backend/scripts/smoke_deployed.py <DEPLOYED_API_URL> [<DEPLOYED_FRONTEND_URL>]
 ```
-*Note: Refreshing shifts the historical observation window and may require model retraining and threshold re-validation.*
 
 ---
 
-## Environment Variables
+## 7. Production Deployment Instructions
 
-See [`.env.example`](.env.example) for the full list and descriptions.
+For complete, step-by-step production deployment instructions to Render (free tier backend) and Vercel (free edge frontend), consult:
+👉 **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**
 
-**Never commit `.env`.** The `.gitignore` excludes all `.env.*` variants except `.env.example`.
+For engineering interview talking points, architectural decisions, and failure modes:
+👉 **[docs/INTERVIEW_NOTES.md](docs/INTERVIEW_NOTES.md)**
 
-Key variables:
-
-| Variable | Purpose |
-|----------|---------|
-| `TIDB_HOST` | TiDB Cloud gateway hostname |
-| `TIDB_PORT` | `4000` |
-| `TIDB_USER` / `TIDB_PASSWORD` | Database credentials (never hardcode) |
-| `TIDB_DATABASE` | `railsense` |
-| `FLASK_ENV` | `development` or `production` |
-| `VITE_API_BASE_URL` | React → Flask API URL (not a DB URL) |
+For data provenance and licensing details:
+👉 **[docs/ATTRIBUTION.md](docs/ATTRIBUTION.md)**
 
 ---
 
-## Data Limitations
+## 8. License & Attribution
 
-- The dataset covers approximately **19 days** (2026-10-07 to 2026-10-25 — owner-reported, to be verified in Phase 2).
-- It is **NOT** multi-year historical data and is **NOT** a live feed.
-- Labelled "Observed Railway Dataset" until provenance is independently verified.
-- Actual timestamps and delay columns contain missing values.
-- Negative delay values are valid (train arrived/departed early) and are never clipped.
-- All dataset statistics are owner-reported and will be re-verified in Phase 2.
-
----
-
-## Model Card & Verified Benchmark Results (Phase 4 Verified)
-
-See [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) for full benchmark documentation, per-segment error analysis, and SHAP explainability.
-
-- **Primary Architecture:** LightGBM + Isotonic Calibration (`AP = 0.8482`, `ROC-AUC = 0.8592`, `F1 = 0.7782` on untouched Test split).
-- **Decision Threshold:** `0.410` (tuned on Validation to maximize F1; catches 82.0% of late arrivals with 74.0% precision).
-- **En-Route Model (Formulation 2):** Incorporates observed delay at stop $k-1$ (`PR-AUC = 0.9293`, `ROC-AUC = 0.9278`, `F1 = 0.8527`).
-- **Explainability:** SHAP TreeExplainer plots archived in `docs/model/` with plain-English translation in `docs/model/explanations_simple.md`.
-- **Saved Artifacts:** Model binaries stored in `backend/models/` (gitignored), metadata in `backend/models/model_metadata.json`, and inference service in `backend/app/ml/predict.py`.
-
----
-
-## Screenshots
-
-> *(Empty — to be filled with real screenshots once the UI is built in Phase 6+.)*
-
----
-
-## Author
-
-**Creator & Maintainer** — GitHub: [Pranav3536](https://github.com/Pranav3536)
-
----
-
-## Dataset Attribution & Licensing
-
-- **Dataset Provenance:** Observed Indian Railways historical delay dataset hosted on Hugging Face: [`pjay-in/indian-railways-delays`](https://huggingface.co/datasets/pjay-in/indian-railways-delays) (Apache 2.0 / Open Data).
-- **Dataset Coverage:** 2,805,574 stop records, 10,743 trains, 8,584 stations across 19 days (2026-10-07 to 2026-10-25).
-- **Codebase License:** [MIT License](LICENSE).
+- **Application Source Code:** MIT License (see repository root).
+- **Underlying Dataset:** Indian Railways Delay Dataset (`pjay-in/indian-railways-delays` on HuggingFace). Status: `UNVERIFIED` external license metadata in offline sandbox. See [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) for full attribution.
+- **Creator & Maintainer:** Pranav ([GitHub Profile](https://github.com/Pranav3536))

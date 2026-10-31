@@ -1,18 +1,17 @@
 """
-RailSense — Cold Start & Initialization Profiler
-(backend/scripts/profile_cold_start.py)
-
-Measures individual component cold-start latencies:
-1. Serving Store & Train Catalog (10,743 trains) in-memory cache
-2. LightGBM Delay Predictor model load from disk
-3. NLP Intent Classifier & Entity Extractor initialization
-4. Full Flask app factory creation
+RailSense — Cold Start End-to-End Profiler (backend/scripts/profile_cold_start.py)
+Measures:
+1. Component initialization latency (ServingClient, Model Loader, NLP Classifier)
+2. Time to first /api/health/ready
+3. Time to first /api/predict (warm prediction)
+4. Memory footprint (RSS) after initialization and prediction
 """
 
 import os
 import sys
 import time
 import json
+import psutil
 from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -20,64 +19,76 @@ PROJECT_ROOT = BACKEND_DIR.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.serving_client import ServingClient
-from app.ml.predict import RailSensePredictor
-from app.nlp.classifier import IntentClassifier
-from app.nlp.entities import EntityExtractor
-from app import create_app
-
+DOCS_DIR = PROJECT_ROOT / "docs"
+EXPERIMENTS_DIR = DOCS_DIR / "experiments"
 
 def profile_cold_start():
-    print("=" * 70)
-    print("RailSense Cold Start Profiling")
-    print("=" * 70)
+    print("=" * 80)
+    print("RailSense Phase 11 — Cold Start End-to-End Profiling")
+    print("=" * 80)
 
-    # 1. Train Catalog / Serving Store
+    proc = psutil.Process()
+    rss_start_mb = proc.memory_info().rss / (1024 * 1024)
+
     t0 = time.perf_counter()
-    sc = ServingClient()
-    t1 = time.perf_counter()
-    serving_ms = (t1 - t0) * 1000.0
-    catalog_count = len(sc._trains_all)
-    print(f"1. ServingClient & Catalog Cache ({catalog_count:,} trains): {serving_ms:.2f} ms")
 
-    # 2. LightGBM Predictor
-    t0 = time.perf_counter()
-    pred = RailSensePredictor().load()
-    t1 = time.perf_counter()
-    predictor_ms = (t1 - t0) * 1000.0
-    print(f"2. LightGBM Delay Predictor Model Load:            {predictor_ms:.2f} ms")
+    # 1. Measure Flask create_app import and instantiation
+    t_app_start = time.perf_counter()
+    from app import create_app
+    app = create_app()
+    app.config["TESTING"] = True
+    client = app.test_client()
+    t_app_end = time.perf_counter()
+    app_factory_ms = (t_app_end - t_app_start) * 1000.0
 
-    # 3. NLP Intent Classifier
-    t0 = time.perf_counter()
-    clf = IntentClassifier()
-    t1 = time.perf_counter()
-    nlp_ms = (t1 - t0) * 1000.0
-    print(f"3. NLP Intent Classifier Initialization:           {nlp_ms:.2f} ms")
+    # 2. First /api/health/ready request
+    t_ready_start = time.perf_counter()
+    res_ready = client.get("/api/health/ready")
+    t_ready_end = time.perf_counter()
+    ready_ms = (t_ready_end - t_ready_start) * 1000.0
+    ready_status = res_ready.status_code
+    ready_json = res_ready.get_json()
 
-    # 4. Full Flask App Factory
-    t0 = time.perf_counter()
-    app = create_app({"TESTING": True, "RAILSENSE_ENV": "testing"})
-    t1 = time.perf_counter()
-    full_app_ms = (t1 - t0) * 1000.0
-    print(f"4. Full Flask create_app() Factory:                {full_app_ms:.2f} ms")
+    # 3. First /api/predict request
+    t_predict_start = time.perf_counter()
+    res_predict = client.post("/api/predict", json={
+        "train_number": "12951",
+        "station_code": "BVI",
+        "seq": 2,
+        "date": "2026-10-15"
+    })
+    t_predict_end = time.perf_counter()
+    predict_ms = (t_predict_end - t_predict_start) * 1000.0
+    predict_status = res_predict.status_code
+    predict_json = res_predict.get_json()
 
-    results = {
-        "timestamp": "2026-10-30T23:25:00+05:30",
-        "train_catalog_count": catalog_count,
-        "serving_store_init_ms": round(serving_ms, 2),
-        "lightgbm_model_load_ms": round(predictor_ms, 2),
-        "nlp_classifier_init_ms": round(nlp_ms, 2),
-        "full_flask_factory_ms": round(full_app_ms, 2),
-        "cold_start_under_2_seconds": bool(full_app_ms < 2000.0)
+    total_cold_start_ms = (time.perf_counter() - t0) * 1000.0
+    rss_final_mb = proc.memory_info().rss / (1024 * 1024)
+
+    print(f"Flask App Creation:          {app_factory_ms:7.2f} ms")
+    print(f"First /api/health/ready:      {ready_ms:7.2f} ms (Status: {ready_status})")
+    print(f"First /api/predict:           {predict_ms:7.2f} ms (Status: {predict_status})")
+    print(f"Total Cold Start Latency:     {total_cold_start_ms:7.2f} ms")
+    print(f"Memory RSS at Start:          {rss_start_mb:7.2f} MB")
+    print(f"Memory RSS After Prediction:  {rss_final_mb:7.2f} MB (Delta: +{rss_final_mb - rss_start_mb:.2f} MB)")
+
+    result = {
+        "timestamp": "2026-10-31T17:15:00+05:30",
+        "app_factory_ms": round(app_factory_ms, 2),
+        "first_health_ready_ms": round(ready_ms, 2),
+        "first_predict_ms": round(predict_ms, 2),
+        "total_cold_start_ms": round(total_cold_start_ms, 2),
+        "rss_start_mb": round(rss_start_mb, 2),
+        "rss_after_predict_mb": round(rss_final_mb, 2),
+        "ready_status": ready_status,
+        "predict_status": predict_status,
+        "first_predict_probability": predict_json.get("calibrated_delay_probability") if predict_json else None
     }
 
-    out_file = PROJECT_ROOT / "docs" / "experiments" / "cold_start_profile.json"
-    out_file.parent.mkdir(parents=True, exist_ok=True)
+    out_file = EXPERIMENTS_DIR / "cold_start_profile.json"
     with open(out_file, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
-    print(f"\n[OK] Saved cold start profile to {out_file}")
-    return results
-
+        json.dump(result, f, indent=2)
+    print(f"[OK] Saved profile to {out_file}")
 
 if __name__ == "__main__":
     profile_cold_start()
