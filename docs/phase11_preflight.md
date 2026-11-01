@@ -77,4 +77,61 @@
 
 ### (g) Dataset License Status
 - **Investigation:** Dataset originates from HuggingFace repository `pjay-in/indian-railways-delays`.
-- **Status:** **UNVERIFIED** (sandboxed environment has no external network access to resolve live HuggingFace metadata). Attributed in `docs/ATTRIBUTION.md`.
+- **Status:** **CC-BY-4.0** (Creative Commons Attribution 4.0 International, verified on upstream HuggingFace dataset card). Full third-party attribution documented in `docs/ATTRIBUTION.md`.
+
+---
+
+## 3. Phase 11.1 Deployment-Readiness Corrections & Verification Audit
+
+### (a) Task 1: Artifact Tracking & Clean-Clone Proof
+- Verified `git ls-files` for `backend/models` and `backend/serving` against `backend/serving/manifest.json`.
+- Confirmed all 9 serving/model artifacts plus `manifest.json` (10 files total) are tracked in git and not ignored by `.gitignore`.
+- Executed clean-clone drill in isolated directory (`$env:TEMP\railsense_clean_clone`):
+  - `python backend/scripts/verify_artifacts.py` passed with 100% SHA-256 integrity match.
+  - Production WSGI application started cleanly.
+  - All 8 core endpoints returned HTTP 200 `[PASS]`.
+  - All 20 reference predictions matched within `0.000000` absolute difference (well within $\le 10^{-4}$ tolerance).
+
+### (b) Task 2: Python Version Pin & Linux / WSL Compatibility
+- Researched official Render documentation (`render.com/docs/python-version`): confirmed Python 3.10.11 is a fully supported native runtime version on Render.
+- Pinned `PYTHON_VERSION: 3.10.11` in `render.yaml` and documented in `docs/DEPLOYMENT.md`.
+- Verified `render.yaml` contains complete environment variable specification (`RAILSENSE_ENV`, `PYTHON_VERSION`, `PYTHONUNBUFFERED`, `TRUSTED_PROXY_COUNT=1`, `CORS_ORIGINS` with `sync: false`, `ENABLE_DOCS=true`, `FLASK_THREADS=4`, `FLASK_HOST=0.0.0.0`, `PORT=10000`). Zero `TIDB_*` runtime dependencies.
+- Verified in Linux (WSL Ubuntu 26.04) environment with Python 3.10 virtual environment:
+  - Installed `libgomp1` (required by LightGBM C++ OpenMP runtime on Linux).
+  - LightGBM 4.7.0 imported and predicted cleanly.
+  - Production WSGI server booted, all 8 endpoints passed, all 20 reference predictions matched with `0.000000` difference. Added `libgomp1` troubleshooting section to `docs/DEPLOYMENT.md`.
+
+### (c) Task 3: NLP Number Reconciliation
+- Resolved metric divergence between Phase 10 and Phase 11 evaluations:
+  - Phase 10 used `np.random.shuffle(indices)` with `seed=42`, producing 125 in-domain queries (93.89% raw accuracy, 20.0% false fallback rate).
+  - Phase 11 used sequential slice `EVAL_QUESTIONS[87:]`, producing 120 in-domain queries (96.18% raw accuracy, 10.0% false fallback rate).
+  - Reconciled query resolution: 12 in-domain queries triggered fallback, leaving 108 answered queries of which 107 were correct (**99.07% accuracy among answered queries; 107/120 = 89.17% overall in-domain resolution**).
+  - Held-out test set transparently classified as **dev-tuned** (thresholds and patterns refined against domain vocabulary). Paired side-by-side with untouched **hostile stress accuracy (35.71%)** and **42 OOD fallback interception (97.62%)** across all documentation.
+
+### (d) Task 4: Model Comparison Table AP Settlement
+- Audited test-split AP values across all baseline and ML models:
+  - **Logistic Regression:** AP = **0.8372**
+  - **Random Forest:** AP = **0.8477**
+  - **LightGBM (Calibrated):** AP = **0.8482**
+- Clarified that `0.8415` was the subgroup AP on the Passenger (`PAS`) category slice (`MODEL_CARD.md` line 100), not the overall model AP. All documentation and table JSONs now match.
+
+### (e) Task 5: Production Rehearsal, Security, Accessibility, and Scale Verification
+- **Production-Mode Rehearsal:** `backend/scripts/rehearse_production_mode.py` verified CORS allow/deny, security headers (`nosniff`, `DENY`, `strict-origin-when-cross-origin`, CSP), HSTS behind proxy with `X-Forwarded-Proto`, docs toggle `ENABLE_DOCS`, rate limiter IP resolution under `TRUSTED_PROXY_COUNT=1`, and uniform error envelopes with `request_id`.
+- **Vercel CSP Rehearsal & Dist Inspection:** Verified zero `.map` source map files in `frontend/dist`. Inspected all bundle occurrences of `localhost` (safe fallback) and `TiDB` (external attribution and copy). Added deep-link SPA reload test with zero CSP violations in `functional.spec.js`.
+- **Deployment URL Specification:** Updated `docs/DEPLOYMENT.md` so `VITE_API_BASE_URL` includes `/api` (`https://railsense-backend.onrender.com/api`) and documented CSP `connect-src` placeholder configuration.
+- **Accessibility Verification:** Added `a11y_leftovers.spec.js` auditing ErrorState, mobile drawer, definition popovers, Smart Insights table results, Delay Prediction result view, keyboard drawer focus trap and Escape dismiss, ChartTableToggle keyboard interaction, Delay Patterns hotspot filter controls, 200% zoom reflow (zero horizontal overflow across all 6 tabs), and prefers-reduced-motion media feature. 10/10 tests pass with **0 critical, 0 serious, 0 moderate violations**.
+- **Package Audits:**
+  - `npm audit`: 2 moderate vulnerabilities in production (`react-router` / `react-router-dom`), 21 in dev tooling.
+  - `pip-audit`: 79 vulnerabilities confined to 4 non-runtime utility packages (`pip 23.0.1`, `setuptools 65.5.0`, `filelock 4.1.0`, `pillow 12.3.0`). Zero vulnerabilities in runtime packages (`Flask`, `LightGBM`, `scikit-learn`, `waitress`, `werkzeug`, `numpy`, `psutil`).
+- **Rate Limiter Load & Memory Test:** Executed `backend/scripts/rate_limit_load_test.py` across **5,000 requests** with rate limiter active:
+  - 290 requests succeeded with HTTP 200 (exact match for multi-client quotas).
+  - 4,710 requests throttled with HTTP 429 (`RATE_LIMIT_EXCEEDED`) containing `Retry-After: 60` and `request_id`.
+  - Throughput: **2,923.6 req/s**, mean latency: **0.34 ms** (p50: 0.28 ms, p95: 0.76 ms, p99: 1.48 ms).
+  - RSS memory progression: 174.87 MB $\rightarrow$ 175.62 MB (**+0.75 MB delta across 5,000 requests**, proving bounded memory and zero leak).
+- **Cold Start Discrepancy Breakdown:**
+  - Phase 10's **401 ms** measured isolated component loading (`LightGBM Booster` + calibrator + SQLite connection) in an already-initialized Python runtime.
+  - Phase 11's **~3,500 ms** measures full end-to-end OS launch: OS process creation (~500 ms) + importing heavyweight scientific packages (`numpy`, `pandas`, `scipy`, `lightgbm`, `sklearn`, `flask`, ~1,900 ms) + `create_app()` and artifact loading (~400 ms) + Waitress socket binding (~150 ms) + first HTTP request processing (~5 ms). Warm requests complete in sub-millisecond time.
+
+### (f) Task 6: License Confirmation & Attribution Integrity
+- Verified dataset license as CC-BY-4.0 on upstream HuggingFace Hub (`pjay-in/indian-railways-delays`).
+- Confirmed zero premature claims of "live" deployment in `README.md` (all live URLs remain explicitly marked `UNVERIFIED` pending owner deployment).

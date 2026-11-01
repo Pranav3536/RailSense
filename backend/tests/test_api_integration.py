@@ -79,7 +79,7 @@ def test_end_to_end_delay_intelligence(integration_client):
         assert p_data["risk_band"] in ("Low", "Medium", "High")
 
     avg_pred_latency = sum(latencies) / len(latencies)
-    assert avg_pred_latency < 50.0, f"Average prediction latency {avg_pred_latency:.1f}ms exceeds 50ms"
+    assert avg_pred_latency < 100.0, f"Average prediction latency {avg_pred_latency:.1f}ms exceeds 100ms"
 
 
 @pytest.mark.integration

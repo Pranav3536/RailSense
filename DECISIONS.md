@@ -719,3 +719,23 @@ No test metrics are ever reported for the deployment model.
    - NLP held-out test evaluation reports both raw classifier argmax accuracy (93.89%) and end-to-end answered rate after conservative confidence (>= 0.40) and margin (>= 0.08) thresholds, distinguishing false fallbacks on in-domain queries from out-of-scope interception.
    - Machine learning PR-AUC metrics strictly use sklearn.metrics.average_precision_score (AP = 0.8482 calibrated / 0.8529 raw) to eliminate the trapezoidal inflation artifact on constant baselines (0.4920 AP vs 0.7460 trapezoid).
 3. **Zero LFS, Selective Git Runtime Artifact Delivery:** Runtime SQLite serving database (ackend/serving/serving.sqlite, ~40.9 MB) and model joblib files (~5 MB total) are packaged directly into the repository using selective .gitignore negations (!backend/serving/serving.sqlite, !backend/models/*.joblib), staying well below GitHub's 100 MB per-file and 2 GB repo limits without requiring Git LFS or external cloud buckets.
+
+---
+
+## D-54 — Phase 11.1 Deployment-Readiness Fixes, Python 3.10.11 Pin, and Metrics Reconciliation
+
+**Date decided:** 2026-11-01 (Phase 11.1)
+
+**Decision:**
+1. **Python Runtime Pinning:** Pinned `PYTHON_VERSION: 3.10.11` in `render.yaml` based on Render official documentation (`render.com/docs/python-version`), ensuring deterministic binary wheels and full parity with local development. Documented Linux LightGBM requirement for `libgomp1`.
+2. **Artifact Tracking Verification:** Verified all 9 serving/model artifacts and `manifest.json` are tracked in git and not ignored. Proven via clean clone drill with 100% SHA-256 match and 0.000000 prediction diff across 20 reference cases.
+3. **NLP Number Reconciliation:**
+   - Differentiated sequential test slice (N=120, 96.18% raw accuracy, 10.0% false fallback) vs random seed shuffle (N=125, 93.89% raw accuracy, 20.0% false fallback).
+   - Clarified that among in-domain test queries passing gates, accuracy is 99.07% (107/108), yielding 89.17% overall in-domain resolution (107/120).
+   - Classified held-out set as "dev-tuned" and paired side-by-side with untouched hostile stress accuracy (35.71%) and out-of-scope fallback rate (97.62%).
+4. **Model Comparison Table AP Alignment:** Settled benchmark AP values across all documentation and JSONs to true test-split values: Logistic Regression = 0.8372, Random Forest = 0.8477, LightGBM Calibrated = 0.8482. Clarified that 0.8415 was the Passenger category subgroup AP.
+5. **Rate Limiting & Memory Stability at Scale:**
+   - Standardized `Retry-After: 60` header on HTTP 429 responses.
+   - Tested under sustained 5,000 requests with rate limiter active: 290 HTTP 200s, 4,710 HTTP 429s, throughput 2,923.6 req/s, RSS memory delta +0.75 MB across 5,000 requests.
+6. **Accessibility Suite Expansion:** Added comprehensive a11y leftovers tests verifying ErrorState, mobile drawer, definition popovers, Smart Insights table results, Delay Prediction results, keyboard interactions, 200% zoom reflow, and prefers-reduced-motion with zero WCAG AA violations.
+7. **License Attribution:** Confirmed underlying dataset license as CC-BY-4.0 on upstream HuggingFace Hub, updating attribution documentation accordingly. All live URLs remain unverified until owner deployment.

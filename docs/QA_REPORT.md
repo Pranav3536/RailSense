@@ -13,18 +13,18 @@ Phase 10 executed an exhaustive, multi-dimensional verification of the entire Ra
 | Verification Dimension | Scope & Methodology | Key Measured Metric | Status |
 |---|---|---|---|
 | **Data Consistency** | Parquet ground truth vs SQLite & JSON (`qa_consistency.py`) | **211 / 211 checks passed** (0 failures) | **PASS** |
-| **Unit & Integration Tests** | Pytest (Backend) + Vitest (Frontend) | **154 Pytest passed (4 skipped), 67 Vitest passed** | **PASS** |
-| **Automated Accessibility** | `@axe-core/playwright` across all 6 tabs | **0 severe / critical WCAG 2.1 AA violations** | **PASS** |
-| **Browser E2E Suite** | 27 real-browser Playwright workflows against live API | **27 / 27 tests passed** | **PASS** |
+| **Unit & Integration Tests** | Pytest (Backend) + Vitest (Frontend) | **154 Pytest passed (4 skipped), 73 Vitest passed** | **PASS** |
+| **Automated Accessibility** | `@axe-core/playwright` across all routes & dynamic states | **0 severe / critical WCAG 2.1 AA violations** | **PASS** |
+| **Browser E2E Suite** | 38 real-browser Playwright workflows against live API | **38 / 38 tests passed (4 live skipped)** | **PASS** |
 | **Responsive Viewports** | 360px, 768px, 1280px, 1366px, 1920px viewports | **0 horizontal overflow, clean visual snapshots** | **PASS** |
 | **NLP Split Integrity** | RapidFuzz token-sort similarity on $N=131$ test split | **Mean max similarity 59.8%, max 86.7% (zero leakage)** | **PASS** |
-| **NLP OOD Safety** | Out-of-distribution & prompt injection interception | **100.0% adversarial / OOD rejection rate** | **PASS** |
-| **Security Credential Audit** | Git history scan across all 12 commits (`git log -p`) | **0 secrets, 0 credentials committed** | **PASS** |
-| **Dependency Security** | `pip-audit` on backend dependencies | **0 known vulnerabilities found** | **PASS** |
+| **NLP OOD Safety** | Out-of-distribution & prompt injection interception | **97.62% adversarial / OOD rejection rate** ($N=42$) | **PASS** |
+| **Security Credential Audit** | Git history scan across entire history (`git log -S`) | **0 secrets, 0 credentials committed** | **PASS** |
+| **Dependency Security** | `pip-audit` & `npm audit` on project dependencies | **0 runtime CVEs in backend serving packages** | **PASS** |
 | **Security Middleware** | Payload size (413), Media Type (415), Fuzzing | **21 / 21 security tests passed** (`test_security_fuzz.py`) | **PASS** |
-| **Throughput & Concurrency** | 20 concurrent threads for 20s (`load_test.py`) | **574.0 req/s, 17.21 ms p50 latency, 0 server errors** | **PASS** |
-| **Cold-Start Startup** | Full Flask factory & model loading (`profile_cold_start.py`) | **401 ms total startup** (catalog: 69ms, model: 160ms) | **PASS** |
-| **Artifact Packaging** | SHA-256 cryptographic manifest (`package_artifacts.py`) | **45.90 MB across 9 verified artifacts** | **PASS** |
+| **Throughput & Concurrency** | 5,000 sustained requests with rate limiter (`rate_limit_load_test.py`) | **2,923.6 req/s, 0.34 ms mean latency, RSS delta +0.75 MB** | **PASS** |
+| **Cold-Start Startup** | Full OS process + dependency imports vs in-process | **3,500 ms OS startup / 401 ms in-process loading** | **PASS** |
+| **Artifact Packaging** | SHA-256 cryptographic manifest (`manifest.json`) | **45.90 MB across 9 verified artifacts (100% match)** | **PASS** |
 
 ---
 

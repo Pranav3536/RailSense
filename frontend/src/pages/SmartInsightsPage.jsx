@@ -350,7 +350,7 @@ export function SmartInsightsPage() {
                 <span className="text-xs font-mono font-semibold text-slate-500">
                   Question: &quot;{currentResult.query}&quot;
                 </span>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-600">
                   Intent: <code className="text-blue-700 font-bold">{currentResult.understood_intent}</code>
                 </span>
               </div>
@@ -472,7 +472,7 @@ export function SmartInsightsPage() {
 
               {/* Visual Result: Table View */}
               {currentResult.answer?.visual_type === 'table' && Array.isArray(currentResult.answer.visual_data) && (
-                <div className="overflow-x-auto max-h-72 border border-slate-200 rounded-xl bg-white shadow-2xs">
+                <div className="overflow-x-auto max-h-72 border border-slate-200 rounded-xl bg-white shadow-2xs" tabIndex={0} role="region" aria-label="Query results data table">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-50 font-semibold text-slate-600 sticky top-0 border-b border-slate-200">
                       <tr>
@@ -530,7 +530,7 @@ export function SmartInsightsPage() {
               <details className="group border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-xs">
                 <summary className="font-bold text-slate-700 cursor-pointer select-none flex items-center justify-between">
                   <span>How This Answer Was Generated (Technical Provenance)</span>
-                  <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                  <span className="text-slate-600 group-open:rotate-180 transition-transform">▼</span>
                 </summary>
                 <div className="pt-3 mt-2 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 font-mono">
                   <div>

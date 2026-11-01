@@ -20,6 +20,18 @@ export function AppShell() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Close mobile drawer on Escape key press
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
     if (mobileMenuOpen) {

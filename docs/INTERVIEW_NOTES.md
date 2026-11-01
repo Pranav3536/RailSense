@@ -62,6 +62,7 @@ Raw operational databases often store real-time telemetry alongside static sched
 1. **Cost & Privacy:** A portfolio project should not require a paid API subscription or credit card to operate indefinitely.
 2. **Sub-2ms Determinism:** LLMs introduce 500ms–2000ms network latency and cost per token. Our local pipeline (word + character n-gram TF-IDF into Logistic Regression) classifies user intent in **1.5 milliseconds** on standard CPU.
 3. **Zero SQL Injection / Hallucination:** Rather than generating free-form SQL text that could hallucinate invalid table schemas or execute destructive queries, our NLP engine maps queries to **19 predefined parameterised templates**. If an entity cannot be extracted with high confidence, the system safely falls back to interactive suggestion chips.
+4. **Honest Evaluation Profile:** On clean held-out test phrasing, the classifier achieves **96.18% dev-tuned accuracy** (126/131), while on our dedicated hostile stress suite (typos, Hinglish slang, word order inversions) it scores **35.71%** (15/42) with conservative fallback preventing erroneous analytical figures.
 
 ---
 

@@ -5,9 +5,20 @@ feature attribution factors, and explicit operational caveats.
 """
 
 from datetime import datetime
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, g
 
 predict_bp = Blueprint('predict', __name__)
+
+
+def make_error(code: str, message: str, status: int, details=None, **extra):
+    err = {
+        "code": code,
+        "message": message,
+        "details": details,
+        "request_id": getattr(g, "request_id", "")
+    }
+    err.update(extra)
+    return jsonify({"error": err}), status
 
 
 @predict_bp.route('/predict', methods=['POST'])
@@ -24,29 +35,14 @@ def predict_delay():
     predictor = current_app.config.get("PREDICTOR")
 
     if not serving_client or not predictor:
-        return jsonify({
-            "error": {
-                "code": "SERVICE_UNAVAILABLE",
-                "message": "Serving store or prediction engine is not initialized."
-            }
-        }), 503
+        return make_error("SERVICE_UNAVAILABLE", "Serving store or prediction engine is not initialized.", 503)
 
     if not request.is_json:
-        return jsonify({
-            "error": {
-                "code": "UNSUPPORTED_MEDIA_TYPE",
-                "message": "Content-Type must be application/json."
-            }
-        }), 415
+        return make_error("UNSUPPORTED_MEDIA_TYPE", "Content-Type must be application/json.", 415)
 
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
-        return jsonify({
-            "error": {
-                "code": "INVALID_JSON",
-                "message": "Request body must be a valid JSON object."
-            }
-        }), 400
+        return make_error("INVALID_JSON", "Request body must be a valid JSON object.", 400)
 
     train_number = payload.get("train_number")
     station_code = payload.get("station_code")
@@ -63,24 +59,22 @@ def predict_delay():
         missing.append("date")
 
     if missing:
-        return jsonify({
-            "error": {
-                "code": "MISSING_REQUIRED_FIELDS",
-                "message": f"Missing required fields: {', '.join(missing)}",
-                "missing_fields": missing
-            }
-        }), 400
+        return make_error(
+            "MISSING_REQUIRED_FIELDS",
+            f"Missing required fields: {', '.join(missing)}",
+            400,
+            missing_fields=missing
+        )
 
     # Validate date format
     try:
         parsed_date = datetime.strptime(str(date_str).strip(), "%Y-%m-%d").date()
     except ValueError:
-        return jsonify({
-            "error": {
-                "code": "INVALID_DATE_FORMAT",
-                "message": f"Date '{date_str}' is invalid. Format must be 'YYYY-MM-DD'."
-            }
-        }), 400
+        return make_error(
+            "INVALID_DATE_FORMAT",
+            f"Date '{date_str}' is invalid. Format must be 'YYYY-MM-DD'.",
+            400
+        )
 
     # Validate optional seq
     seq_val = None
@@ -90,12 +84,11 @@ def predict_delay():
             if seq_val <= 0:
                 raise ValueError()
         except (ValueError, TypeError):
-            return jsonify({
-                "error": {
-                    "code": "INVALID_SEQUENCE_NUMBER",
-                    "message": "Parameter 'seq' must be a positive integer."
-                }
-            }), 400
+            return make_error(
+                "INVALID_SEQUENCE_NUMBER",
+                "Parameter 'seq' must be a positive integer.",
+                400
+            )
 
     # Resolve train stop against canonical route template in serving store
     try:
@@ -105,43 +98,26 @@ def predict_delay():
             seq=seq_val
         )
     except Exception as e:
-        return jsonify({
-            "error": {
-                "code": "DATABASE_ERROR",
-                "message": f"Failed to resolve route: {str(e)}"
-            }
-        }), 500
+        return make_error("DATABASE_ERROR", f"Failed to resolve route: {str(e)}", 500)
 
     if err_code:
         if err_code in ("TRAIN_NOT_FOUND", "STATION_NOT_ON_ROUTE", "SEQ_NOT_FOUND"):
-            return jsonify({
-                "error": {
-                    "code": err_code,
-                    "message": err_details
-                }
-            }), 404
+            return make_error(err_code, err_details, 404)
         elif err_code == "ORIGIN_STOP":
-            return jsonify({
-                "error": {
-                    "code": "ORIGIN_STOP_NOT_APPLICABLE",
-                    "message": "Origin stops (seq=1) depart from the origin station and have no arrival delay. Arrival delay is only defined for subsequent stops (seq > 1)."
-                }
-            }), 422
+            return make_error(
+                "ORIGIN_STOP_NOT_APPLICABLE",
+                "Origin stops (seq=1) depart from the origin station and have no arrival delay. Arrival delay is only defined for subsequent stops (seq > 1).",
+                422
+            )
         elif err_code == "MULTIPLE_STOPS_REQUIRE_SEQ":
-            return jsonify({
-                "error": {
-                    "code": "MULTIPLE_STOPS_REQUIRE_SEQ",
-                    "message": err_details["message"],
-                    "valid_seq_options": err_details["valid_seq_options"]
-                }
-            }), 422
+            return make_error(
+                "MULTIPLE_STOPS_REQUIRE_SEQ",
+                err_details["message"],
+                422,
+                valid_seq_options=err_details["valid_seq_options"]
+            )
         else:
-            return jsonify({
-                "error": {
-                    "code": err_code,
-                    "message": str(err_details)
-                }
-            }), 400
+            return make_error("BAD_REQUEST", str(err_details), 400)
 
     # Extract schedule parameters
     sched_arrival_time = stop_info.get("scheduled_arrival_time") or "12:00:00"

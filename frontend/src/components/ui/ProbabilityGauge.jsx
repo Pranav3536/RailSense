@@ -37,7 +37,7 @@ export function ProbabilityGauge({
           </span>
         </div>
         {rawProbability !== null && Math.abs(rawProbability - probVal) >= 0.005 && (
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-slate-600 font-mono">
             (raw: {formatPercent(rawProbability)})
           </span>
         )}
@@ -46,6 +46,7 @@ export function ProbabilityGauge({
       {/* Meter Track */}
       <div
         role="meter"
+        aria-label="Calibrated delay probability meter"
         aria-valuenow={Math.round(probPct)}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -71,7 +72,7 @@ export function ProbabilityGauge({
       </div>
 
       {/* Sub-meter Scale */}
-      <div className="flex justify-between items-center text-xs font-mono text-slate-400 mt-2">
+      <div className="flex justify-between items-center text-xs font-mono text-slate-600 mt-2">
         <span>0% (On-Time)</span>
         <span className="text-slate-500">
           Decision boundary: ≥{(threshVal * 100).toFixed(1)}% → Predicted Delayed

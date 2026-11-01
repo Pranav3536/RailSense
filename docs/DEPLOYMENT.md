@@ -65,14 +65,19 @@
    - **Build Command:** `pip install -r backend/requirements.txt`
    - **Start Command:** `python backend/wsgi.py`
    - **Instance Type:** `Free`
-5. Click **Advanced** $\rightarrow$ **Add Environment Variable** and add the following keys:
+5. Click **Advanced** $\rightarrow$ **Add Environment Variable** and add the following keys (matches `render.yaml` exactly):
    | Key | Value | Purpose |
    |---|---|---|
    | `RAILSENSE_ENV` | `production` | Enables artifact checksum verification on startup |
+   | `PYTHON_VERSION` | `3.10.11` | Pins Python runtime on Render (see `https://render.com/docs/python-version`) |
    | `PYTHONUNBUFFERED` | `1` | Forces stdout flushing for real-time Render logs |
-   | `FLASK_THREADS` | `4` | 4 concurrent waitress worker threads (< 180 MB RSS) |
+   | `TRUSTED_PROXY_COUNT` | `1` | Configures Werkzeug ProxyFix for Render's single proxy layer (IP & HSTS) |
    | `CORS_ORIGINS` | `*` | Allows initial frontend connection (restricted in Step 5) |
+   | `ENABLE_DOCS` | `true` | Serves Swagger UI at `/api/docs` and spec at `/api/openapi.json` |
+   | `FLASK_THREADS` | `4` | 4 concurrent Waitress worker threads (< 180 MB RSS) |
+   | `FLASK_HOST` | `0.0.0.0` | Binds to all network interfaces on Render |
    | `PORT` | `10000` | Port automatically assigned by Render |
+   *(Note: Zero `TIDB_*` variables are required. TiDB Cloud was completely detached in Phase 8.5; all data is served from local precomputed SQLite and serialized models).*
 6. Click **Create Web Service**. Wait ~3–5 minutes for dependencies to install and artifacts to verify.
 
 ---
@@ -110,7 +115,11 @@
 5. Expand **Environment Variables** and add:
    | Key | Value | Notes |
    |---|---|---|
-   | `VITE_API_BASE_URL` | `https://railsense-backend.onrender.com` | **Do NOT include trailing slash `/`** |
+   | `VITE_API_BASE_URL` | `https://railsense-backend.onrender.com/api` | **MUST INCLUDE `/api` suffix. Do NOT include trailing slash `/`** |
+
+   > [!TIP]
+   > **CSP `connect-src` Configuration:** `frontend/vercel.json` defaults to `connect-src 'self' https:`. To strictly lock down outbound frontend API calls to only your Render backend, update line 33 of `frontend/vercel.json` from `connect-src 'self' https:` to `connect-src 'self' https://railsense-backend.onrender.com`.
+
 6. Click **Deploy**. Vercel will install dependencies, build the production bundle, and deploy to their global edge CDN in ~1 minute.
 7. Once deployed, note your frontend URL (e.g., `https://railsense.vercel.app`).
 
@@ -147,6 +156,7 @@ npx --prefix frontend playwright test e2e/deployed.spec.js
 |---|---|---|
 | **Render Build Fails:** `No module named '...'` | Build command didn't install `backend/requirements.txt` | Ensure Render Build Command is set to: `pip install -r backend/requirements.txt`. |
 | **Render Startup Fails:** `Production serving artifacts verification failed!` | One of the 9 manifest files was modified, truncated, or corrupted in git | Run `python backend/scripts/verify_artifacts.py` locally to detect the mismatched SHA-256 hash. Re-commit the exact manifest file. |
+| **Linux / Render Startup Fails:** `libgomp.so.1: cannot open shared object file` | Missing OpenMP runtime required by LightGBM on bare Linux distros | Check the Render first deploy logs. Render native Python runtime provides `libgomp1`; on custom or bare Linux servers, install via `apt-get install -y libgomp1`. |
 | **Render Out of Memory (OOM / Error 137)** | Worker threads or process count exceeded 512 MB memory limit | Ensure `FLASK_THREADS` is set to `4` (default). Never start multiple worker processes (Waitress single process with 4 threads consumes ~177 MB RSS). |
 | **Render Web Service Timeout / Sleep** | Render free tier enters idle sleep after 15 minutes without requests | Normal behavior. First request takes ~40–50s to wake up. The RailSense frontend displays an automated `WakeUpNotice` banner informing the visitor. |
 | **Frontend Network Error / Failed to Fetch** | `VITE_API_BASE_URL` misconfigured or missing in Vercel | In Vercel Project Settings $\rightarrow$ Environment Variables, check `VITE_API_BASE_URL`. It must match your live Render backend URL exactly without trailing slash. Redeploy after editing. |

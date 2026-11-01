@@ -11,12 +11,20 @@ services:
     envVars:
       - key: RAILSENSE_ENV
         value: production
-      - key: FLASK_HOST
-        value: "0.0.0.0"
+      - key: PYTHON_VERSION
+        value: 3.10.11
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: TRUSTED_PROXY_COUNT
+        value: "1"
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ENABLE_DOCS
+        value: "true"
       - key: FLASK_THREADS
         value: "4"
-      - key: CORS_ORIGINS
-        value: "*"
+      - key: FLASK_HOST
+        value: "0.0.0.0"
+      - key: PORT
+        value: "10000"
       # Zero TIDB_* variables (TiDB is strictly detached from runtime)

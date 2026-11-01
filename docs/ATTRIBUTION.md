@@ -12,7 +12,7 @@ The empirical data powering RailSense originates from public observational recor
 - **Observed Volume:** 2,805,574 total stop observations across 10,743 train services and 3,184 stations.
 - **Observed Temporal Window:** October 7, 2026 to October 25, 2026 (19 calendar days).
 - **Label-Eligible Arrival Stops:** 1,773,068 arrival records (excluding sequence origin stops `seq=1`, unverified reporting flags, and multi-day data anomalies).
-- **External Dataset License Status:** **UNVERIFIED** (sandboxed evaluation environment operates without external network access to resolve live HuggingFace dataset card metadata; users should consult the upstream dataset repository for commercial licensing status).
+- **External Dataset License Status:** **CC-BY-4.0** (Creative Commons Attribution 4.0 International, as declared on the upstream HuggingFace repository card `pjay-in/indian-railways-delays`).
 - **Disclaimer:** RailSense is an educational portfolio project and independent community intelligence platform. It is **not affiliated with, endorsed by, or operated by** the Ministry of Railways, Indian Railways (IR), or the Indian Railway Catering and Tourism Corporation (IRCTC).
 
 ---

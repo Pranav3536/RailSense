@@ -32,6 +32,10 @@ export default defineConfig({
       url: 'http://127.0.0.1:5000/api/health',
       reuseExistingServer: false,
       timeout: 45000,
+      env: {
+        ...process.env,
+        RATE_LIMIT_MAX: '5000',
+      },
     },
     {
       command: 'npm run preview -- --port 5173 --host 127.0.0.1',

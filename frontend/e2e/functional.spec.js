@@ -67,6 +67,33 @@ test.describe('RailSense E2E — Functional Suite (Real API)', () => {
     }
   });
 
+  test('Train Explorer deep-link reload with SPA routing and zero CSP violations', async ({ page, request }) => {
+    const trainsRes = await request.get('http://127.0.0.1:5000/api/trains?page=1&page_size=5');
+    expect(trainsRes.ok()).toBeTruthy();
+    const trainsJson = await trainsRes.json();
+    const sampleTrain = trainsJson.items?.[0]?.train_number || '12951';
+
+    const cspViolations = [];
+    page.on('console', (msg) => {
+      const text = msg.text();
+      if (text.includes('Content Security Policy') || text.includes('CSP') || text.includes('violates')) {
+        cspViolations.push(text);
+      }
+    });
+
+    // Direct deep-link navigation
+    await page.goto(`/explorer/${sampleTrain}`);
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(/Canonical Timetable/i)).toBeVisible();
+
+    // Reload page to test static host SPA fallback behavior
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(/Canonical Timetable/i)).toBeVisible();
+
+    expect(cspViolations).toEqual([]);
+  });
+
   test('Delay Prediction form submission displays calibrated probability and risk band', async ({ page }) => {
     await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
     await page.waitForLoadState('networkidle');

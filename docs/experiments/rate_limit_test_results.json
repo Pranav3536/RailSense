@@ -9,7 +9,7 @@
       "code": "RATE_LIMIT_EXCEEDED",
       "details": null,
       "message": "Too many requests. Rate limit is 120 requests per minute.",
-      "request_id": "34292229-f25c-401b-9f38-e98ff7ec2e48"
+      "request_id": "0dea4791-46b4-46b5-b72a-0fea2e58c6f2"
     }
   },
   "verified": true

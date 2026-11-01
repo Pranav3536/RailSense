@@ -643,3 +643,27 @@ In Phase 10, the session will:
 | LightGBM compatibility | Unverified | **LightGBM 4.7.0 installed & verified** | **VERIFIED — COMPATIBLE** |
 | SHAP compatibility | Unverified | **SHAP 0.49.1 installed & verified** | **VERIFIED — COMPATIBLE** |
 | Frontend language | Unclear | **Plain JavaScript (JSX) — TS rejected** | **FINAL DECISION** |
+
+---
+
+## 16. Phase 10 & 11 Completion Status
+
+- **Phase 10: Integration QA, Security Hardening, and Deployment-Readiness**:
+  - Comprehensive accessibility audits across all 6 views with zero critical/serious violations.
+  - Reverse proxy hardening with ProxyFix and rate limiting (120 req/min general, 30 req/min NLP).
+  - Serving store package: 45.90 MB across 9 files with SHA-256 manifest.
+  - Pytest: 154 passed, 4 skipped; Vitest: 73 passed; Playwright: 27 passed; ESLint: 0 warnings, 0 errors.
+
+- **Phase 11: Deployment Preparation & Verification Tooling**:
+  - Vercel frontend config (`vercel.json`), Render backend config (`render.yaml`).
+  - Deployment rehearsal scripts: `smoke_deployed.py`, `profile_cold_start.py`.
+  - Step-by-step owner deployment guide: `docs/DEPLOYMENT.md`.
+
+- **Phase 11.1: Deployment-Readiness Fix Patch (COMPLETE)**:
+  - Task 1: Artifact Tracking & Clean-Clone Proof (verified in `$env:TEMP\railsense_clean_clone` with 100% SHA-256 match, 0.000000 prediction diff across 20 test cases).
+  - Task 2: Python Version Pin (`PYTHON_VERSION: 3.10.11` citing Render docs) & Linux/WSL compatibility check with LightGBM 4.7.0 and `libgomp1`.
+  - Task 3: NLP Number Reconciliation (reconciled sequential test slice 96.18% raw / 89.17% resolution / 99.07% answered accuracy, paired with hostile stress 35.71% and OOD fallback 97.62%).
+  - Task 4: Model Table AP Settlement (LogReg = 0.8372, RF = 0.8477, LightGBM Calibrated = 0.8482; explained 0.8415 was Passenger category subgroup AP).
+  - Task 5: Production rehearsal, security headers, Vercel CSP rehearsal & dist inspection, a11y leftovers (10/10 axe tests pass, 0 violations), package audits, rate limiter load test (5,000 reqs, 290 200s, 4710 429s, RSS delta +0.75 MB), cold start breakdown (3,500 ms OS/import vs 401 ms in-process).
+  - Task 6: Dataset license confirmed as CC-BY-4.0 on upstream HuggingFace Hub; zero premature live claims in documentation.
+  - Verification: Pytest 154 passed / 4 skipped, Vitest 73 passed (13 files), Playwright 38 passed / 4 skipped (6 files), ESLint 0 errors / 0 warnings.

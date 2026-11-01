@@ -3,6 +3,7 @@ RailSense — API Documentation Endpoints (backend/app/api/docs.py)
 Serves Swagger UI and OpenAPI 3.0 specification.
 """
 
+import os
 import json
 from pathlib import Path
 from flask import Blueprint, jsonify, render_template_string
@@ -54,12 +55,26 @@ SWAGGER_UI_HTML = """<!DOCTYPE html>
 @docs_bp.route('/docs', methods=['GET'])
 def get_swagger_ui():
     """Renders interactive Swagger UI documentation."""
+    if os.environ.get("ENABLE_DOCS", "true").strip().lower() in ("false", "0", "no"):
+        return jsonify({
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "API documentation is disabled in this environment."
+            }
+        }), 404
     return render_template_string(SWAGGER_UI_HTML), 200, {'Content-Type': 'text/html; charset=utf-8'}
 
 
 @docs_bp.route('/openapi.json', methods=['GET'])
 def get_openapi_json():
     """Returns OpenAPI 3.0 specification as JSON."""
+    if os.environ.get("ENABLE_DOCS", "true").strip().lower() in ("false", "0", "no"):
+        return jsonify({
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "OpenAPI specification is disabled in this environment."
+            }
+        }), 404
     if not OPENAPI_JSON_PATH.exists():
         return jsonify({
             "error": {

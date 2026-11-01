@@ -37,7 +37,7 @@ Unlike toy ML tutorials using random train/test splits that leak future temporal
 | **Balanced F1 Score** | 0.7330 (History Prior) | **0.7782** (@ Operational Threshold 0.410) | **+6.17% Net Gain** |
 | **Expected Calibration Error (ECE)** | 0.0307 (Raw LightGBM) | **0.0093** (Isotonic Calibrated) | **69.7% Error Reduction** |
 | **Inference Latency (Single Run)** | Target: < 15.0 ms | **2.10 ms** (Local CPU Inference) | **7.1x Faster than SLA** |
-| **NLP Intent Classification Accuracy** | 22.90% (Keyword Search) | **96.18%** (Held-Out Test Set) | **+73.28 pp Improvement** |
+| **NLP Intent Classification Accuracy** | 22.90% (Keyword Search) | **96.18%** (Held-Out Test, Dev-Tuned) / **35.71%** (Hostile Stress Suite) | **Conservative Fallback Interception** |
 | **Out-of-Scope Fallback Interception** | Random Guessing: 0% | **97.62%** (Expanded 42 OOD Suite) | **Zero Hallucinated Metrics** |
 
 ---
@@ -204,5 +204,5 @@ For data provenance and licensing details:
 ## 8. License & Attribution
 
 - **Application Source Code:** MIT License (see repository root).
-- **Underlying Dataset:** Indian Railways Delay Dataset (`pjay-in/indian-railways-delays` on HuggingFace). Status: `UNVERIFIED` external license metadata in offline sandbox. See [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) for full attribution.
+- **Underlying Dataset:** Indian Railways Delay Dataset (`pjay-in/indian-railways-delays` on HuggingFace). License: **CC-BY-4.0** (Creative Commons Attribution 4.0 International). See [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) for full attribution.
 - **Creator & Maintainer:** Pranav ([GitHub Profile](https://github.com/Pranav3536))

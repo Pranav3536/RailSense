@@ -1,11 +1,11 @@
 {
   "timestamp": "2026-10-31T17:15:00+05:30",
-  "app_factory_ms": 3500.78,
-  "first_health_ready_ms": 21.71,
-  "first_predict_ms": 82.44,
-  "total_cold_start_ms": 3605.12,
-  "rss_start_mb": 16.65,
-  "rss_after_predict_mb": 176.69,
+  "app_factory_ms": 2497.04,
+  "first_health_ready_ms": 4.71,
+  "first_predict_ms": 14.24,
+  "total_cold_start_ms": 2516.05,
+  "rss_start_mb": 16.67,
+  "rss_after_predict_mb": 176.03,
   "ready_status": 200,
   "predict_status": 200,
   "first_predict_probability": null

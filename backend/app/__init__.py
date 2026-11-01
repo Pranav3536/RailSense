@@ -186,6 +186,10 @@ def create_app(config: Optional[dict] = None) -> Flask:
         response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
         response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:;"
 
+        # HSTS (RFC 6797): only delivered over HTTPS (or when behind TLS-terminating reverse proxy via ProxyFix)
+        if request.is_secure or request.headers.get("X-Forwarded-Proto") == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
         # Cache-Control Headers
         if request.path in ("/api/predict", "/api/insights/query"):
             response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
@@ -200,6 +204,8 @@ def create_app(config: Optional[dict] = None) -> Flask:
         if hasattr(g, "rate_limit_remaining"):
             response.headers["X-RateLimit-Limit"] = str(app.config["RATE_LIMIT_MAX"])
             response.headers["X-RateLimit-Remaining"] = str(g.rate_limit_remaining)
+        if response.status_code == 429 and "Retry-After" not in response.headers:
+            response.headers["Retry-After"] = str(app.config.get("RATE_LIMIT_WINDOW_SECONDS", 60))
 
         return response
 

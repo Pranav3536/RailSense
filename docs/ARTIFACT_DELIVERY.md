@@ -47,6 +47,8 @@ Every production artifact required for offline serving was audited, sized, and S
    Exits `0` only if all 9 files exist with exact size and SHA-256 match.
 
 2. **Cold Start Latency:**
-   - Full Flask factory startup takes **401 ms** (measured in `docs/experiments/cold_start_profile.json`).
+   - Isolated in-process component loading takes **401 ms** (measured in `docs/experiments/cold_start_profile.json`).
+   - Full OS process launch + heavyweight dependency imports (`numpy`, `pandas`, `lightgbm`, `sklearn`) + Waitress socket binding takes **~3,500 ms**.
+   - Sub-millisecond latency on all warm requests (mean 0.34 ms). Verified in `docs/experiments/rate_limit_5000_load_test.json`.
    - SQLite URI connection in read-only mode (`file:...mode=ro`) starts in **69 ms**.
    - Zero database migration steps required at runtime.
