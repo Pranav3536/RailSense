@@ -71,13 +71,12 @@
    | `RAILSENSE_ENV` | `production` | Enables artifact checksum verification on startup |
    | `PYTHON_VERSION` | `3.10.11` | Pins Python runtime on Render (see `https://render.com/docs/python-version`) |
    | `PYTHONUNBUFFERED` | `1` | Forces stdout flushing for real-time Render logs |
-   | `TRUSTED_PROXY_COUNT` | `1` | Configures Werkzeug ProxyFix for Render's single proxy layer (IP & HSTS) |
-   | `CORS_ORIGINS` | `*` | Allows initial frontend connection (restricted in Step 5) |
+   | `TRUSTED_PROXY_COUNT` | `1` | Configures Werkzeug ProxyFix for Render's single proxy layer (critical: without this, all incoming users share one reverse proxy IP and exhaust the 120 req/min rate limit) |
+   | `CORS_ORIGINS` | `http://localhost:5173` | Temporary local dev origin for initial setup (Step 5 updates this to exact Vercel https origin, no slash; never `*` as production rejects it) |
    | `ENABLE_DOCS` | `true` | Serves Swagger UI at `/api/docs` and spec at `/api/openapi.json` |
-   | `FLASK_THREADS` | `4` | 4 concurrent Waitress worker threads (< 180 MB RSS) |
+   | `FLASK_THREADS` | `4` | 4 concurrent Waitress worker threads (read by `backend/wsgi.py` line 35; keeps process < 180 MB RSS) |
    | `FLASK_HOST` | `0.0.0.0` | Binds to all network interfaces on Render |
-   | `PORT` | `10000` | Port automatically assigned by Render |
-   *(Note: Zero `TIDB_*` variables are required. TiDB Cloud was completely detached in Phase 8.5; all data is served from local precomputed SQLite and serialized models).*
+   *(Note: Render automatically assigns and manages `PORT`; do not set `PORT` manually. Zero `TIDB_*` variables are required; TiDB Cloud was completely detached in Phase 8.5).*
 6. Click **Create Web Service**. Wait ~3–5 minutes for dependencies to install and artifacts to verify.
 
 ---
@@ -89,14 +88,22 @@
    ```bash
    curl -i https://railsense-backend.onrender.com/api/health/ready
    ```
-3. Confirm you receive HTTP `200 OK` with JSON:
+3. Confirm you receive HTTP `200 OK` with JSON (matches real running app):
    ```json
    {
+     "components": {
+       "json_analytics": "ready",
+       "nlp": "ready",
+       "prediction_engine": "ready",
+       "serving_store": "ready"
+     },
+     "data_as_of": "2026-10-25",
+     "data_source": "precomputed_local",
+     "model_version": "1.0.0",
+     "service": "RailSense API",
      "status": "ready",
-     "catalog_loaded": true,
-     "serving_store": "ready",
-     "model_loaded": true,
-     "nlp_loaded": true
+     "timestamp": "2026-11-01 23:16:48 UTC",
+     "version": "1.0.0"
    }
    ```
 
@@ -128,7 +135,7 @@
 ### Step 5: Lock Down Production CORS on Render
 
 1. Return to your [Render Dashboard](https://dashboard.render.com/) $\rightarrow$ `railsense-backend` $\rightarrow$ **Environment**.
-2. Find `CORS_ORIGINS` and change its value from `*` to your production frontend domain:
+2. Find `CORS_ORIGINS` and change its value from `http://localhost:5173` to your production frontend domain (exact Vercel https origin, no trailing slash, never `*`):
    ```
    CORS_ORIGINS=https://railsense.vercel.app
    ```
@@ -159,7 +166,7 @@ npx --prefix frontend playwright test e2e/deployed.spec.js
 | **Linux / Render Startup Fails:** `libgomp.so.1: cannot open shared object file` | Missing OpenMP runtime required by LightGBM on bare Linux distros | Check the Render first deploy logs. Render native Python runtime provides `libgomp1`; on custom or bare Linux servers, install via `apt-get install -y libgomp1`. |
 | **Render Out of Memory (OOM / Error 137)** | Worker threads or process count exceeded 512 MB memory limit | Ensure `FLASK_THREADS` is set to `4` (default). Never start multiple worker processes (Waitress single process with 4 threads consumes ~177 MB RSS). |
 | **Render Web Service Timeout / Sleep** | Render free tier enters idle sleep after 15 minutes without requests | Normal behavior. First request takes ~40–50s to wake up. The RailSense frontend displays an automated `WakeUpNotice` banner informing the visitor. |
-| **Frontend Network Error / Failed to Fetch** | `VITE_API_BASE_URL` misconfigured or missing in Vercel | In Vercel Project Settings $\rightarrow$ Environment Variables, check `VITE_API_BASE_URL`. It must match your live Render backend URL exactly without trailing slash. Redeploy after editing. |
-| **CORS Error in Browser Console** | Render `CORS_ORIGINS` does not match the Vercel URL | In Render $\rightarrow$ Environment, set `CORS_ORIGINS=https://your-app.vercel.app` (or `*` for initial setup). Ensure protocol `https://` matches. |
+| **Frontend Network Error / Failed to Fetch** | `VITE_API_BASE_URL` misconfigured or missing in Vercel | In Vercel Project Settings $\rightarrow$ Environment Variables, check `VITE_API_BASE_URL`. It must match your live Render backend URL WITH `/api` suffix (e.g., `https://railsense-backend.onrender.com/api`) without trailing slash. Redeploy after editing. |
+| **CORS Error in Browser Console** | Render `CORS_ORIGINS` does not match the Vercel URL | In Render $\rightarrow$ Environment, set `CORS_ORIGINS=https://your-app.vercel.app` (the exact Vercel https origin, no trailing slash, never `*` as production rejects it). Ensure protocol `https://` matches. |
 | **Vercel 404 on Direct Route Refresh (`/predict`)** | Missing SPA rewrite rule in static host | Verify `frontend/vercel.json` exists in git with `"source": "/(.*)", "destination": "/index.html"`. |
 | **Delay Prediction Returns 429 Too Many Requests** | IP exceeded 120 req/minute rate limit | Wait 20 seconds. The UI features an automatic cooldown timer countdown that disables the button until the rate window reopens. |

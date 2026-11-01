@@ -2,7 +2,7 @@
 
 > **Generated:** Phase 10 Integration QA Hardening  
 > **Target Release:** RailSense v2.0 Production-Ready (Pre-Deployment)  
-> **Status:** **ALL AUDITS & BENCHMARKS PASSED (Zero Critical Defects)**
+> **Status:** **ALL LOCAL AUDITS & BENCHMARKS PASSED (Live Deployment Checks UNVERIFIED Pending Owner Deployment)**
 
 ---
 
@@ -14,8 +14,8 @@ Phase 10 executed an exhaustive, multi-dimensional verification of the entire Ra
 |---|---|---|---|
 | **Data Consistency** | Parquet ground truth vs SQLite & JSON (`qa_consistency.py`) | **211 / 211 checks passed** (0 failures) | **PASS** |
 | **Unit & Integration Tests** | Pytest (Backend) + Vitest (Frontend) | **154 Pytest passed (4 skipped), 73 Vitest passed** | **PASS** |
-| **Automated Accessibility** | `@axe-core/playwright` across all routes & dynamic states | **0 severe / critical WCAG 2.1 AA violations** | **PASS** |
-| **Browser E2E Suite** | 38 real-browser Playwright workflows against live API | **38 / 38 tests passed (4 live skipped)** | **PASS** |
+| **Automated Accessibility** | `@axe-core/playwright` across all routes & dynamic states | **0 severe / critical / moderate WCAG 2.1 AA violations** across 16 audited viewports & states | **PASS (local)** |
+| **Browser E2E Suite** | 38 real-browser Playwright workflows against local API (4 live skipped) | **38 / 38 local tests passed (4 live checks UNVERIFIED until deployed)** | **PASS (local)** |
 | **Responsive Viewports** | 360px, 768px, 1280px, 1366px, 1920px viewports | **0 horizontal overflow, clean visual snapshots** | **PASS** |
 | **NLP Split Integrity** | RapidFuzz token-sort similarity on $N=131$ test split | **Mean max similarity 59.8%, max 86.7% (zero leakage)** | **PASS** |
 | **NLP OOD Safety** | Out-of-distribution & prompt injection interception | **97.62% adversarial / OOD rejection rate** ($N=42$) | **PASS** |
@@ -43,7 +43,7 @@ Phase 10 executed an exhaustive, multi-dimensional verification of the entire Ra
 
 ### B. Frontend Vitest Suite
 - **Command:** `npm --prefix frontend test`
-- **Result:** **13 test files passed, 67 tests passed (0 failed)**
+- **Result:** **13 test files passed, 73 tests passed (0 failed)**
 - **Test Categories:**
   - Adapters normalization tests
   - StatCard, PageHeader, ErrorState component unit tests
@@ -53,7 +53,7 @@ Phase 10 executed an exhaustive, multi-dimensional verification of the entire Ra
 ### C. Playwright Browser E2E Suite
 - **Command:** `npm --prefix frontend run test:e2e`
 - **Configuration:** 1 worker, real Python Waitress backend on port 5000, Vite preview on port 5173.
-- **Result:** **27 / 27 passed in 1.6 minutes**
+- **Result:** **38 passed, 4 live skipped in 2.0 minutes**
   1. `a11y.spec.js`: Axe-core automated audit on Overview
   2. `a11y.spec.js`: Axe-core automated audit on Train Explorer
   3. `a11y.spec.js`: Axe-core automated audit on Delay Prediction
@@ -98,7 +98,7 @@ Verified by `backend/scripts/qa_consistency.py` (211 checks passed):
 
 - **Runtime Isolation:** SQLite database opened strictly with `?mode=ro`.
 - **Credential Safety:** 12 git commits audited; zero private keys or credentials ever committed.
-- **Dependency Health:** `pip-audit` reports 0 vulnerabilities.
+- **Dependency Health:** Zero CVEs across runtime serving dependencies (`Flask`, `LightGBM`, `scikit-learn`, `waitress`, `werkzeug`, `numpy`, `psutil`).
 - **Reverse Proxy Protection:** `werkzeug.middleware.proxy_fix.ProxyFix` with configurable `TRUSTED_PROXY_COUNT` protects against `X-Forwarded-For` client IP spoofing.
 - **Response Headers:** `nosniff`, `DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and CSP applied to every response.
 - **Payload & Media Protection:** Request size capped at 1MB (HTTP 413); non-JSON POST rejected with HTTP 415.
@@ -107,7 +107,7 @@ Verified by `backend/scripts/qa_consistency.py` (211 checks passed):
 
 ## 5. Performance, Memory & Artifact Delivery
 
-- **Cold Start:** 401 ms from process spawn to fully responsive API.
+- **Cold Start:** ~3,500 ms full OS process spawn + dependency imports (401 ms isolated in-process component loading).
 - **Throughput:** 574.0 requests/sec with 20 concurrent clients.
 - **Latency:** p50 = 17.21 ms, p90 = 66.11 ms, p95 = 198.95 ms.
 - **Memory Footprint:** Initial 174.31 MB, Peak 184.28 MB, Final 184.31 MB (+10 MB delta, zero memory leak).
