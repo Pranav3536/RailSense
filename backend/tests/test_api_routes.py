@@ -91,6 +91,28 @@ def test_trains_list_and_pagination(client):
     assert data["pagination"]["page"] == 1
     assert data["pagination"]["page_size"] == 10
     assert "definition" in data
+    # Default sort is runs_desc
+    runs = [t["runs_count"] for t in data["items"]]
+    assert runs == sorted(runs, reverse=True)
+    assert runs[0] >= 19
+
+
+def test_trains_sort_number_asc(client):
+    res = client.get("/api/trains?sort=number_asc&page=1&page_size=10")
+    assert res.status_code == 200
+    data = res.get_json()
+    assert len(data["items"]) == 10
+    train_nums = [t["train_number"] for t in data["items"]]
+    assert train_nums == sorted(train_nums)
+
+
+def test_trains_sort_invalid(client):
+    res = client.get("/api/trains?sort=invalid_sort")
+    assert res.status_code == 400
+    data = res.get_json()
+    assert "error" in data
+    assert data["error"]["code"] == "INVALID_SORT"
+
 
 
 def test_trains_search_prefix(client):

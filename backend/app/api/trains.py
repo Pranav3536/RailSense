@@ -16,6 +16,7 @@ def list_trains():
     Query parameters:
       - q: search train_number prefix or train_name substring
       - category: filter by train category (e.g. SUB, MEX, SUF, EXP)
+      - sort: sort order ('runs_desc' [default when q is empty], 'number_asc')
       - page: page number (default 1)
       - page_size: items per page (default 20, max 100)
     """
@@ -30,6 +31,16 @@ def list_trains():
 
     query = request.args.get("q", "").strip() or None
     category = request.args.get("category", "").strip() or None
+    sort_param = request.args.get("sort", "runs_desc").strip() if request.args.get("sort") is not None else "runs_desc"
+    sort = sort_param or "runs_desc"
+
+    if sort not in ("runs_desc", "number_asc"):
+        return jsonify({
+            "error": {
+                "code": "INVALID_SORT",
+                "message": "Query parameter 'sort' must be one of: 'runs_desc', 'number_asc'."
+            }
+        }), 400
 
     try:
         page = int(request.args.get("page", 1))
@@ -49,6 +60,7 @@ def list_trains():
         results = serving_client.get_trains(
             query=query,
             category=category,
+            sort=sort,
             page=page,
             page_size=page_size
         )

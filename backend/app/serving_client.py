@@ -47,6 +47,19 @@ class ServingClient:
                 cat = str(t.get("category", "")).upper().strip()
                 if cat:
                     self._trains_by_cat[cat].append(t)
+
+            # Pre-sort for runs_desc (primary: runs_count DESC, secondary: train_number ASC)
+            self._trains_all_by_runs = sorted(
+                self._trains_all,
+                key=lambda t: (-int(t.get("runs_count") or 0), str(t.get("train_number") or ""))
+            )
+            self._trains_by_cat_runs = {
+                cat: sorted(
+                    trains,
+                    key=lambda t: (-int(t.get("runs_count") or 0), str(t.get("train_number") or ""))
+                )
+                for cat, trains in self._trains_by_cat.items()
+            }
             self._catalog_loaded = True
         except Exception:
             self._catalog_loaded = False
@@ -80,12 +93,15 @@ class ServingClient:
         self,
         query: Optional[str] = None,
         category: Optional[str] = None,
+        sort: str = "runs_desc",
         page: int = 1,
         page_size: int = 20
     ) -> Dict[str, Any]:
         """
         Returns paginated train catalog with sub-millisecond in-memory search and category filters.
         Employs RapidFuzz for fuzzy matching when query is at least 2 characters.
+        Sort options: 'runs_desc' (default when query empty) or 'number_asc'.
+        When query is provided, relevance/fuzzy match ordering is preserved.
         """
         page = max(1, page)
         page_size = max(1, min(page_size, 100))
@@ -93,11 +109,15 @@ class ServingClient:
 
         if self._catalog_loaded:
             cat_clean = category.upper().strip() if category else None
-            pool = self._trains_by_cat.get(cat_clean, []) if cat_clean else self._trains_all
 
             if not query or not query.strip():
+                if sort == "runs_desc":
+                    pool = self._trains_by_cat_runs.get(cat_clean, []) if cat_clean else self._trains_all_by_runs
+                else:
+                    pool = self._trains_by_cat.get(cat_clean, []) if cat_clean else self._trains_all
                 matched = pool
             else:
+                pool = self._trains_by_cat.get(cat_clean, []) if cat_clean else self._trains_all
                 q_clean = query.strip()
                 if q_clean.isdigit():
                     # Prefix match on train number
@@ -165,8 +185,13 @@ class ServingClient:
         cur.execute(f"SELECT COUNT(*) FROM trains {where_clause};", params)
         total_items = cur.fetchone()[0]
 
+        if query:
+            order_clause = "ORDER BY train_number ASC"
+        else:
+            order_clause = "ORDER BY runs_count DESC, train_number ASC" if sort == "runs_desc" else "ORDER BY train_number ASC"
+
         cur.execute(
-            f"SELECT * FROM trains {where_clause} ORDER BY train_number ASC LIMIT ? OFFSET ?;",
+            f"SELECT * FROM trains {where_clause} {order_clause} LIMIT ? OFFSET ?;",
             params + [page_size, offset]
         )
         rows = [dict(r) for r in cur.fetchall()]

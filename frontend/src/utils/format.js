@@ -101,3 +101,17 @@ export function formatDate(dateVal) {
     return NOT_AVAILABLE;
   }
 }
+
+/**
+ * Formats a count with appropriate singular or plural noun.
+ * @param {number|string} count
+ * @param {string} singular
+ * @param {string|null} [plural=null]
+ * @returns {string} e.g. "1 observed run", "19 observed runs", "1 stop", "5 stops"
+ */
+export function pluralize(count, singular, plural = null) {
+  if (!isValidNumber(count)) return NOT_AVAILABLE;
+  const num = Number(count);
+  const word = Math.abs(num) === 1 ? singular : (plural || `${singular}s`);
+  return `${formatNumber(num)} ${word}`;
+}

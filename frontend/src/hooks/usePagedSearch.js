@@ -11,10 +11,17 @@ import { adaptTrainsList } from '../api/adapters.js';
  * - Category filtering support
  * - Adapts backend schema with error handling
  */
-export function usePagedSearch({ initialQuery = '', initialCategory = '', initialPage = 1, pageSize = 20 } = {}) {
+export function usePagedSearch({
+  initialQuery = '',
+  initialCategory = '',
+  initialSort = 'runs_desc',
+  initialPage = 1,
+  pageSize = 20
+} = {}) {
   const [query, setQuery] = useState(initialQuery);
   const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
+  const [sort, setSort] = useState(initialSort);
   const [page, setPage] = useState(initialPage);
 
   const [items, setItems] = useState([]);
@@ -40,6 +47,12 @@ export function usePagedSearch({ initialQuery = '', initialCategory = '', initia
     setPage(1);
   }, []);
 
+  // Reset to page 1 when sort changes
+  const handleSortChange = useCallback((newSort) => {
+    setSort(newSort);
+    setPage(1);
+  }, []);
+
   const fetchData = useCallback(async () => {
     // Abort prior in-flight request
     if (abortControllerRef.current) {
@@ -62,6 +75,9 @@ export function usePagedSearch({ initialQuery = '', initialCategory = '', initia
       if (category) {
         queryParams.category = category;
       }
+      if (sort) {
+        queryParams.sort = sort;
+      }
 
       const raw = await getTrains(queryParams, {
         signal: controller.signal,
@@ -81,7 +97,7 @@ export function usePagedSearch({ initialQuery = '', initialCategory = '', initia
     } finally {
       setLoading(false);
     }
-  }, [debouncedQuery, category, page, pageSize]);
+  }, [debouncedQuery, category, sort, page, pageSize]);
 
   useEffect(() => {
     fetchData();
@@ -98,6 +114,8 @@ export function usePagedSearch({ initialQuery = '', initialCategory = '', initia
     setQuery,
     category,
     setCategory: handleCategoryChange,
+    sort,
+    setSort: handleSortChange,
     page,
     setPage,
     items,

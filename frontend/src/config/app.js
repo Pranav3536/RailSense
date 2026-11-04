@@ -27,7 +27,7 @@ export const NAV_ITEMS = [
   },
   {
     path: '/explorer',
-    title: 'Single Train Deep Dive',
+    title: 'Train Explorer',
     label: 'Train Explorer',
     iconName: 'Route',
     phase: 'Phase 7',

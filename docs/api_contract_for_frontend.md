@@ -169,6 +169,15 @@ The sidebar's **Truthful Database & Service Status Card** consumes `/api/health/
 
 ---
 
+### `GET /api/trains` (Status: 200)
+
+**Query Parameters:**
+- `q`: Optional search prefix for train number or name substring.
+- `category`: Optional filter by category (SUB, MEX, SUF, EXP, etc.).
+- `sort`: `runs_desc` (default when `q` empty) or `number_asc`. When `q` is provided, search relevance ordering is preserved.
+- `page`: Page number (default: 1).
+- `page_size`: Page size (default: 20, max: 100).
+
 ### `GET /api/trains?q=12951&page=1&page_size=2` (Status: 200)
 
 **Response Top-Level Structure / Schema:**

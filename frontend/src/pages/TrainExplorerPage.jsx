@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer,
   LineChart,
@@ -20,6 +20,8 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Clock,
   Calendar,
   Layers,
@@ -38,7 +40,6 @@ import {
   Skeleton,
   ErrorState,
   EmptyState,
-  DefinitionNote,
   ChartCard,
   SupportBadge,
   PartialDayLegend,
@@ -48,9 +49,9 @@ import {
 } from '../components/ui';
 import { usePagedSearch } from '../hooks/usePagedSearch';
 import { useTrain } from '../hooks/useTrain';
-import { formatNumber, formatPercent, formatMinutes, formatDate } from '../utils/format';
+import { formatNumber, formatPercent, formatMinutes, formatDate, pluralize } from '../utils/format';
 import { CHART_THEME } from '../components/charts/chartTheme';
-import { CATEGORY_OPTIONS, LOW_SUPPORT_THRESHOLD } from '../config/constants';
+import { CATEGORY_OPTIONS, LOW_SUPPORT_THRESHOLD, PARTIAL_DATES } from '../config/constants';
 
 /**
  * Custom Tooltip for Stop Progression Chart
@@ -134,11 +135,19 @@ function DateHistoryTooltip({ active, payload, label }) {
 }
 
 /**
- * TrainExplorerPage — Tab 2 ("Single Train Deep Dive")
+ * TrainExplorerPage — Train Explorer & Route Delay Profile
  */
 export function TrainExplorerPage() {
   const { trainNumber: urlTrainNumber } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // Search params initialization from URL query string
+  const initialQuery = searchParams.get('q') || '';
+  const initialCategory = searchParams.get('category') || '';
+  const urlSort = searchParams.get('sort');
+  const initialSort = (urlSort === 'number_asc' || urlSort === 'runs_desc') ? urlSort : 'runs_desc';
+  const initialPage = parseInt(searchParams.get('page') || '1', 10) || 1;
 
   // Search hook for catalog browsing
   const {
@@ -146,6 +155,8 @@ export function TrainExplorerPage() {
     setQuery,
     category,
     setCategory,
+    sort,
+    setSort,
     page,
     setPage,
     items,
@@ -153,7 +164,13 @@ export function TrainExplorerPage() {
     loading: catalogLoading,
     error: catalogError,
     refetch: refetchCatalog,
-  } = usePagedSearch({ pageSize: 15 });
+  } = usePagedSearch({
+    initialQuery,
+    initialCategory,
+    initialSort,
+    initialPage,
+    pageSize: 15,
+  });
 
   // Single train detail hook when a train is selected
   const {
@@ -166,6 +183,27 @@ export function TrainExplorerPage() {
   const [progressionView, setProgressionView] = useState('chart');
   const [historyView, setHistoryView] = useState('chart');
   const [showAllStops, setShowAllStops] = useState(false);
+  const [isAboutNumbersOpen, setIsAboutNumbersOpen] = useState(false);
+
+  // Sync search state to URL query params when browsing catalog
+  useEffect(() => {
+    if (urlTrainNumber) return;
+    const nextParams = new URLSearchParams();
+    if (query.trim()) nextParams.set('q', query.trim());
+    if (category) nextParams.set('category', category);
+    if (sort) nextParams.set('sort', sort);
+    if (page > 1) nextParams.set('page', String(page));
+    setSearchParams(nextParams, { replace: true });
+  }, [query, category, sort, page, urlTrainNumber, setSearchParams]);
+
+  // Document title sync
+  useEffect(() => {
+    if (urlTrainNumber) {
+      document.title = `${urlTrainNumber} Delay Profile | RailSense`;
+    } else {
+      document.title = 'Train Explorer | RailSense';
+    }
+  }, [urlTrainNumber]);
 
   // Select train handler
   const handleSelectTrain = (num) => {
@@ -177,14 +215,14 @@ export function TrainExplorerPage() {
   };
 
   // -------------------------------------------------------------
-  // VIEW A: Single Train Deep Dive (when URL has :trainNumber)
+  // VIEW A: Single Train Detail View (when URL has :trainNumber)
   // -------------------------------------------------------------
   if (urlTrainNumber) {
     if (trainLoading) {
       return (
         <div className="space-y-6">
           <PageHeader
-            title="Train Route Timetable & Delay Profile"
+            title="Train Delay Profile"
             subtitle={`Retrieving operational history for train #${urlTrainNumber}...`}
           />
           <Skeleton className="h-44 rounded-xl" />
@@ -202,7 +240,7 @@ export function TrainExplorerPage() {
       return (
         <div className="space-y-6">
           <PageHeader
-            title="Train Deep Dive"
+            title="Train Delay Profile"
             subtitle={`Operational profile for train #${urlTrainNumber}`}
           />
           <ErrorState
@@ -217,6 +255,7 @@ export function TrainExplorerPage() {
     // Filtered or full stops
     const stopsToDisplay = showAllStops ? train.stops : train.stops.slice(0, 25);
     const hasMoreStops = train.stops.length > 25;
+    const hasBoundaryDates = train.historyByDate?.some((h) => PARTIAL_DATES.includes(h.startDate));
 
     return (
       <div className="space-y-8">
@@ -233,7 +272,7 @@ export function TrainExplorerPage() {
 
           <PageHeader
             title={`${train.trainNumber} — ${train.trainName || 'Express Service'}`}
-            subtitle={`Timetable, intermediate halts, and observed delay intelligence across ${train.runsCount} observed runs.`}
+            subtitle={`Timetable, intermediate halts, and observed delay intelligence across ${pluralize(train.runsCount, 'observed run', 'observed runs')}.`}
             action={
               <button
                 type="button"
@@ -265,7 +304,7 @@ export function TrainExplorerPage() {
                   <ArrowRight className="w-4 h-4 text-slate-400" aria-hidden="true" />
                   <span className="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200">{train.terminusStationCode}</span>
                   <span className="text-xs text-slate-500 font-normal ml-2">
-                    ({train.stopsCount} scheduled halts)
+                    ({pluralize(train.stopsCount, 'scheduled halt', 'scheduled halts')})
                   </span>
                 </div>
               </div>
@@ -287,7 +326,7 @@ export function TrainExplorerPage() {
                 label="Observed Runs"
                 value={formatNumber(train.runsCount)}
                 icon={<Train className="w-4 h-4" />}
-                subtext={`Across ${train.daysObserved} calendar days`}
+                subtext={`Across ${pluralize(train.daysObserved, 'calendar day', 'calendar days')}`}
               />
               <StatCard
                 label="Mean Arrival Delay"
@@ -308,11 +347,6 @@ export function TrainExplorerPage() {
                 subtext="Oct 7 – Oct 25, 2026"
               />
             </div>
-            {train.definition && (
-              <div className="mt-3">
-                <DefinitionNote note={train.definition} />
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -321,6 +355,7 @@ export function TrainExplorerPage() {
           <SectionHeader
             title="Canonical Timetable & Stop Delay Rates"
             description="Route stops ordered strictly by sequence number (seq). Keyed to preserve exact circular and repeating station halts."
+            info="delayed = arrival delay > 15 min on label-eligible stops (seq > 1, arrival reported, |delay| <= 1440 min)"
           />
 
           <Card className="border-slate-200 bg-white overflow-hidden">
@@ -328,7 +363,7 @@ export function TrainExplorerPage() {
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>
-                    <th className="py-2.5 px-3 w-12 text-center">#</th>
+                    <th className="sticky left-0 z-10 bg-slate-100 py-2.5 px-3 w-12 text-center border-r border-slate-200 shadow-sm">#</th>
                     <th className="py-2.5 px-3">Station Code</th>
                     <th className="py-2.5 px-3">Role</th>
                     <th className="py-2.5 px-3">Scheduled Arrival</th>
@@ -341,12 +376,14 @@ export function TrainExplorerPage() {
                 <tbody className="divide-y divide-slate-100">
                   {stopsToDisplay.map((stop) => (
                     <tr
-                      key={stop.seq} // Keyed strictly by seq to handle circular routes
-                      className={`hover:bg-slate-50 transition-colors ${
+                       key={stop.seq} // Keyed strictly by seq to handle circular routes
+                       className={`hover:bg-slate-50 transition-colors ${
                         stop.isOrigin ? 'bg-blue-50/30' : stop.isTerminus ? 'bg-purple-50/30' : ''
                       }`}
                     >
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-600 text-center">
+                      <td className={`sticky left-0 z-10 py-2.5 px-3 font-mono font-bold text-slate-600 text-center border-r border-slate-200 ${
+                        stop.isOrigin ? 'bg-blue-50/95' : stop.isTerminus ? 'bg-purple-50/95' : 'bg-white'
+                      }`}>
                         {stop.seq}
                       </td>
                       <td className="py-2.5 px-3 font-mono font-bold text-slate-900 text-sm">
@@ -406,7 +443,20 @@ export function TrainExplorerPage() {
                         )}
                       </td>
                       <td className="py-2.5 px-3">
-                        <SupportBadge count={stop.observedStopsCount} threshold={LOW_SUPPORT_THRESHOLD} />
+                        <div className="flex items-center gap-1.5">
+                          <span className={stop.isLowSupport ? 'text-slate-400 font-mono' : 'text-slate-700 font-mono'}>
+                            {pluralize(stop.observedStopsCount, 'stop', 'stops')}
+                          </span>
+                          {stop.isLowSupport && (
+                            <span
+                              className="inline-flex items-center text-amber-600 hover:text-amber-700 cursor-help"
+                              title={`Low support: fewer than ${LOW_SUPPORT_THRESHOLD} eligible stops, treat as noisy`}
+                              aria-label={`Low support: fewer than ${LOW_SUPPORT_THRESHOLD} eligible stops, treat as noisy`}
+                            >
+                              <Info className="w-3.5 h-3.5" aria-hidden="true" />
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -492,12 +542,12 @@ export function TrainExplorerPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-                  <span className="font-semibold text-slate-800">Route Progression:</span> Tracks delay accumulation or recovery along the journey. Stations showing steep upward slopes reflect observed hotspot halts where delay increases relative to prior halts.
+                <p className="sr-only">
+                  Route Progression: Tracks delay accumulation or recovery along the journey. Stations showing steep upward slopes reflect observed hotspot halts where delay increases relative to prior halts.
                 </p>
               </div>
             ) : (
-              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto max-h-[380px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
+              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto h-[320px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                     <tr>
@@ -521,7 +571,20 @@ export function TrainExplorerPage() {
                           {s.observedMeanDelayMin !== null ? formatMinutes(s.observedMeanDelayMin) : '—'}
                         </td>
                         <td className="py-2 px-3">
-                          <SupportBadge count={s.observedStopsCount} threshold={LOW_SUPPORT_THRESHOLD} />
+                          <div className="flex items-center gap-1.5">
+                            <span className={s.isLowSupport ? 'text-slate-400 font-mono' : 'text-slate-700 font-mono'}>
+                              {pluralize(s.observedStopsCount, 'stop', 'stops')}
+                            </span>
+                            {s.isLowSupport && (
+                              <span
+                                className="inline-flex items-center text-amber-600 hover:text-amber-700 cursor-help"
+                                title={`Low support: fewer than ${LOW_SUPPORT_THRESHOLD} eligible stops, treat as noisy`}
+                                aria-label={`Low support: fewer than ${LOW_SUPPORT_THRESHOLD} eligible stops, treat as noisy`}
+                              >
+                                <Info className="w-3.5 h-3.5" aria-hidden="true" />
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-2 px-3 text-right">
                           {s.seq > 1 ? (
@@ -586,7 +649,7 @@ export function TrainExplorerPage() {
                         >
                           {train.historyByDate.map((entry, index) => {
                             let fill = CHART_THEME.colors.primary;
-                            if (entry.isPartial) fill = '#F59E0B'; // amber for partial dates
+                            if (entry.isPartial && hasBoundaryDates) fill = '#F59E0B'; // amber for partial dates
                             else if (entry.delayedRate < 20) fill = CHART_THEME.colors.onTime;
                             else if (entry.delayedRate > 50) fill = CHART_THEME.colors.delayed;
                             return <Cell key={`cell-date-${index}`} fill={fill} />;
@@ -601,14 +664,14 @@ export function TrainExplorerPage() {
                   )}
                 </div>
 
-                <PartialDayLegend />
+                {hasBoundaryDates && <PartialDayLegend />}
 
-                <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-                  <span className="font-semibold text-slate-800">Operational Consistency:</span> Shows day-to-day fluctuations in on-time arrival. Highlighted boundary dates (Oct 7 &amp; Oct 25) have partial temporal coverage.
+                <p className="sr-only">
+                  Operational Consistency: Shows day-to-day fluctuations in on-time arrival. Highlighted boundary dates (Oct 7 &amp; Oct 25) have partial temporal coverage.
                 </p>
               </div>
             ) : (
-              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto max-h-[380px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
+              <div tabIndex={0} role="region" aria-label="Train metrics table" className="overflow-x-auto h-[320px] overflow-y-auto focus:outline-none focus:ring-1 focus:ring-blue-400">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                     <tr>
@@ -644,14 +707,37 @@ export function TrainExplorerPage() {
           </ChartCard>
         </div>
 
-        {/* 4. Non-Causal Caveats Card */}
-        <Card className="border-slate-200 bg-slate-50/70">
-          <CardContent className="pt-4 pb-4 flex items-start gap-3 text-xs text-slate-600 leading-relaxed">
-            <Info className="w-4 h-4 text-primary-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
-            <div>
-              <span className="font-semibold text-slate-800">Methodological Note on Observed Stop Rates:</span> Stop-level delay rates represent historical empirical proportions calculated from journeys observed between Oct 7 and Oct 25, 2026. They do not constitute forward-looking predictions (which are generated via pre-departure ML inference in Phase 8) and make no causal claims regarding track conditions, operational impediments, or weather.
+        {/* 4. Non-Causal Caveats Collapsible */}
+        <Card className="border-slate-200 bg-white">
+          <button
+            type="button"
+            onClick={() => setIsAboutNumbersOpen((prev) => !prev)}
+            className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors rounded-xl min-h-[44px]"
+            aria-expanded={isAboutNumbersOpen}
+          >
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-primary-600 flex-shrink-0" aria-hidden="true" />
+              <span className="text-sm font-bold text-slate-900">
+                About these numbers
+              </span>
             </div>
-          </CardContent>
+            {isAboutNumbersOpen ? (
+              <ChevronUp className="w-4 h-4 text-slate-500" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-slate-500" />
+            )}
+          </button>
+
+          {isAboutNumbersOpen && (
+            <CardContent className="pt-0 pb-5 text-xs text-slate-600 space-y-3 leading-relaxed border-t border-slate-100">
+              <p>
+                <strong className="text-slate-800">Methodological Note on Observed Stop Rates:</strong> Stop-level delay rates represent historical empirical proportions calculated from journeys observed between Oct 7 and Oct 25, 2026. They do not constitute forward-looking predictions (which are generated via pre-departure ML inference in the Delay Prediction tab) and make no causal claims regarding track conditions, operational impediments, or weather.
+              </p>
+              <p>
+                <strong className="text-slate-800">Delay Definition:</strong> A stop is classified as delayed if arrival delay exceeds 15 minutes on label-eligible halts (stop sequence &gt; 1, arrival reported, and delay within &plusmn;1,440 minutes).
+              </p>
+            </CardContent>
+          )}
         </Card>
       </div>
     );
@@ -664,7 +750,7 @@ export function TrainExplorerPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <PageHeader
-        title="Single Train Deep Dive"
+        title="Train Explorer"
         subtitle="Search and explore canonical timetables, sequence numbers, and observed delay intelligence across registered train services."
       />
 
@@ -696,7 +782,7 @@ export function TrainExplorerPage() {
             </div>
 
             {/* Category Filter Dropdown */}
-            <div className="w-full md:w-64">
+            <div className="w-full md:w-56">
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -710,6 +796,19 @@ export function TrainExplorerPage() {
                 ))}
               </select>
             </div>
+
+            {/* Sort Dropdown */}
+            <div className="w-full md:w-48">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="w-full py-2.5 px-3 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-slate-900 min-h-[44px]"
+                aria-label="Sort trains"
+              >
+                <option value="runs_desc">Most runs</option>
+                <option value="number_asc">Train number</option>
+              </select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -721,7 +820,7 @@ export function TrainExplorerPage() {
             title="Train Service Directory"
             description={
               pagination
-                ? `Showing ${items.length} of ${formatNumber(pagination.total)} registered train services`
+                ? `Showing ${items.length} of ${pluralize(pagination.total, 'registered train service', 'registered train services')}`
                 : 'Loading train directory...'
             }
           />
@@ -786,7 +885,7 @@ export function TrainExplorerPage() {
                     <th className="py-2.5 px-3">Category</th>
                     <th className="py-2.5 px-3">Route (Origin → Terminus)</th>
                     <th className="py-2.5 px-3">Stops</th>
-                    <th className="py-2.5 px-3">Observed Runs</th>
+                    <th className="py-2.5 px-3">Runs</th>
                     <th className="py-2.5 px-3 min-w-[140px]">Observed Delayed Rate</th>
                     <th className="py-2.5 px-3">Mean Delay</th>
                     <th className="py-2.5 px-3">Action</th>
@@ -813,8 +912,8 @@ export function TrainExplorerPage() {
                         <span className="text-slate-400 mx-1">→</span>
                         <span className="font-semibold">{tr.terminusStationCode}</span>
                       </td>
-                      <td className="py-3 px-3 font-mono">{tr.stopsCount}</td>
-                      <td className="py-3 px-3 font-mono">{tr.runsCount}</td>
+                      <td className="py-3 px-3 font-mono">{pluralize(tr.stopsCount, 'stop', 'stops')}</td>
+                      <td className="py-3 px-3 font-mono">{pluralize(tr.runsCount, 'observed run', 'observed runs')}</td>
                       <td className="py-3 px-3">
                         <RateBar rate={tr.delayedRate} showLabel isMuted={tr.isLowSupport} />
                       </td>
@@ -823,8 +922,8 @@ export function TrainExplorerPage() {
                       </td>
                       <td className="py-3 px-3">
                         <span className="inline-flex items-center gap-1 text-primary-600 font-semibold group-hover:translate-x-0.5 transition-transform">
-                          <span>Inspect</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <span>View Route</span>
+                          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                         </span>
                       </td>
                     </tr>
@@ -837,7 +936,7 @@ export function TrainExplorerPage() {
             {pagination && pagination.totalPages > 1 && (
               <div className="p-3 border-t border-slate-100 flex items-center justify-between bg-slate-50">
                 <span className="text-xs text-slate-500 font-mono">
-                  Showing page {pagination.page} of {pagination.totalPages} ({formatNumber(pagination.total)} trains)
+                  Showing page {pagination.page} of {pagination.totalPages} ({pluralize(pagination.total, 'train', 'trains')})
                 </span>
                 <div className="flex items-center gap-2">
                   <button

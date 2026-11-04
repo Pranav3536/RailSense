@@ -775,3 +775,42 @@ Decommissioned obsolete development artifacts and transient test outputs across 
    - **Equal-Height Chart Layout:** Standardized Daily Trend and Delay Distribution containers to `h-[340px]`. Replaced the large Boundary Days Notice block with an inline legend badge (amber dot for partial edge dates) and hover tooltip note.
    - **Category Breakdown Polish:** Formatted YAxis labels as `"CODE (Name)"` strictly for documented categories in `docs/data_dictionary.md` (`MEX`, `SUB`, `MEMU`, `PAS`, `SUF`, `TOD`, `VNDB`) and added value percentage labels (`LabelList`) at the end of each bar with responsive zero-clipping margins.
    - **WCAG AA Contrast Fix:** Upgraded status subtext in `Sidebar.jsx` from `text-slate-500` to `text-slate-400` on dark navy backgrounds, achieving >= 4.5:1 contrast and zero axe-core violations.
+
+---
+
+## D-57 — Phase 11.3 Train Explorer UI Polish, Default Sort, and Low-Support Clutter Elimination
+
+**Date decided:** 2026-11-05 (Phase 11.3 UI Polish Patch)
+
+**Decision:**
+1. **Backend Default Catalog Sorting & Sub-Millisecond Latency:**
+   - Added `sort` query parameter to `GET /api/trains` supporting `runs_desc` (default when `q` is absent/empty) and `number_asc`.
+   - Validates `sort` against allowed values; returns HTTP 400 (`INVALID_SORT`) for unrecognized sort values.
+   - When `q` is non-empty, search relevance/RapidFuzz fuzzy match ordering is strictly preserved.
+   - Pre-sorted in-memory catalog at startup into `self._trains_all_by_runs` and `self._trains_by_cat_runs`, achieving 0.60 ms p50 latency (p95 0.91 ms), easily satisfying the < 100 ms target.
+   - Updated `docs/openapi.yaml`, `docs/openapi.json`, `docs/API.md`, and `docs/api_contract_for_frontend.md`.
+2. **Pluralization Helper & Grammar Uniformity:**
+   - Added `pluralize(count, singular, plural = null)` helper in `frontend/src/utils/format.js` with full test coverage in `frontend/src/test/format.test.js`.
+   - Corrected all count labels to pluralize accurately ("19 observed runs", "1 stop", "8 scheduled halts", "19 calendar days").
+3. **Subheading, Labels & Action Polish:**
+   - Renamed subheading from "Single Train Deep Dive" to "Train Explorer" (catalog view) and "Train Delay Profile" (single-train detail view).
+   - Updated `NAV_ITEMS[1].title` in `frontend/src/config/app.js` and synced `document.title` dynamically (`Train Explorer | RailSense` and `<TrainNumber> Delay Profile | RailSense`).
+   - Renamed catalog list action button from "Inspect" to "View Route".
+   - Added Sort dropdown `<select>` next to category filter ("Most runs", "Train number") synced to URL query string.
+4. **Timetable Low-Support Clutter Elimination:**
+   - Removed repeated yellow `SupportBadge` pills ("Low Support (<30)") from every row in the timetable table.
+   - Replaced row-level clutter with plain muted text (`1 stop`, `18 stops`) and an accessible amber `<Info>` tooltip on low-support stops explaining: `"Low support: fewer than 30 eligible stops, treat as noisy"`.
+   - Retained exactly one train-level `SupportBadge` in the header card when train overall eligible stops < 30.
+5. **Conditional Boundary Notice:**
+   - Replaced bulky 4-line boundary notice box with a compact inline `<PartialDayLegend />` ("Partial day" pill with amber indicator and tooltip).
+   - Evaluated conditionally: rendered ONLY when the train's `history_by_date` contains at least one date from `PARTIAL_DATES` (`2026-10-07`, `2026-10-25`). Trains with only non-boundary dates render zero boundary notice and zero amber legend.
+6. **Explainer Paragraphs & Non-Causal Caveats:**
+   - Converted visible explanatory paragraphs under route progression and date history charts to accessible `<p className="sr-only">`.
+   - Replaced the bottom caveats card with an accessible collapsible ("About these numbers", collapsed by default, keyboard accessible with `aria-expanded`).
+7. **Stray Definition Popover Removal:**
+   - Removed free-floating `(i)` definition note under stat cards.
+   - Definition moved into `SectionHeader` `info` prop ("delayed = arrival delay > 15 min on label-eligible stops (seq > 1, arrival reported, |delay| <= 1440 min)").
+8. **Table Sticky Column & Visual Verification:**
+   - Added sticky first column (`#` sequence) with clean border to timetable table.
+   - Captured responsive screenshots at 1366x768 into `docs/ui/phase11_3/` (`explorer_catalog_1366.png`, `explorer_train_12951_boundary_1366.png`, `explorer_train_01051_noboundary_1366.png`, total size 304 KB < 1 MB).
+

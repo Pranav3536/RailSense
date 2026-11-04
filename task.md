@@ -706,3 +706,44 @@ In Phase 10, the session will:
   - Playwright E2E: **38 passed, 4 skipped (live)** across 6 test files
   - ESLint: **0 errors, 0 warnings**
   - Vite Build: **OK**
+
+---
+
+## 19. Phase 11.3 Train Explorer UI Polish & Default Sort (COMPLETE)
+
+- **Backend Default Catalog Sorting (`GET /api/trains`):**
+  - Added `sort` query parameter accepting `runs_desc` (default when `q` is absent/empty) and `number_asc`.
+  - Validates `sort` against allowed values; returns HTTP 400 (`INVALID_SORT`) for unrecognized sort values.
+  - When `q` is non-empty, search relevance/RapidFuzz fuzzy match ordering is strictly preserved.
+  - In-memory catalog is pre-sorted at startup into `self._trains_all_by_runs` and `self._trains_by_cat_runs`, achieving sub-millisecond p50 response (0.60 ms, p95 0.91 ms).
+  - Updated API documentation (`docs/openapi.yaml`, `docs/openapi.json`, `docs/API.md`, `docs/api_contract_for_frontend.md`) and added pytest test coverage.
+- **Pluralization Helper & Grammar Uniformity:**
+  - Implemented `pluralize(count, singular, plural = null)` in `frontend/src/utils/format.js` with comprehensive unit tests in `frontend/src/test/format.test.js`.
+  - Corrected all count labels to pluralize accurately ("19 observed runs", "1 stop", "8 scheduled halts", "19 calendar days").
+- **Subheading, Labels & Action Polish:**
+  - Renamed subheading from "Single Train Deep Dive" to "Train Explorer" (catalog view) and "Train Delay Profile" (single-train detail view).
+  - Updated `NAV_ITEMS[1].title` in `frontend/src/config/app.js` and synced `document.title` dynamically (`Train Explorer | RailSense` and `<TrainNumber> Delay Profile | RailSense`).
+  - Renamed catalog list action button from "Inspect" to "View Route".
+  - Added Sort dropdown `<select>` next to category filter ("Most runs", "Train number") synced to URL query string.
+- **Timetable Low-Support Clutter Elimination:**
+  - Removed repeated yellow `SupportBadge` pills ("Low Support (<30)") from every row in the timetable table.
+  - Replaced row-level clutter with plain muted text (`1 stop`, `18 stops`) and an accessible amber `<Info>` tooltip on low-support stops explaining: `"Low support: fewer than 30 eligible stops, treat as noisy"`.
+  - Retained exactly one train-level `SupportBadge` in the header card when train overall eligible stops < 30.
+- **Conditional Boundary Notice:**
+  - Replaced bulky 4-line boundary notice box with a compact inline `<PartialDayLegend />` ("Partial day" pill with amber indicator and tooltip).
+  - Evaluated conditionally: rendered ONLY when the train's `history_by_date` contains at least one date from `PARTIAL_DATES` (`2026-10-07`, `2026-10-25`). Trains with only non-boundary dates render zero boundary notice and zero amber legend.
+- **Explainer Paragraphs & Non-Causal Caveats:**
+  - Converted visible explanatory paragraphs under route progression and date history charts to accessible `<p className="sr-only">`.
+  - Replaced the bottom caveats card with an accessible collapsible ("About these numbers", collapsed by default, keyboard accessible with `aria-expanded`).
+- **Stray Definition Popover Removal:**
+  - Removed free-floating `(i)` definition note under stat cards.
+  - Definition moved into `SectionHeader` `info` prop ("delayed = arrival delay > 15 min on label-eligible stops (seq > 1, arrival reported, |delay| <= 1440 min)").
+- **Table Sticky Column & Visual Verification:**
+  - Added sticky first column (`#` sequence) with clean border to timetable table.
+  - Captured responsive screenshots at 1366x768 into `docs/ui/phase11_3/` (`explorer_catalog_1366.png`, `explorer_train_12951_boundary_1366.png`, `explorer_train_01051_noboundary_1366.png`, total size 304 KB < 1 MB).
+- **Verification Baseline Preserved:**
+  - Pytest: **156 passed, 4 skipped in 26.28s** (+2 new sort tests)
+  - Vitest: **77 passed across 13 test files in 46.56s** (+3 new tests)
+  - Playwright E2E: **38 passed, 4 skipped (live)** across 6 test files
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK (11.94s)**

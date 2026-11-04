@@ -96,6 +96,7 @@ Search trains by number prefix or name substring, with optional category filteri
 |-----------|------|---------|-------------|
 | `q` | string | `null` | Train number prefix (e.g. `129`) or name substring (e.g. `Rajdhani`) |
 | `category` | string | `null` | Category code (e.g. `SUB`, `MEX`, `SUF`, `EXP`, `TOD`) |
+| `sort` | string | `runs_desc` | Sort order: `runs_desc` (default when `q` empty) or `number_asc` |
 | `page` | integer | `1` | Page number |
 | `page_size` | integer | `20` | Results per page (max 100) |
 

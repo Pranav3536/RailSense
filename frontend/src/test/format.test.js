@@ -4,7 +4,8 @@ import {
   formatCompact,
   formatPercent,
   formatMinutes,
-  formatDate
+  formatDate,
+  pluralize
 } from '../utils/format';
 
 describe('format.js utility suite', () => {
@@ -52,5 +53,19 @@ describe('format.js utility suite', () => {
 
     expect(formatDate(null)).toBe('Not available');
     expect(formatDate('')).toBe('Not available');
+  });
+
+  it('pluralizes nouns accurately based on count', () => {
+    expect(pluralize(1, 'run')).toBe('1 run');
+    expect(pluralize(0, 'run')).toBe('0 runs');
+    expect(pluralize(5, 'stop')).toBe('5 stops');
+    expect(pluralize(1, 'stop')).toBe('1 stop');
+    expect(pluralize(1, 'observed run', 'observed runs')).toBe('1 observed run');
+    expect(pluralize(19, 'observed run', 'observed runs')).toBe('19 observed runs');
+    expect(pluralize(1, 'scheduled halt', 'scheduled halts')).toBe('1 scheduled halt');
+    expect(pluralize(24, 'scheduled halt', 'scheduled halts')).toBe('24 scheduled halts');
+    expect(pluralize(1000, 'train')).toBe('1,000 trains');
+    expect(pluralize(null, 'run')).toBe('Not available');
+    expect(pluralize(undefined, 'stop')).toBe('Not available');
   });
 });

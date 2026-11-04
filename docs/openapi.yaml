@@ -46,6 +46,13 @@ paths:
           description: Filter by category (SUB, MEX, SUF, EXP, etc.)
           schema:
             type: string
+        - name: sort
+          in: query
+          description: Sort ordering ('runs_desc' [default when q empty], 'number_asc')
+          schema:
+            type: string
+            enum: [runs_desc, number_asc]
+            default: runs_desc
         - name: page
           in: query
           schema:
