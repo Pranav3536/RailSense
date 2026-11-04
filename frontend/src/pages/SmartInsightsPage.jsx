@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Send,
-  Sparkles,
   AlertCircle,
   ChevronDown,
   ChevronUp,
@@ -327,7 +326,7 @@ export function SmartInsightsPage() {
             id="answer-heading"
             title="Analysis Result"
             description="Truthfully compiled response from observed historical records."
-            icon={Sparkles}
+            icon={Cpu}
             badge={
               <Badge
                 variant={

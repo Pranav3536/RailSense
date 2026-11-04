@@ -128,4 +128,18 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
     expect(CHART_THEME.fontSize.tooltip).toBeGreaterThanOrEqual(14);
     expect(CHART_THEME.heights.standard).toBeGreaterThanOrEqual(320);
   });
+
+  it('contains zero sparkle or AI-style icons (Sparkles, Wand, Stars) in frontend production source files', () => {
+    const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
+    const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')));
+
+    const forbiddenIconRegex = /\b(Sparkles|Wand|Stars)\b/;
+
+    nonTestFiles.forEach((file) => {
+      if (file.includes('creator.js')) return;
+      const content = fs.readFileSync(file, 'utf-8');
+      const match = content.match(forbiddenIconRegex);
+      expect(match, `Found forbidden sparkle/AI-style icon '${match?.[0]}' in ${file}`).toBeNull();
+    });
+  });
 });

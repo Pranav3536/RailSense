@@ -52,6 +52,9 @@ export function formatCompact(val) {
 
 /**
  * Formats a proportion or percentage.
+ * PREFER using formatFractionAsPercent for values in [0, 1] (e.g. probabilities, metrics)
+ * or formatPercentValue for values in [0, 100] (e.g. rates, percentages).
+ *
  * @param {number|string} val
  * @param {boolean} isFraction If true, val is in [0, 1] (e.g. 0.492 -> "49.2%").
  *                             If false, val is already 0-100 (e.g. 49.2 -> "49.2%").
@@ -62,8 +65,45 @@ export function formatPercent(val, isFraction = true, decimals = 1) {
   if (!isValidNumber(val)) return NOT_AVAILABLE;
   let num = Number(val);
   if (isFraction) {
+    if (typeof import.meta !== 'undefined' && import.meta.env?.DEV && num > 1.0) {
+      console.warn(`[formatPercent] Value ${num} > 1.0 was treated as fraction and multiplied by 100. Use formatPercentValue if this is already a percentage.`);
+    }
     num = num * 100;
   }
+  return `${formatNumber(num, decimals)}%`;
+}
+
+/**
+ * Formats a fraction strictly in [0, 1] as a percentage string (multiplies by 100).
+ * E.g., 0.227 -> "22.7%", 0.0 -> "0.0%", 1.0 -> "100.0%".
+ * Use for model probabilities, prevalence, classification metrics (precision, recall, AUC),
+ * and confusion matrix proportions.
+ *
+ * @param {number|string} val
+ * @param {number} decimals
+ * @returns {string}
+ */
+export function formatFractionAsPercent(val, decimals = 1) {
+  if (!isValidNumber(val)) return NOT_AVAILABLE;
+  const num = Number(val);
+  if (typeof import.meta !== 'undefined' && import.meta.env?.DEV && (num < 0 || num > 1.0)) {
+    console.warn(`[formatFractionAsPercent] Expected fraction in [0, 1], received: ${num}`);
+  }
+  return `${formatNumber(num * 100, decimals)}%`;
+}
+
+/**
+ * Formats a number already expressed on the 0-100 percentage scale (does NOT multiply by 100).
+ * E.g., 88.24 -> "88.2%", 49.91 -> "49.9%", 0 -> "0.0%".
+ * Use for observed delay rates, fleet delayed rates, hotspot rates, category rates from API.
+ *
+ * @param {number|string} val
+ * @param {number} decimals
+ * @returns {string}
+ */
+export function formatPercentValue(val, decimals = 1) {
+  if (!isValidNumber(val)) return NOT_AVAILABLE;
+  const num = Number(val);
   return `${formatNumber(num, decimals)}%`;
 }
 

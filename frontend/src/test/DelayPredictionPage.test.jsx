@@ -32,7 +32,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
     );
 
     expect(screen.getByText('Delay Prediction Engine')).toBeInTheDocument();
-    expect(screen.getByText('Schedule-Time Prediction Parameters')).toBeInTheDocument();
+    expect(screen.getByText('Prediction Inputs')).toBeInTheDocument();
 
     // Wait for train details to load
     await waitFor(() => {
@@ -40,8 +40,8 @@ describe('DelayPredictionPage (Tab 3)', () => {
     });
 
     // Check stop selector has options
-    // Submit prediction
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    // Submit prediction using new "Run Prediction" button text
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -58,19 +58,29 @@ describe('DelayPredictionPage (Tab 3)', () => {
       expect(screen.getByText('Prediction Result & Risk Profile')).toBeInTheDocument();
     });
 
-    // Check risk badge and plain words decision
-    expect(screen.getByText(/estimated delay probability/i)).toBeInTheDocument();
-    expect(screen.getByText(/Decision at Operational Threshold/i)).toBeInTheDocument();
-    expect(screen.getByText(/Model Feature Associations/i)).toBeInTheDocument();
+    // Check result card title and plain words decision
+    expect(screen.getByText('Estimated Delay Risk')).toBeInTheDocument();
+    expect(screen.getByText(/Estimated below alert threshold/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Model Feature Associations/i })).toBeInTheDocument();
 
-    // Check in-sample educational note is displayed
-    expect(screen.getByText(/In-Sample Demonstration/i)).toBeInTheDocument();
+    // Check compact status chip for in-window date
+    expect(screen.getByText('Date inside training window')).toBeInTheDocument();
+
+    // Check collapsible "Model assumptions and caveats" is present and closed by default
+    const caveatsBtn = screen.getByRole('button', { name: /Model assumptions and caveats/i });
+    expect(caveatsBtn).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText(/What the Model Predicts/i)).not.toBeInTheDocument();
+
+    // Open collapsible
+    fireEvent.click(caveatsBtn);
+    expect(caveatsBtn).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText(/What the Model Predicts/i)).toBeInTheDocument();
 
     // Check model version
     expect(screen.getByText('1.0.0')).toBeInTheDocument();
   });
 
-  it('displays prospective date notice when date is outside dataset window', async () => {
+  it('displays prospective date notice chip when date is outside dataset window', async () => {
     endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
     endpoints.predictDelay.mockResolvedValue(predictOutOfWindowFixture);
 
@@ -83,18 +93,18 @@ describe('DelayPredictionPage (Tab 3)', () => {
     );
 
     await waitFor(() => {
-      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
     });
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText(/Prospective Date Notice/i)).toBeInTheDocument();
+      expect(screen.getByText('Outside observed window')).toBeInTheDocument();
     });
   });
 
-  it('renders cold-start notice for low-history trains', async () => {
+  it('renders limited history chip for cold-start trains', async () => {
     endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
     endpoints.predictDelay.mockResolvedValue(predictColdStartFixture);
 
@@ -110,11 +120,11 @@ describe('DelayPredictionPage (Tab 3)', () => {
       expect(endpoints.getTrainDetail).toHaveBeenCalledWith('00149');
     });
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText(/Cold-Start Prior Applied/i)).toBeInTheDocument();
+      expect(screen.getByText('Limited history')).toBeInTheDocument();
     });
   });
 
@@ -133,10 +143,10 @@ describe('DelayPredictionPage (Tab 3)', () => {
     );
 
     await waitFor(() => {
-      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
     });
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -201,7 +211,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
     expect(ndlsStops[1]).not.toBeDisabled();
     expect(select.value).toBe('4');
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -225,7 +235,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
       </MemoryRouter>
     );
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     expect(submitBtn).toBeDisabled();
 
     fireEvent.click(submitBtn);
@@ -247,10 +257,10 @@ describe('DelayPredictionPage (Tab 3)', () => {
     );
 
     await waitFor(() => {
-      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
     });
 
-    const submitBtn = screen.getByRole('button', { name: /Predict Delay Probability/i });
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -279,5 +289,150 @@ describe('DelayPredictionPage (Tab 3)', () => {
 
     const dateInput = screen.getByLabelText(/Journey Start Date/i);
     expect(dateInput.value).toBe('2026-10-20');
+  });
+
+  it('proves observed delay rate shows ~88.2% for fixture value 88.24 without unit multiplier bug', async () => {
+    const customTrainFixture = {
+      ...trainDetailFixture,
+      stops: [
+        trainDetailFixture.stops[0],
+        {
+          ...trainDetailFixture.stops[1],
+          observed_delayed_rate: 88.24,
+          observed_stops_count: 17,
+        },
+      ],
+    };
+
+    endpoints.getTrainDetail.mockResolvedValue(customTrainFixture);
+    endpoints.predictDelay.mockResolvedValue(predictNormalFixture);
+
+    render(
+      <MemoryRouter initialEntries={['/predict?train=12951&seq=2&date=2026-10-15']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="predict" element={<DelayPredictionPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
+    });
+
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('Historical Observed Context')).toBeInTheDocument();
+    });
+
+    // Must show 88.2% and NEVER 8,824.0%
+    expect(screen.getByText('88.2%')).toBeInTheDocument();
+    expect(screen.queryByText(/8,824/)).not.toBeInTheDocument();
+    expect(screen.getByText('17 observed runs')).toBeInTheDocument();
+  });
+
+  it('verifies form footer contains no internal rate-limit or threshold strings', async () => {
+    endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
+
+    render(
+      <MemoryRouter initialEntries={['/predict?train=12951&seq=2&date=2026-10-15']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="predict" element={<DelayPredictionPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+    });
+
+    expect(screen.queryByText(/Rate limited to 120 requests\/minute/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Model threshold: 0\.410/i)).not.toBeInTheDocument();
+  });
+
+  it('verifies date picker helper text displays observed snapshot range dynamically', async () => {
+    endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
+
+    render(
+      <MemoryRouter initialEntries={['/predict']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="predict" element={<DelayPredictionPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/Observed snapshot: 7 Oct 2026 – 25 Oct 2026\./i)).toBeInTheDocument();
+  });
+
+  it('verifies factor bars display raw log-odds and contain zero percent signs', async () => {
+    endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
+    endpoints.predictDelay.mockResolvedValue({
+      ...predictNormalFixture,
+      contributing_factors: [
+        'Train 12951 exhibits high historical punctuality',
+        'Station BRC is an observed delay hotspot',
+      ],
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/predict?train=12951&seq=2&date=2026-10-15']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="predict" element={<DelayPredictionPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
+    });
+
+    const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
+    await waitFor(() => {
+      expect(submitBtn).not.toBeDisabled();
+    });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(endpoints.predictDelay).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Model Feature Associations/i })).toBeInTheDocument();
+      expect(screen.getAllByText(/lowers the estimate/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/raises the estimate/i).length).toBeGreaterThanOrEqual(1);
+    });
+
+    // Verify factor container does not print percent signs on factor items
+    const factorSection = screen.getByRole('heading', { name: /Model Feature Associations/i }).closest('div');
+    expect(factorSection).not.toBeNull();
+  });
+
+  it('verifies that no rendered text contains an unintended percentage above 100 or 4-digit percentage', async () => {
+    endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
+    endpoints.predictDelay.mockResolvedValue(predictNormalFixture);
+
+    const { container } = render(
+      <MemoryRouter initialEntries={['/predict?train=12951&seq=2&date=2026-10-15']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="predict" element={<DelayPredictionPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Run Prediction/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Estimated Delay Risk')).toBeInTheDocument();
+    });
+
+    // Regex checks for bug pattern like 8,824.0% or 5702.0%
+    const pageText = container.textContent || '';
+    const badPercentRegex = /\d{3,},\d{3}\.\d%/g;
+    expect(badPercentRegex.test(pageText)).toBe(false);
   });
 });

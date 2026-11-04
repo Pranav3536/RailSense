@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
-  Sparkles,
+  SlidersHorizontal,
+  Play,
   Calendar,
   Clock,
   MapPin,
@@ -10,7 +11,8 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowRight,
-  ShieldCheck,
+  Info,
+  AlertTriangle,
 } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import {
@@ -26,17 +28,15 @@ import {
   ProbabilityGauge,
   RiskBadge,
   FactorBars,
-  ColdStartNotice,
-  WarningList,
   CategoryLabel,
   SupportBadge,
 } from '../components/ui';
 import { getTrainDetail, predictDelay } from '../api/endpoints';
-import { formatPercent, formatMinutes, formatDate } from '../utils/format';
-import { LOW_SUPPORT_THRESHOLD } from '../config/constants';
+import { formatPercentValue, formatMinutes, formatDate, pluralize } from '../utils/format';
+import { LOW_SUPPORT_THRESHOLD, DATASET_WINDOW } from '../config/constants';
 
 /**
- * DelayPredictionPage — Tab 3 ("ML Inference Engine")
+ * DelayPredictionPage — Tab 3 ("Delay Prediction Engine")
  * Interactive schedule-time pre-departure delay probability forecasting.
  */
 export function DelayPredictionPage() {
@@ -64,8 +64,8 @@ export function DelayPredictionPage() {
   // Rate Limiting (429) Cooldown State
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
-  // Explanatory Collapsible
-  const [isExplainerOpen, setIsExplainerOpen] = useState(false);
+  // Collapsible for Model Assumptions & Caveats (Task 3b: closed by default)
+  const [isCaveatsOpen, setIsCaveatsOpen] = useState(false);
 
   // Handle Rate Limit Countdown
   useEffect(() => {
@@ -163,6 +163,20 @@ export function DelayPredictionPage() {
   // Find currently selected stop object
   const currentStop = trainDetail?.stops?.find((s) => String(s.seq) === String(selectedSeq));
 
+  // Determine window status for compact chips
+  const isInWindow = Boolean(
+    prediction?.journey_date &&
+    prediction.journey_date >= DATASET_WINDOW.startDate &&
+    prediction.journey_date <= DATASET_WINDOW.endDate
+  );
+
+  const isOutOfWindow = Boolean(
+    prediction?.journey_date &&
+    (prediction.journey_date < DATASET_WINDOW.startDate || prediction.journey_date > DATASET_WINDOW.endDate)
+  );
+
+  const isColdStart = Boolean(prediction?.historical_context?.is_cold_start);
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -175,12 +189,12 @@ export function DelayPredictionPage() {
         }
       />
 
-      {/* 1. Interactive Prediction Form */}
+      {/* 1. Interactive Prediction Form (Task 2: SlidersHorizontal icon, "Prediction Inputs", Task 5 & 6) */}
       <Card className="border-slate-200 bg-white">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-primary-600" aria-hidden="true" />
-            <CardTitle>Schedule-Time Prediction Parameters</CardTitle>
+            <SlidersHorizontal size={18} className="text-primary-600" aria-hidden="true" />
+            <CardTitle>Prediction Inputs</CardTitle>
           </div>
           <CardDescription>
             Specify a train service, destination stop, and planned journey start date. Pre-departure inference uses strictly pre-run timetable features with zero en-route leakage.
@@ -266,7 +280,7 @@ export function DelayPredictionPage() {
                 </p>
               </div>
 
-              {/* Journey Date Input */}
+              {/* Journey Date Input (Task 6: Dynamic snapshot text) */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="journey-date-input" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -289,7 +303,7 @@ export function DelayPredictionPage() {
                   />
                 </div>
                 <p className="text-xs text-slate-500">
-                  Historical window: Oct 7–25, 2026. Dates outside this range test prospective generalization.
+                  Observed snapshot: {formatDate(DATASET_WINDOW.startDate)} – {formatDate(DATASET_WINDOW.endDate)}.
                 </p>
               </div>
             </div>
@@ -305,28 +319,25 @@ export function DelayPredictionPage() {
               </div>
             )}
 
-            {/* Actions Bar */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <div className="text-xs text-slate-500">
-                Rate limited to 120 requests/minute. Model threshold: <span className="font-mono font-semibold">{prediction?.threshold_used?.toFixed(3) || "0.410"}</span>.
-              </div>
-
+            {/* Actions Bar (Task 5: removed rate-limit text; Task 2: "Run Prediction") */}
+            <div className="flex items-center justify-end pt-2 border-t border-slate-100">
               <button
                 type="submit"
                 disabled={!trainNumber || !selectedSeq || !journeyDate || predicting || cooldownSeconds > 0}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-xs bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition-colors disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed min-h-[44px]"
+                aria-label="Run Prediction"
               >
                 {predicting ? (
                   <>
                     <Spinner size="sm" className="text-white" />
-                    <span>Computing Inference...</span>
+                    <span>Running Prediction...</span>
                   </>
                 ) : cooldownSeconds > 0 ? (
-                  <span>Cooldown ({cooldownSeconds}s)...</span>
+                  <span>Try again in {cooldownSeconds}s</span>
                 ) : (
                   <>
-                    <Sparkles size={16} className="text-white" aria-hidden="true" />
-                    <span>Predict Delay Probability</span>
+                    <Play size={15} className="text-white fill-white" aria-hidden="true" />
+                    <span>Run Prediction</span>
                   </>
                 )}
               </button>
@@ -345,15 +356,22 @@ export function DelayPredictionPage() {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* 2a. Primary Gauge & Decision Card */}
+              {/* 2a. Primary Gauge & Estimated Delay Risk Card (Tasks 2 & 3) */}
               <Card className="lg:col-span-2 border-slate-200 bg-white">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <Clock size={18} className="text-primary-600" aria-hidden="true" />
-                      <CardTitle>Delay Risk Estimation</CardTitle>
+                      <CardTitle>Estimated Delay Risk</CardTitle>
                     </div>
-                    <RiskBadge riskBand={prediction.risk_band} size="md" />
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {prediction.predicted_delayed
+                          ? `Estimated above alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(3)})`
+                          : `Estimated below alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(3)})`}
+                      </span>
+                      <RiskBadge riskBand={prediction.risk_band} size="md" />
+                    </div>
                   </div>
                   <CardDescription>
                     Calibrated probability that this train arrives more than 15 minutes late at this stop.
@@ -368,50 +386,57 @@ export function DelayPredictionPage() {
                     threshold={prediction.threshold_used || 0.41}
                   />
 
-                  {/* Decision Text in Plain Words */}
-                  <div
-                    className={`p-4 rounded-xl border ${
-                      prediction.predicted_delayed
-                        ? 'bg-amber-50/80 border-amber-200 text-amber-950'
-                        : 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      {prediction.predicted_delayed ? (
-                        <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <ShieldCheck size={20} className="text-emerald-600 flex-shrink-0 mt-0.5" />
-                      )}
-                      <div className="space-y-1">
-                        <div className="text-xs font-bold uppercase tracking-wider">
-                          Decision at Operational Threshold ({(prediction.threshold_used * 100).toFixed(1)}%)
+                  {/* Task 3a: Compact Status Chip Row */}
+                  {(isInWindow || isOutOfWindow || isColdStart) && (
+                    <div
+                      className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100"
+                      role="region"
+                      aria-label="Prediction operational status"
+                    >
+                      {isInWindow && (
+                        <div
+                          tabIndex={0}
+                          role="status"
+                          title={`The model and rolling aggregates saw these dates (${formatDate(DATASET_WINDOW.startDate)} – ${formatDate(DATASET_WINDOW.endDate)}). Treat the result as an illustration of in-sample statistical associations.`}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-300 cursor-help focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        >
+                          <Info size={13} className="text-slate-500 flex-shrink-0" aria-hidden="true" />
+                          <span>Date inside training window</span>
                         </div>
-                        <p className="text-sm font-semibold leading-relaxed">
-                          {prediction.predicted_delayed
-                            ? `At the operational decision threshold of ${(prediction.threshold_used * 100).toFixed(1)}%, this stop is classified as Predicted Delayed (>15 minutes arrival delay).`
-                            : `At the operational decision threshold of ${(prediction.threshold_used * 100).toFixed(1)}%, this stop is classified as Predicted On-Time / Minor Delay (≤15 minutes).`}
-                        </p>
-                      </div>
+                      )}
+
+                      {isOutOfWindow && (
+                        <div
+                          tabIndex={0}
+                          role="status"
+                          title={`Journey date is outside the recorded observation window (${formatDate(DATASET_WINDOW.startDate)} – ${formatDate(DATASET_WINDOW.endDate)}). Prediction assumes standard timetable patterns without seasonality or holiday adjustments.`}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-300 cursor-help focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <Calendar size={13} className="text-amber-600 flex-shrink-0" aria-hidden="true" />
+                          <span>Outside observed window</span>
+                        </div>
+                      )}
+
+                      {isColdStart && (
+                        <div
+                          tabIndex={0}
+                          role="status"
+                          title="Cold-start fallback: fewer than 5 historical runs recorded for this service or stop in the observation window. Estimates rely on category-level priors."
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-300 cursor-help focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <AlertTriangle size={13} className="text-amber-600 flex-shrink-0" aria-hidden="true" />
+                          <span>Limited history</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
 
-                  {/* Cold-Start Callout */}
-                  <ColdStartNotice
-                    isColdStart={prediction.historical_context?.is_cold_start}
-                  />
-
-                  {/* Associated Factors */}
+                  {/* Associated Factors (Task 4: horizontal diverging bars in log-odds space) */}
                   <FactorBars factors={prediction.contributing_factors} />
-
-                  {/* Warnings, In-Sample Note, and API Caveats */}
-                  <WarningList
-                    caveats={prediction.caveats}
-                    journeyDate={prediction.journey_date}
-                  />
                 </CardContent>
               </Card>
 
-              {/* 2b. Context & Empirical Baseline Card */}
+              {/* 2b. Context & Empirical Baseline Card (Task 1: formatPercentValue fix) */}
               <div className="space-y-6">
                 <Card className="border-slate-200 bg-white">
                   <CardHeader>
@@ -431,11 +456,13 @@ export function DelayPredictionPage() {
                           <div className="text-xs text-slate-500 font-medium">Observed Delayed Rate</div>
                           <div className="text-2xl font-bold font-mono text-slate-900">
                             {currentStop.observed_delayed_rate !== null && currentStop.observed_delayed_rate !== undefined
-                              ? formatPercent(currentStop.observed_delayed_rate)
+                              ? formatPercentValue(currentStop.observed_delayed_rate, 1)
                               : 'Not available'}
                           </div>
                           <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
-                            <span>Empirical historical rate</span>
+                            <span>
+                              {pluralize(currentStop.observed_stops_count || 0, 'observed run', 'observed runs')}
+                            </span>
                             <SupportBadge
                               count={currentStop.observed_stops_count || 0}
                               threshold={LOW_SUPPORT_THRESHOLD}
@@ -501,34 +528,74 @@ export function DelayPredictionPage() {
               </div>
             </div>
 
-            {/* 3. About This Prediction Educational Collapsible */}
+            {/* Task 3b: ONE collapsed collapsible "Model assumptions and caveats" (closed by default, aria-expanded, keyboard accessible) */}
             <Card className="border-slate-200 bg-white">
               <button
                 type="button"
-                onClick={() => setIsExplainerOpen(!isExplainerOpen)}
-                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors rounded-xl"
-                aria-expanded={isExplainerOpen}
+                onClick={() => setIsCaveatsOpen(!isCaveatsOpen)}
+                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-expanded={isCaveatsOpen}
+                aria-controls="model-assumptions-content"
               >
                 <div className="flex items-center gap-2">
                   <HelpCircle size={18} className="text-primary-600" aria-hidden="true" />
                   <span className="text-sm font-bold text-slate-900">
-                    Methodology: How to interpret this delay probability
+                    Model assumptions and caveats
                   </span>
                 </div>
-                {isExplainerOpen ? <ChevronUp size={18} className="text-slate-500" /> : <ChevronDown size={18} className="text-slate-500" />}
+                {isCaveatsOpen ? <ChevronUp size={18} className="text-slate-500" /> : <ChevronDown size={18} className="text-slate-500" />}
               </button>
 
-              {isExplainerOpen && (
-                <CardContent className="pt-0 pb-5 text-xs text-slate-600 space-y-3 leading-relaxed border-t border-slate-100">
-                  <p>
-                    <strong>Estimated Delay Probability:</strong> Represents the model&apos;s statistical estimation that this service arrives &gt;15 minutes behind schedule at the target stop. The raw tree probability is calibrated via Isotonic Regression on held-out validation data so that a predicted 40% probability corresponds closely to an observed 40% historical delay frequency.
-                  </p>
-                  <p>
-                    <strong>Operational Threshold (0.410):</strong> The binary decision cut-off was tuned to maximize the F1-score on the validation split. Because arrival delay is slightly imbalanced and false negatives are costly in passenger planning, the balanced F1 threshold (0.410) catches 82.0% of all late arrivals with 74.0% precision on the untouched test split.
-                  </p>
-                  <p>
-                    <strong>Non-Causal Attribute Association:</strong> Factors shown above are features the model uses to compute the probability (e.g. stop sequence, scheduled arrival time of day, and trailing 7-day priors). They do not represent causal physical explanations (such as external disruptions or infrastructure events), which are unobserved in timetable data.
-                  </p>
+              {isCaveatsOpen && (
+                <CardContent id="model-assumptions-content" className="pt-0 pb-5 text-xs text-slate-600 space-y-3.5 leading-relaxed border-t border-slate-100">
+                  <div>
+                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">What the Model Predicts</h5>
+                    <p>
+                      The model forecasts pre-departure arrival delay exceeding 15 minutes at scheduled intermediate or terminus halts, evaluated strictly on label-eligible service stops.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Timetable Inputs &amp; Information Boundaries</h5>
+                    <p>
+                      Inference relies strictly on pre-departure schedule attributes (train service classification, route sequence, arrival time of day) and rolling 7-day empirical priors. It does not observe dynamic real-time physical track events, signal disruptions, weather, or tactical dispatch interventions.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Observation Window &amp; Demonstration Context</h5>
+                    <p>
+                      The baseline model was fitted on observations spanning {formatDate(DATASET_WINDOW.startDate)} to {formatDate(DATASET_WINDOW.endDate)} (data snapshot baseline as of {prediction.data_as_of || '2026-10-25'}). When inspecting journey dates within this snapshot, results illustrate in-sample statistical patterns rather than prospective checks.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Calibration &amp; Operational Decision Threshold</h5>
+                    <p>
+                      Raw ensemble tree outputs are calibrated via Isotonic Regression on held-out validation data. The operational decision threshold is set at {(prediction.threshold_used ?? 0.41).toFixed(3)} to balance precision and recall on late arrivals.
+                    </p>
+                  </div>
+
+                  {prediction.caveats && prediction.caveats.length > 0 && (
+                    <div>
+                      <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Operating Caveats</h5>
+                      <ul className="list-disc list-inside space-y-1 text-slate-600">
+                        {prediction.caveats.map((c, idx) => (
+                          <li key={idx}>{c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="pt-2 border-t border-slate-100">
+                    <Link
+                      to="/model-lab"
+                      className="inline-flex items-center gap-1.5 text-primary-700 hover:text-primary-900 font-semibold"
+                    >
+                      <span>Explore validation metrics and calibration curves in Model Lab</span>
+                      <ArrowRight size={13} />
+                    </Link>
+                  </div>
                 </CardContent>
               )}
             </Card>

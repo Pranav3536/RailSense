@@ -52,6 +52,32 @@ The sidebar's **Truthful Database & Service Status Card** consumes `/api/health/
 
 ---
 
+## 2.1 Numerical Units & Percentage Formatting Convention
+
+To eliminate ambiguity across API responses and frontend formatting, values follow strict conventions:
+
+| Data Type | API Response Scale | Example Value | Frontend Formatter | Rendered Output |
+| :--- | :--- | :--- | :--- | :--- |
+| **Observed Rates & Aggregates** | Pre-scaled `0` to `100` (%) | `88.24`, `57.02` | `formatPercentValue(val, 1)` | `"88.2%"`, `"57.0%"` |
+| **Model Probabilities & Cut-offs** | Fraction `[0, 1]` | `0.227`, `0.42` | `formatFractionAsPercent(val, 1)` | `"22.7%"`, `"42.0%"` |
+| **Model Lab Benchmark Metrics** | Fraction `[0, 1]` | `0.7852`, `0.654` | `formatFractionAsPercent(val, 1)` | `"78.5%"`, `"65.4%"` |
+| **Model Contributing Factors** | Signed log-odds | `+0.84`, `-0.52` | Plain signed float (no `%`) | `"+0.84"`, `"-0.52"` |
+
+**Endpoints by Category:**
+- **Pre-scaled 0–100 (`formatPercentValue`):**
+  - `/api/overview` (`delay_rate`, `early_rate`, category distribution shares)
+  - `/api/trains` & `/api/trains/<id>` (`delayed_rate`, `category_delayed_rate`, timetable `observed_delayed_rate`)
+  - `/api/patterns` (`delayedRate`, `avg_delay_min`, hotspot percentages)
+  - `/api/stations/<id>` (`delayed_rate`)
+- **Fractions [0, 1] (`formatFractionAsPercent`):**
+  - `/api/predict` (`probability_delayed`, `probability_raw`, `threshold_used`)
+  - `/api/model-lab` (`precision`, `recall`, `f1`, `roc_auc`, `pr_auc`, `brier_score`, `prevalence`)
+  - Confusion matrix cell ratios
+- **Raw Log-Odds (never `%`):**
+  - `/api/predict` (`contributing_factors`, `contributions`)
+
+---
+
 ## 3. Comprehensive Endpoint Schemas & Truncated Examples
 
 ### `GET /api/health` (Status: 200)

@@ -78,7 +78,7 @@ test.describe('RailSense E2E — Resilience, Error Envelopes & Wake-Up Notice', 
     await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
     await page.waitForLoadState('networkidle');
 
-    const submitBtn = page.getByRole('button', { name: /Predict Delay/i });
+    const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
     await submitBtn.click();
 
     // Error message appears

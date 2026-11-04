@@ -3,6 +3,8 @@ import {
   formatNumber,
   formatCompact,
   formatPercent,
+  formatFractionAsPercent,
+  formatPercentValue,
   formatMinutes,
   formatDate,
   pluralize
@@ -25,6 +27,29 @@ describe('format.js utility suite', () => {
     expect(formatPercent(0.4852)).toBe('48.5%');
     expect(formatPercent(0.4852, true, 2)).toBe('48.52%');
     expect(formatPercent(1.0)).toBe('100.0%');
+    expect(formatPercent(49.2, false)).toBe('49.2%');
+  });
+
+  it('formats fractions as percent explicitly with formatFractionAsPercent', () => {
+    expect(formatFractionAsPercent(0.4852)).toBe('48.5%');
+    expect(formatFractionAsPercent(0.4852, 2)).toBe('48.52%');
+    expect(formatFractionAsPercent(0.227)).toBe('22.7%');
+    expect(formatFractionAsPercent(0)).toBe('0.0%');
+    expect(formatFractionAsPercent(1.0)).toBe('100.0%');
+    expect(formatFractionAsPercent(null)).toBe('Not available');
+    expect(formatFractionAsPercent(undefined)).toBe('Not available');
+    expect(formatFractionAsPercent(NaN)).toBe('Not available');
+  });
+
+  it('formats percentage values directly with formatPercentValue without multiplying', () => {
+    expect(formatPercentValue(88.24)).toBe('88.2%');
+    expect(formatPercentValue(88.24, 2)).toBe('88.24%');
+    expect(formatPercentValue(49.91)).toBe('49.9%');
+    expect(formatPercentValue(0)).toBe('0.0%');
+    expect(formatPercentValue(100)).toBe('100.0%');
+    expect(formatPercentValue(null)).toBe('Not available');
+    expect(formatPercentValue(undefined)).toBe('Not available');
+    expect(formatPercentValue(NaN)).toBe('Not available');
   });
 
   it('formats delay minutes preserving negative values for early arrivals', () => {

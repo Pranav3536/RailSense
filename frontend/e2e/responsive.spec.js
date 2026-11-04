@@ -69,4 +69,60 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       await expect(footer).toBeVisible();
     }
   });
+
+  test('captures Phase 11.4 Delay Prediction screenshots', async ({ page }) => {
+    // 1. Empty form (1366x768)
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto('/predict');
+    await page.waitForLoadState('networkidle');
+    await page.screenshot({
+      path: path.resolve('../docs/ui/phase11_4/predict_empty_1366.png'),
+      fullPage: false,
+    });
+
+    // 2. Result views at 360, 1366, 1920
+    const viewports = [
+      { name: '360', width: 360, height: 640 },
+      { name: '1366', width: 1366, height: 768 },
+      { name: '1920', width: 1920, height: 1080 },
+    ];
+
+    for (const vp of viewports) {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
+      await page.waitForLoadState('networkidle');
+
+      const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
+      await expect(submitBtn).toBeEnabled();
+      await submitBtn.click();
+
+      await expect(page.getByText(/Estimated Delay Risk/i)).toBeVisible({ timeout: 10000 });
+      await page.waitForTimeout(500);
+
+      await page.screenshot({
+        path: path.resolve(`../docs/ui/phase11_4/predict_result_${vp.name}.png`),
+        fullPage: false,
+      });
+    }
+
+    // 3. Collapsible open (1366x768)
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
+    await page.waitForLoadState('networkidle');
+
+    const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
+    await expect(submitBtn).toBeEnabled();
+    await submitBtn.click();
+    await expect(page.getByText(/Estimated Delay Risk/i)).toBeVisible({ timeout: 10000 });
+
+    const collapsibleBtn = page.getByRole('button', { name: /Model assumptions and caveats/i });
+    await collapsibleBtn.click();
+    await expect(page.getByRole('heading', { name: /Calibration & Operational/i })).toBeVisible();
+    await page.waitForTimeout(300);
+
+    await page.screenshot({
+      path: path.resolve('../docs/ui/phase11_4/predict_collapsible_1366.png'),
+      fullPage: false,
+    });
+  });
 });

@@ -814,3 +814,52 @@ Decommissioned obsolete development artifacts and transient test outputs across 
    - Added sticky first column (`#` sequence) with clean border to timetable table.
    - Captured responsive screenshots at 1366x768 into `docs/ui/phase11_3/` (`explorer_catalog_1366.png`, `explorer_train_12951_boundary_1366.png`, `explorer_train_01051_noboundary_1366.png`, total size 304 KB < 1 MB).
 
+---
+
+## D-58 — Phase 11.4 Delay Prediction Polish, Percent Unit Convention & Caveat Consolidation
+
+**Date decided:** 2026-11-05 (Phase 11.4 UI Polish Patch)
+
+**Decision:**
+1. **Explicit Percentage vs Fraction Formatting Convention:**
+   - Established explicit formatting helpers in `frontend/src/utils/format.js`:
+     - `formatPercentValue(val, decimals)`: strictly for values already scaled 0–100 (e.g., `observed_delayed_rate`, `delayedRate`, category shares). Formats `88.24` -> `"88.2%"` (never multiplies).
+     - `formatFractionAsPercent(val, decimals)`: strictly for true fractions on `[0, 1]` (e.g., `predict.probability_*`, `predict.threshold`, `precision`, `recall`, `prevalence`). Formats `0.8824` -> `"88.2%"`.
+     - `formatPercent(val, decimals)`: retained for backward compatibility with explicit developer warning guard when `val > 1.0` is passed.
+   - Audited 68 call sites across `frontend/src`:
+     - Fixed `8,824.0%` unit bug in `frontend/src/pages/DelayPredictionPage.jsx` (`observed_delayed_rate`).
+     - Fixed identical `5,702.0%` bug in `frontend/src/pages/DelayPatternsPage.jsx` across 11 call sites (`d.delayedRate`, `h.delayedRate`, `c.delayedRate`, `p.delayedRate`, `item.delayedRate`, `stationDetail.delayedRate`, `tr.delayedRate`).
+2. **Sparkle Elimination & Domain-Specific Iconography:**
+   - Removed all generic AI sparkles (`Sparkles`, `Wand`, `Stars`) across the entire frontend.
+   - Form card header updated to "Prediction Inputs" with `SlidersHorizontal` icon.
+   - Result card header updated to "Estimated Delay Risk".
+   - Primary submit button updated to "Run Prediction" with `Play` icon, with dynamic states: "Running Prediction..." during fetch and "Try again in Ns" cooldown countdown.
+   - Replaced sparkles on Train Explorer with `Gauge` and on Smart Insights with `Cpu`.
+3. **Caveat Consolidation & Streamlined Result Layout:**
+   - Removed yellow "Decision at operational threshold" alert box (threshold is clearly indicated on the circular gauge; plain-words decision line placed in `RiskBadge` header area).
+   - Removed stacked blue in-sample box and grey caveats box.
+   - Replaced with:
+     - Compact status chip row below gauge: "Date inside training window", "Outside observed window", "Limited history" (based on runtime dates and history).
+     - Single collapsible "Model assumptions and caveats" (closed by default, `aria-expanded`, keyboard accessible) with dynamic API-driven values (`model_version`, `threshold`, calibration method).
+4. **Factor Display Redesign (Diverging Bars):**
+   - Removed Cards|Table toggle in `FactorBars.jsx`.
+   - Rendered mini horizontal diverging bars scaled to the largest absolute factor magnitude:
+     - Positive factors (red/danger): extend right ("raises the estimate").
+     - Negative factors (green/success): extend left ("lowers the estimate").
+   - Direction phrasing uses strictly non-causal language ("raises"/"lowers the estimate"; never "causes", "slows down", "bottleneck").
+   - Units are raw model log-odds (`+0.84`, `-0.52`), never formatted with `%` signs.
+   - Screen-reader accessible `sr-only` table provides full semantic accessibility.
+5. **Form Footer & Helper Text Cleanup:**
+   - Removed internal developer string (`"Rate limited to 120 requests/minute. Model threshold: 0.410."`) from form footer.
+   - Replaced academic date helper text with dynamic `"Observed snapshot: {formatDate(DATASET_WINDOW.startDate)} – {formatDate(DATASET_WINDOW.endDate)}."`.
+6. **Responsive Verification & Capture:**
+   - Captured full-page screenshots into `docs/ui/phase11_4/`:
+     - Empty form (1366x768): `predict_empty_1366.png` (93 KB)
+     - Result view (360x640): `predict_result_360.png` (33 KB)
+     - Result view (1366x768): `predict_result_1366.png` (115 KB)
+     - Result view (1920x1080): `predict_result_1920.png` (180 KB)
+     - Collapsible open (1366x768): `predict_collapsible_1366.png` (114 KB)
+     - Total directory size: 524 KB (< 1 MB).
+   - Verified zero horizontal overflow across 360, 768, 1280, 1366, and 1920 viewports.
+
+

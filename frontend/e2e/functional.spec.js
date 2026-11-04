@@ -98,14 +98,14 @@ test.describe('RailSense E2E — Functional Suite (Real API)', () => {
     await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
     await page.waitForLoadState('networkidle');
 
-    const submitBtn = page.getByRole('button', { name: /Predict Delay/i });
+    const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
     await expect(submitBtn).toBeEnabled();
     await submitBtn.click();
 
     // Verify results panel renders
-    await expect(page.getByText(/Delay Risk Estimation/i)).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/Decision at Operational Threshold/i)).toBeVisible();
-    await expect(page.getByText(/Model Feature Associations/i)).toBeVisible();
+    await expect(page.getByText(/Estimated Delay Risk|Delay Risk Estimation/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Estimated (above|below) alert threshold/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Model Feature Associations/i })).toBeVisible();
   });
 
   test('Model Lab renders benchmark table, curves, and split toggle', async ({ page }) => {

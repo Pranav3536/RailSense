@@ -48,7 +48,7 @@ import {
   adaptPatternsHotspots,
   adaptStationDetail,
 } from '../api/adapters';
-import { formatNumber, formatPercent, formatMinutes } from '../utils/format';
+import { formatNumber, formatPercentValue, formatMinutes } from '../utils/format';
 import { CHART_THEME } from '../components/charts/chartTheme';
 
 /**
@@ -62,7 +62,7 @@ function HourTooltip({ active, payload, label }) {
       <p className="font-bold text-slate-900 mb-1 font-mono">{label} IST</p>
       <div className="space-y-1">
         <p className="text-blue-700 font-semibold">
-          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+          Delayed Rate: <span className="font-mono">{formatPercentValue(d.delayedRate)}</span>
         </p>
         <p className="text-slate-600">
           Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
@@ -91,7 +91,7 @@ function DowTooltip({ active, payload, label }) {
       <p className="font-bold text-slate-900 mb-1">{label}</p>
       <div className="space-y-1">
         <p className="text-blue-700 font-semibold">
-          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+          Delayed Rate: <span className="font-mono">{formatPercentValue(d.delayedRate)}</span>
         </p>
         <p className="text-slate-600">
           Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
@@ -118,7 +118,7 @@ function PositionTooltip({ active, payload, label }) {
       <p className="font-bold text-slate-900 mb-1">{label}</p>
       <div className="space-y-1">
         <p className="text-blue-700 font-semibold">
-          Delayed Rate: <span className="font-mono">{formatPercent(d.delayedRate)}</span>
+          Delayed Rate: <span className="font-mono">{formatPercentValue(d.delayedRate)}</span>
         </p>
         <p className="text-slate-600">
           Mean Delay: <span className="font-mono font-medium">{formatMinutes(d.meanDelayMin)}</span>
@@ -440,7 +440,7 @@ export function DelayPatternsPage() {
                     {hourData.map((h) => (
                       <tr key={`table-hour-${h.hour}`} className="hover:bg-slate-50/70">
                         <td className="py-2 px-3 font-bold text-slate-900">{h.hourLabel}</td>
-                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercent(h.delayedRate)}</td>
+                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercentValue(h.delayedRate)}</td>
                         <td className="py-2 px-3 text-slate-700">{formatMinutes(h.meanDelayMin)}</td>
                         <td className="py-2 px-3 text-slate-600">{formatNumber(h.stopsCount)}</td>
                         <td className="py-2 px-3 font-sans">
@@ -531,7 +531,7 @@ export function DelayPatternsPage() {
                           <span className="font-semibold text-slate-800">{d.calendarDaysCount} days</span>
                           {d.calendarDaysCount === 2 && <span className="text-amber-700 text-xs ml-1 font-sans">(partial sample)</span>}
                         </td>
-                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercent(d.delayedRate)}</td>
+                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercentValue(d.delayedRate)}</td>
                         <td className="py-2.5 px-3 text-slate-700">{formatMinutes(d.meanDelayMin)}</td>
                         <td className="py-2.5 px-3 text-slate-600">{formatNumber(d.stopsCount)}</td>
                       </tr>
@@ -592,7 +592,7 @@ export function DelayPatternsPage() {
                     />
                     <Tooltip
                       formatter={(val, name, item) => [
-                        `${formatPercent(val)} (${formatMinutes(item.payload.meanDelayMin)} mean)`,
+                        `${formatPercentValue(val)} (${formatMinutes(item.payload.meanDelayMin)} mean)`,
                         'Delayed Rate',
                       ]}
                     />
@@ -627,7 +627,7 @@ export function DelayPatternsPage() {
                           <CategoryLabel category={c.category} />
                         </td>
                         <td className="py-2 px-3 text-slate-700 font-sans">{c.categoryName}</td>
-                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercent(c.delayedRate)}</td>
+                        <td className="py-2 px-3 font-semibold text-blue-700">{formatPercentValue(c.delayedRate)}</td>
                         <td className="py-2 px-3 text-slate-700">{formatMinutes(c.meanDelayMin)}</td>
                         <td className="py-2 px-3 text-slate-600">{formatMinutes(c.medianDelayMin)}</td>
                         <td className="py-2 px-3 text-slate-600">{formatNumber(c.eligibleStops)}</td>
@@ -713,7 +713,7 @@ export function DelayPatternsPage() {
                     {posData.map((p) => (
                       <tr key={`table-pos-${p.positionBucket}`} className="hover:bg-slate-50/70">
                         <td className="py-2.5 px-3 font-bold text-slate-900 font-sans">{p.positionBucket}</td>
-                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercent(p.delayedRate)}</td>
+                        <td className="py-2.5 px-3 font-semibold text-blue-700">{formatPercentValue(p.delayedRate)}</td>
                         <td className="py-2.5 px-3 text-slate-700">{formatMinutes(p.meanDelayMin)}</td>
                         <td className="py-2.5 px-3 text-slate-600">{formatNumber(p.stopsCount)}</td>
                       </tr>
@@ -926,7 +926,7 @@ export function DelayPatternsPage() {
                                 : 'text-emerald-600'
                             }`}
                           >
-                            {formatPercent(item.delayedRate)}
+                            {formatPercentValue(item.delayedRate)}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-slate-600">{item.wilsonText}</td>
@@ -994,7 +994,7 @@ export function DelayPatternsPage() {
                     <div className="p-3 bg-white rounded-xl border border-slate-200">
                       <span className="text-xs text-slate-500 font-medium block">Observed Delayed Rate</span>
                       <span className="text-lg font-bold font-mono text-blue-700">
-                        {formatPercent(stationDetail.delayedRate)}
+                        {formatPercentValue(stationDetail.delayedRate)}
                       </span>
                     </div>
                     <div className="p-3 bg-white rounded-xl border border-slate-200">
@@ -1051,7 +1051,7 @@ export function DelayPatternsPage() {
                                 <CategoryLabel category={tr.category} />
                               </td>
                               <td className="py-1.5 px-3 font-semibold text-slate-800">
-                                {formatPercent(tr.delayedRate)}
+                                {formatPercentValue(tr.delayedRate)}
                               </td>
                               <td className="py-1.5 px-3 text-slate-600">{formatMinutes(tr.meanDelay)}</td>
                               <td className="py-1.5 px-3 text-slate-500">{tr.observedStops}</td>

@@ -25,7 +25,7 @@ import {
   Clock,
   Calendar,
   Layers,
-  Sparkles,
+  Gauge,
   Info,
   Train,
   X,
@@ -280,7 +280,7 @@ export function TrainExplorerPage() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition-colors min-h-[44px]"
                 title="Open schedule-time ML delay prediction for this service"
               >
-                <Sparkles className="w-4 h-4 text-white" aria-hidden="true" />
+                <Gauge className="w-4 h-4 text-white" aria-hidden="true" />
                 <span>Predict Delay</span>
               </button>
             }

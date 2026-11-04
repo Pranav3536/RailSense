@@ -105,11 +105,11 @@ test.describe('RailSense E2E — Accessibility Leftovers & Interactive A11y Suit
     await page.goto('/predict?train=12951&seq=4&date=2026-10-20');
     await page.waitForLoadState('networkidle');
 
-    const submitBtn = page.getByRole('button', { name: /Predict Delay/i });
+    const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
     await submitBtn.click();
 
     // Wait for probability gauge and risk band to render
-    await expect(page.getByText(/Delay Risk Estimation/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/Estimated Delay Risk|Delay Risk Estimation/i)).toBeVisible({ timeout: 15000 });
 
     const scan = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

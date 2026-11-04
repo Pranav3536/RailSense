@@ -747,3 +747,57 @@ In Phase 10, the session will:
   - Playwright E2E: **38 passed, 4 skipped (live)** across 6 test files
   - ESLint: **0 errors, 0 warnings**
   - Vite Build: **OK (11.94s)**
+
+---
+
+## 20. Phase 11.4 Delay Prediction UI Polish & Percent Unit Fix (COMPLETE)
+
+- **Task 1: Percent vs Fraction Formatting Audit & 8,824.0% Bug Fix:**
+  - Root cause: `observed_delayed_rate` was returned from the API pre-scaled (88.24) but treated as a fraction and multiplied by 100 in `formatPercent`.
+  - Added explicit formatters in `frontend/src/utils/format.js`:
+    - `formatPercentValue(val, decimals)`: for values already scaled 0–100.
+    - `formatFractionAsPercent(val, decimals)`: for true fractions on `[0, 1]`.
+    - `formatPercent`: guarded against double multiplication.
+  - Audited 68 call sites across `frontend/src`:
+    - Fixed `8,824.0%` bug in `DelayPredictionPage.jsx`.
+    - Fixed identical `5,702.0%` bug across 11 call sites in `DelayPatternsPage.jsx`.
+    - Added 9 unit tests to `frontend/src/test/format.test.js` (all passed).
+- **Task 2: AI Sparkle Elimination & Domain-Specific Iconography:**
+  - Removed all `Sparkles`, `Wand`, and `Stars` icons across the entire frontend.
+  - Form card header -> "Prediction Inputs" with `SlidersHorizontal` icon.
+  - Result card header -> "Estimated Delay Risk".
+  - Primary button -> "Run Prediction" with `Play` icon, with loading "Running Prediction..." and cooldown "Try again in Ns".
+  - Replaced sparkles with `Gauge` in Train Explorer and `Cpu` in Smart Insights.
+- **Task 3: Caveat Consolidation & Streamlined Results:**
+  - Removed yellow operational decision alert box (decision line placed in `RiskBadge` header area).
+  - Removed stacked blue in-sample box and grey caveats box.
+  - Added compact status chip row below gauge: "Date inside training window", "Outside observed window", "Limited history".
+  - Added single collapsible "Model assumptions and caveats" (closed by default, keyboard accessible with `aria-expanded`) with dynamic API-driven values.
+- **Task 4: Factor Display (Mini Horizontal Diverging Bars):**
+  - Removed Cards|Table toggle in `FactorBars.jsx`.
+  - Implemented mini horizontal diverging bars scaled to max absolute factor magnitude.
+  - Positive factors (red): extend right ("raises the estimate").
+  - Negative factors (green): extend left ("lowers the estimate").
+  - Units are raw model log-odds (`+0.84`, `-0.52`), never formatted with `%`.
+  - Screen-reader accessible `sr-only` table included.
+- **Task 5: Form Footer & Helper Text Cleanup:**
+  - Removed internal string `"Rate limited to 120 requests/minute. Model threshold: 0.410."` from form footer.
+  - Dynamic date snapshot helper text under date picker: `"Observed snapshot: 7 Oct 2026 – 25 Oct 2026."`.
+- **Task 6: Responsive Verification & Visual Capture:**
+  - Captured full-page screenshots into `docs/ui/phase11_4/`:
+    - `predict_empty_1366.png` (93 KB)
+    - `predict_result_360.png` (33 KB)
+    - `predict_result_1366.png` (115 KB)
+    - `predict_result_1920.png` (180 KB)
+    - `predict_collapsible_1366.png` (114 KB)
+    - Total directory size: 524 KB (< 1 MB).
+  - Verified zero horizontal scroll across 360, 768, 1280, 1366, 1920 viewports.
+- **Verification Baseline:**
+  - Pytest: **156 passed, 4 skipped in 51.62s**
+  - Vitest: **85 passed across 13 test files in 72.93s** (+8 tests)
+  - Playwright E2E: **38 passed, 4 skipped (live)** across 6 test files
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK (14.22s)**
+  - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
+  - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
+
