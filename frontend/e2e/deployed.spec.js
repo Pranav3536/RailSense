@@ -29,8 +29,8 @@ test.describe('RailSense Live Deployed Verification', () => {
 
     // Confirm main content and key KPIs
     await expect(page.locator('#main-content')).toBeVisible();
-    await expect(page.getByText(/Total Stops Observed/i)).toBeVisible();
-    await expect(page.getByText(/Observed Delayed Rate/i).first()).toBeVisible();
+    await expect(page.getByText('Total Stops', { exact: true })).toBeVisible();
+    await expect(page.getByText('Fleet Delay Rate', { exact: true })).toBeVisible();
 
     expect(consoleErrors).toEqual([]);
   });

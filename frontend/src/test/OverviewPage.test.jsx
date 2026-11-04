@@ -25,7 +25,7 @@ describe('OverviewPage (Tab 1)', () => {
     expect(screen.getByText('Railway at a Glance')).toBeInTheDocument();
   });
 
-  it('renders error state on API failure and retries', async () => {
+  it('renders error state on API failure and retries without blank screen', async () => {
     endpoints.getOverview.mockRejectedValueOnce(new Error('Network error connecting to backend'));
 
     render(
@@ -42,6 +42,35 @@ describe('OverviewPage (Tab 1)', () => {
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
   });
 
+  it('regression test: renders ErrorState with Retry when backend is completely offline', async () => {
+    const offlineErr = new Error('Unable to connect to RailSense API server. Please verify backend is running on port 5000.');
+    offlineErr.code = 'NETWORK_ERROR';
+    offlineErr.status = 0;
+    endpoints.getOverview.mockRejectedValueOnce(offlineErr);
+
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <OverviewPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to Load Overview Intelligence')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/Please verify backend is running on port 5000/i)).toBeInTheDocument();
+    const retryBtn = screen.getByRole('button', { name: /try again/i });
+    expect(retryBtn).toBeInTheDocument();
+
+    // Trigger retry to ensure refetch action works
+    endpoints.getOverview.mockResolvedValueOnce(overviewFixture);
+    fireEvent.click(retryBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('28,05,574')).toBeInTheDocument();
+    });
+  });
+
   it('renders live fleet KPIs and performance stats truthfully from response', async () => {
     endpoints.getOverview.mockResolvedValue(overviewFixture);
 
@@ -56,27 +85,42 @@ describe('OverviewPage (Tab 1)', () => {
       expect(screen.getByText('28,05,574')).toBeInTheDocument();
     });
 
-    // Check Volume KPIs
+    // Check Volume KPIs (with new shorter titles)
+    expect(screen.getByText('Total Stops')).toBeInTheDocument();
+    expect(screen.getByText('Total Runs')).toBeInTheDocument();
+    expect(screen.getByText('Train Services')).toBeInTheDocument();
+    expect(screen.getByText('Stations')).toBeInTheDocument();
+    expect(screen.getByText('Observation Span')).toBeInTheDocument();
+
     expect(screen.getByText('1,47,367')).toBeInTheDocument();
     expect(screen.getByText('10,743')).toBeInTheDocument();
     expect(screen.getByText('8,584')).toBeInTheDocument();
     expect(screen.getByText('19 Days')).toBeInTheDocument();
 
-    // Check Delay Performance KPIs
+    // Check Delay Performance KPIs (with new shorter titles)
+    expect(screen.getByText('Fleet Delay Rate')).toBeInTheDocument();
+    expect(screen.getByText('Median Delay')).toBeInTheDocument();
+    expect(screen.getByText('Mean Delay')).toBeInTheDocument();
+    expect(screen.getByText('Early Arrivals')).toBeInTheDocument();
+    expect(screen.getByText('Data Coverage')).toBeInTheDocument();
+
     expect(screen.getByText('49.9%')).toBeInTheDocument(); // Delayed rate
     expect(screen.getByText('+15 min')).toBeInTheDocument(); // Median delay
     expect(screen.getByText('+38 min')).toBeInTheDocument(); // Mean delay
     expect(screen.getByText('8.6%')).toBeInTheDocument(); // Early arrival pct
     expect(screen.getByText('63.2%')).toBeInTheDocument(); // Label coverage
 
-    // Check Caveat Banner
-    expect(screen.getByText(/19-Day Observational Window/i)).toBeInTheDocument();
-    expect(screen.getByText(/Non-causal observational analytics/i)).toBeInTheDocument();
+    // Check Slim Context Bar
+    expect(screen.getByText(/Observational Snapshot:/i)).toBeInTheDocument();
+    expect(screen.getByText(/19 days snapshot/i)).toBeInTheDocument();
 
-    // Check Partial day boundary markers
-    expect(screen.getAllByText(/Boundary Days Notice:/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText('2026-10-07').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('2026-10-25').length).toBeGreaterThan(0);
+    // Check Chart concise header badges
+    expect(screen.getByText(/Fleet baseline: 49.9%/i)).toBeInTheDocument();
+    expect(screen.getByText(/≤15m tolerance: 50.1%/i)).toBeInTheDocument();
+    expect(screen.getByText(/Lowest: SUB 17.1%/i)).toBeInTheDocument();
+
+    // Check Partial day inline legend badge
+    expect(screen.getByText('Partial day (boundary date)')).toBeInTheDocument();
   });
 
   it('allows toggling between chart and table views', async () => {

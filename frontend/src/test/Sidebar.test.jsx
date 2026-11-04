@@ -38,7 +38,7 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     expect(screen.getByText('Smart Insights')).toBeInTheDocument();
   });
 
-  it('renders the dataset badge and brand version pill', () => {
+  it('renders the brand title and dataset badge without version pill', () => {
     global.fetch = vi.fn().mockReturnValue(new Promise(() => {}));
 
     render(
@@ -48,7 +48,7 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     );
 
     expect(screen.getByText('RailSense')).toBeInTheDocument();
-    expect(screen.getByText('v2.0.4 Community ML Edition')).toBeInTheDocument();
+    expect(screen.queryByText('v2.0.4 Community ML Edition')).not.toBeInTheDocument();
     expect(screen.getByText('Observed Railway Dataset')).toBeInTheDocument();
   });
 

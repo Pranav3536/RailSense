@@ -21,7 +21,8 @@ export function useApi(apiFn, deps = [], options = {}) {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-    abortControllerRef.current = new AbortController();
+    const currentController = new AbortController();
+    abortControllerRef.current = currentController;
 
     if (mountedRef.current) {
       setLoading(true);
@@ -29,15 +30,15 @@ export function useApi(apiFn, deps = [], options = {}) {
     }
 
     try {
-      const result = await apiFn(...args, { signal: abortControllerRef.current.signal });
-      if (mountedRef.current) {
+      const result = await apiFn(...args, { signal: currentController.signal });
+      if (mountedRef.current && !currentController.signal.aborted) {
         setData(result);
         setLoading(false);
       }
       return result;
     } catch (err) {
-      if (err.name === 'AbortError' || err.code === 'TIMEOUT') {
-        // If intentionally aborted by re-render, don't set error
+      if (currentController.signal.aborted) {
+        // Intentionally aborted by unmount or superseded refetch
         return null;
       }
       if (mountedRef.current) {

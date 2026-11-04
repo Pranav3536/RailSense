@@ -68,12 +68,7 @@ export function AppShell() {
           <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
             <TrainFront size={22} aria-hidden="true" />
           </div>
-          <div>
-            <span className="text-base font-bold tracking-tight block leading-tight">{APP_CONFIG.name}</span>
-            <span className="text-xs text-blue-300 font-mono tracking-tight inline-block mt-0.5">
-              {APP_CONFIG.versionPill}
-            </span>
-          </div>
+          <span className="text-base font-bold tracking-tight block leading-tight">{APP_CONFIG.name}</span>
         </div>
         <button
           type="button"
@@ -113,15 +108,7 @@ export function AppShell() {
           <Outlet />
         </main>
 
-        {/* Global Footer Note */}
-        <footer className="border-t border-slate-200/80 px-4 sm:px-6 lg:px-8 py-5 text-center text-sm text-slate-500 bg-white/70 backdrop-blur-sm space-y-1">
-          <p>
-            {APP_CONFIG.name} • {APP_CONFIG.versionPill} • {APP_CONFIG.delayDefinition}
-          </p>
-          <p className="text-xs text-slate-600">
-            Observed historical window: Oct 7–25, 2026. Pre-departure schedule-time estimates with zero real-time GPS tracking. Not affiliated with IRCTC or Indian Railways.
-          </p>
-        </footer>
+
       </div>
     </div>
   );

@@ -49,7 +49,7 @@ test.describe('RailSense E2E — Resilience, Error Envelopes & Wake-Up Notice', 
     // Clicking retry recovers when API resumes
     const retryBtn = page.getByRole('button', { name: /Try Again/i });
     await retryBtn.click();
-    await expect(page.getByText(/Total Stops Observed/i)).toBeVisible();
+    await expect(page.getByText('Total Stops', { exact: true })).toBeVisible();
   });
 
   test('handles 404 train not found gracefully in Train Explorer', async ({ page }) => {

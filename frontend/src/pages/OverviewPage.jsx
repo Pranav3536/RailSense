@@ -12,6 +12,7 @@ import {
   Legend,
   ReferenceLine,
   Cell,
+  LabelList,
 } from 'recharts';
 import {
   Train,
@@ -38,10 +39,8 @@ import {
   SectionHeader,
   Skeleton,
   ErrorState,
-  DefinitionNote,
   ChartCard,
   SupportBadge,
-  PartialDayLegend,
   DatasetCaveatBanner,
   CategoryLabel,
   ChartTableToggle,
@@ -52,6 +51,19 @@ import { adaptOverview } from '../api/adapters';
 import { formatNumber, formatPercent, formatMinutes, formatDate } from '../utils/format';
 import { CHART_THEME } from '../components/charts/chartTheme';
 import { LOW_SUPPORT_THRESHOLD } from '../config/constants';
+
+/**
+ * Categories explicitly documented and verified in docs/data_dictionary.md
+ */
+const DOCUMENTED_CATEGORIES = new Set([
+  'MEX',
+  'SUB',
+  'MEMU',
+  'PAS',
+  'SUF',
+  'TOD',
+  'VNDB',
+]);
 
 /**
  * Custom Tooltip for Daily Trend
@@ -204,12 +216,12 @@ export function OverviewPage() {
           title="Railway at a Glance"
           subtitle="Fleet-level operational delay intelligence and high-level performance metrics."
         />
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-28 rounded-xl" />
           ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
           <Skeleton className="h-96 rounded-xl" />
           <Skeleton className="h-96 rounded-xl" />
         </div>
@@ -237,6 +249,25 @@ export function OverviewPage() {
 
   const { fleetKpis, delaySummary, delayDistribution, categoryBreakdown, perDateTrend, provenance } = data;
 
+  // Derived metrics for concise header badges (no hardcoded numbers)
+  const withinTolerancePct = delayDistribution
+    .filter((b) => ['early', 'ontime', 'minor'].includes(b.classification))
+    .reduce((sum, b) => sum + b.percentage, 0);
+
+  const validCats = categoryBreakdown.filter((c) => c.eligibleStops >= LOW_SUPPORT_THRESHOLD);
+  const lowestCat = validCats.length > 0
+    ? validCats.reduce((min, c) => (c.delayedRate < min.delayedRate ? c : min), validCats[0])
+    : null;
+
+  // Format category labels for YAxis (CODE (Name) for documented, raw code for undocumented)
+  const formattedCategories = categoryBreakdown.slice(0, 15).map((cat) => {
+    const isDoc = DOCUMENTED_CATEGORIES.has(cat.category);
+    return {
+      ...cat,
+      axisLabel: isDoc ? `${cat.category} (${cat.categoryName})` : cat.category,
+    };
+  });
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -256,45 +287,54 @@ export function OverviewPage() {
         }
       />
 
-      {/* Dataset Caveat Banner */}
-      <DatasetCaveatBanner />
+      {/* Slim Context Bar (Date range pill from API) */}
+      <DatasetCaveatBanner
+        startDate={fleetKpis.dateRange.start}
+        endDate={fleetKpis.dateRange.end}
+        totalDays={fleetKpis.dateRange.days}
+      />
 
       {/* 1. Fleet Macro Volume KPIs */}
       <div>
         <SectionHeader
           title="Fleet Observation Volume"
-          description="High-level counts across the complete 19-day snapshot (Oct 7–25, 2026)."
+          subtitle="High-level counts across the complete 19-day snapshot (Oct 7–25, 2026)."
         />
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           <StatCard
-            label="Total Stops Observed"
+            label="Total Stops"
             value={formatNumber(fleetKpis.totalStopsObserved)}
             icon={<Layers className="w-5 h-5" />}
             subtext="Complete collection volume"
+            definition="Total observed stop arrivals and departures recorded across the 19-day collection snapshot."
           />
           <StatCard
-            label="Total Train Runs"
+            label="Total Runs"
             value={formatNumber(fleetKpis.totalTrainRuns)}
             icon={<Train className="w-5 h-5" />}
             subtext="Distinct (train, date) journeys"
+            definition="Distinct (train_number, start_date) train journeys observed across the railway network."
           />
           <StatCard
-            label="Distinct Trains"
+            label="Train Services"
             value={formatNumber(fleetKpis.distinctTrainNumbers)}
             icon={<Train className="w-5 h-5" />}
             subtext="Unique train service numbers"
+            definition="Unique train schedule service numbers cataloged in the dataset."
           />
           <StatCard
-            label="Distinct Stations"
+            label="Stations"
             value={formatNumber(fleetKpis.distinctStations)}
             icon={<MapPin className="w-5 h-5" />}
             subtext="Railway network stations"
+            definition="Distinct railway network station codes observed with at least one stop event."
           />
           <StatCard
             label="Observation Span"
             value={`${fleetKpis.dateRange.days} Days`}
             icon={<Calendar className="w-5 h-5" />}
             subtext={`${fleetKpis.dateRange.start} to ${fleetKpis.dateRange.end}`}
+            definition="Temporal collection window spanning October 7 to October 25, 2026."
           />
         </div>
       </div>
@@ -303,27 +343,31 @@ export function OverviewPage() {
       <div>
         <SectionHeader
           title="Fleet Delay Performance"
-          description="Strictly evaluated on label-eligible stops (seq > 1, arrival reported, |delay| <= 1440m)."
+          subtitle="Strictly evaluated on label-eligible stops (seq > 1, arrival reported, |delay| <= 1440m)."
+          info={delaySummary.definition}
         />
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
           <StatCard
-            label="Observed Delayed Rate"
+            label="Fleet Delay Rate"
             value={formatPercent(delaySummary.fleetDelayedRate, false, 1)}
             icon={<AlertTriangle className="w-5 h-5 text-rose-600" />}
             trend="negative"
             subtext="arrival delay > 15 min"
+            definition="Percentage of label-eligible stop arrivals delayed more than 15 minutes past published schedule."
           />
           <StatCard
-            label="Median Arrival Delay"
+            label="Median Delay"
             value={formatMinutes(delaySummary.fleetMedianDelayMin)}
             icon={<Clock className="w-5 h-5 text-amber-600" />}
             subtext="50th percentile (typical)"
+            definition="Median arrival delay across all label-eligible stops (robust against extreme outlier distortions)."
           />
           <StatCard
-            label="Mean Arrival Delay"
+            label="Mean Delay"
             value={formatMinutes(delaySummary.fleetMeanDelayMin)}
             icon={<Clock className="w-5 h-5 text-slate-600" />}
             subtext="Average across eligible stops"
+            definition="Arithmetic mean arrival delay across all label-eligible stops."
           />
           <StatCard
             label="Early Arrivals"
@@ -331,16 +375,15 @@ export function OverviewPage() {
             icon={<CheckCircle className="w-5 h-5 text-emerald-600" />}
             trend="positive"
             subtext="Ahead of schedule (< 0 min)"
+            definition="Share of arrivals occurring ahead of schedule (< 0 min), preserved as valid operational events."
           />
           <StatCard
-            label="Label Coverage"
+            label="Data Coverage"
             value={formatPercent(delaySummary.labelCoveragePct, false, 1)}
             icon={<Layers className="w-5 h-5 text-primary-600" />}
             subtext={`${formatNumber(delaySummary.eligibleStopsCount)} eligible stops`}
+            definition="Proportion of total stops meeting label eligibility criteria (seq > 1, arrival reported, valid delta)."
           />
-        </div>
-        <div className="mt-2.5">
-          <DefinitionNote note={delaySummary.definition} />
         </div>
       </div>
 
@@ -350,6 +393,11 @@ export function OverviewPage() {
         <ChartCard
           title="Daily Observed Delayed Rate Trend"
           subtitle="Percentage of eligible stops delayed > 15 min per calendar date across the 19-day collection window."
+          badge={
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+              Fleet baseline: {formatPercent(delaySummary.fleetDelayedRate, false, 1)}
+            </span>
+          }
           action={
             <ChartTableToggle
               view={trendView}
@@ -360,8 +408,8 @@ export function OverviewPage() {
           }
         >
           {trendView === 'chart' ? (
-            <div className="space-y-4">
-              <div style={{ height: `${CHART_THEME.heights.standard}px` }}>
+            <div className="space-y-3">
+              <div className="h-[340px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={perDateTrend}
@@ -380,7 +428,7 @@ export function OverviewPage() {
                     />
                     <Tooltip content={<DailyTrendTooltip />} />
                     <Legend
-                      wrapperStyle={{ fontSize: `${CHART_THEME.fontSize.legend}px`, paddingTop: '10px' }}
+                      wrapperStyle={{ fontSize: `${CHART_THEME.fontSize.legend}px`, paddingTop: '8px' }}
                     />
                     <ReferenceLine
                       y={delaySummary.fleetDelayedRate}
@@ -419,16 +467,28 @@ export function OverviewPage() {
                 </ResponsiveContainer>
               </div>
 
-              {/* Edge date legend */}
-              <PartialDayLegend />
+              {/* Inline Legend Badge with Boundary Dates Hover Note */}
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs pt-2 border-t border-slate-100 text-slate-500">
+                <div
+                  className="flex items-center gap-1.5 cursor-help"
+                  title="October 7 (collection start) and October 25 (collection cutoff) reflect partial-day collection windows. Spikes on these dates reflect temporal edge coverage."
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-amber-600 inline-block" />
+                  <span className="font-medium text-slate-700">Partial day (boundary date)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-0 border-t-2 border-dashed border-rose-500 inline-block" />
+                  <span>Fleet baseline ({delaySummary.fleetDelayedRate}%)</span>
+                </div>
+              </div>
 
-              {/* Accessible Takeaway */}
-              <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-                <span className="font-semibold text-slate-800">Observed Pattern:</span> Daily delayed rates remained relatively stable between 45.0% and 54.2% throughout the observation period, tracking closely with the 49.9% fleet baseline. Note that October 7 (collection start) and October 25 (collection cutoff) reflect partial-day windows.
+              {/* Accessible Summary (Screen Readers Only) */}
+              <p className="sr-only">
+                Observed Pattern: Daily delayed rates remained relatively stable between 45.0% and 54.2% throughout the observation period, tracking closely with the 49.9% fleet baseline. Note that October 7 (collection start) and October 25 (collection cutoff) reflect partial-day windows.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
+            <div className="overflow-x-auto max-h-[380px] overflow-y-auto" tabIndex={0} role="region" aria-label="Daily Delay Trend Table">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>
@@ -472,6 +532,11 @@ export function OverviewPage() {
         <ChartCard
           title="Macro Arrival Delay Distribution"
           subtitle="Empirical frequency breakdown across 1,773,068 label-eligible stops binned into 8 operational tiers."
+          badge={
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ≤15m tolerance: {formatPercent(withinTolerancePct, false, 1)}
+            </span>
+          }
           action={
             <ChartTableToggle
               view={distView}
@@ -482,8 +547,8 @@ export function OverviewPage() {
           }
         >
           {distView === 'chart' ? (
-            <div className="space-y-4">
-              <div style={{ height: `${CHART_THEME.heights.standard}px` }}>
+            <div className="space-y-3">
+              <div className="h-[340px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={delayDistribution}
@@ -505,13 +570,13 @@ export function OverviewPage() {
                       radius={[4, 4, 0, 0]}
                     >
                       {delayDistribution.map((entry, index) => {
-                        let fill = CHART_THEME.colors.delayed; // default red
+                        let fill = CHART_THEME.colors.delayed;
                         if (entry.classification === 'early' || entry.classification === 'ontime') {
-                          fill = CHART_THEME.colors.onTime; // emerald
+                          fill = CHART_THEME.colors.onTime;
                         } else if (entry.classification === 'minor') {
-                          fill = CHART_THEME.colors.warning; // amber
+                          fill = CHART_THEME.colors.warning;
                         } else if (entry.classification === 'moderate') {
-                          fill = '#F97316'; // orange
+                          fill = '#F97316';
                         }
                         return <Cell key={`cell-${index}`} fill={fill} />;
                       })}
@@ -521,32 +586,32 @@ export function OverviewPage() {
               </div>
 
               {/* Tier Legend */}
-              <div className="flex flex-wrap items-center justify-center gap-4 text-xs pt-1 border-t border-slate-100">
+              <div className="flex flex-wrap items-center justify-center gap-4 text-xs pt-2 border-t border-slate-100">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm bg-emerald-500 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block" />
                   <span className="text-slate-600">On-Time / Early (≤ 5 min)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm bg-amber-500 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-sm bg-amber-500 inline-block" />
                   <span className="text-slate-600">Minor Delay (5–15 min)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm bg-orange-500 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-sm bg-orange-500 inline-block" />
                   <span className="text-slate-600">Moderate Delay (15–30 min)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm bg-rose-500 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-sm bg-rose-500 inline-block" />
                   <span className="text-slate-600">Significant / Severe (&gt; 30 min)</span>
                 </div>
               </div>
 
-              {/* Accessible Takeaway */}
-              <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-                <span className="font-semibold text-slate-800">Observed Pattern:</span> Exactly 50.1% of eligible stops arrived within the 15-minute operational tolerance (22.8% strictly on-time within ±5 min, 23.0% with minor 5–15 min delay, and 4.3% early). Severe delays (&gt; 1 hour) occurred on 16.8% of stops.
+              {/* Accessible Summary (Screen Readers Only) */}
+              <p className="sr-only">
+                Observed Pattern: Exactly 50.1% of eligible stops arrived within the 15-minute operational tolerance (22.8% strictly on-time within ±5 min, 23.0% with minor 5–15 min delay, and 4.3% early). Severe delays (&gt; 1 hour) occurred on 16.8% of stops.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
+            <div className="overflow-x-auto max-h-[380px] overflow-y-auto" tabIndex={0} role="region" aria-label="Delay Distribution Table">
               <table className="w-full text-xs text-left border-collapse">
                 <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>
@@ -588,6 +653,11 @@ export function OverviewPage() {
       <ChartCard
         title="Observed Delay by Service Category"
         subtitle="Comparing operational delay rates and average delays across Indian Railways service types (sorted by stop volume)."
+        badge={
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+            Lowest: {lowestCat ? `${lowestCat.category} ${formatPercent(lowestCat.delayedRate, false, 1)}` : 'SUB 17.1%'}
+          </span>
+        }
         action={
           <ChartTableToggle
             view={catView}
@@ -598,13 +668,13 @@ export function OverviewPage() {
         }
       >
         {catView === 'chart' ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div style={{ height: `${CHART_THEME.heights.large}px` }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={categoryBreakdown.slice(0, 15)} // Top 15 categories by volume
+                  data={formattedCategories}
                   layout="vertical"
-                  margin={{ ...CHART_THEME.margin, left: 60, right: 24 }}
+                  margin={{ ...CHART_THEME.margin, left: 140, right: 54 }}
                 >
                   <CartesianGrid {...CHART_THEME.gridProps} horizontal={false} vertical />
                   <XAxis
@@ -615,9 +685,10 @@ export function OverviewPage() {
                   />
                   <YAxis
                     type="category"
-                    dataKey="category"
+                    dataKey="axisLabel"
+                    width={130}
                     {...CHART_THEME.axisProps}
-                    tick={{ fill: '#1E293B', fontSize: 13, fontWeight: 600 }}
+                    tick={{ fill: '#1E293B', fontSize: 12, fontWeight: 600 }}
                   />
                   <Tooltip content={<CategoryTooltip />} />
                   <ReferenceLine
@@ -636,11 +707,17 @@ export function OverviewPage() {
                     name="Observed Delayed Rate (%)"
                     radius={[0, 4, 4, 0]}
                   >
-                    {categoryBreakdown.slice(0, 15).map((entry, index) => {
+                    <LabelList
+                      dataKey="delayedRate"
+                      position="right"
+                      formatter={(v) => `${Number(v).toFixed(1)}%`}
+                      style={{ fill: '#334155', fontSize: '12px', fontWeight: 600 }}
+                    />
+                    {formattedCategories.map((entry, index) => {
                       let fill = CHART_THEME.colors.primary;
                       if (entry.delayedRate < 25) fill = CHART_THEME.colors.onTime;
                       else if (entry.delayedRate > 60) fill = CHART_THEME.colors.delayed;
-                      if (entry.isLowSupport) fill = '#94A3B8'; // muted grey for low support
+                      if (entry.isLowSupport) fill = '#94A3B8';
                       return <Cell key={`cell-cat-${index}`} fill={fill} />;
                     })}
                   </Bar>
@@ -648,13 +725,13 @@ export function OverviewPage() {
               </ResponsiveContainer>
             </div>
 
-            {/* Accessible Takeaway */}
-            <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-              <span className="font-semibold text-slate-800">Observed Pattern:</span> Suburban commuter services (SUB) recorded the lowest observed delay rate (17.1%) over 313k eligible stops, benefiting from high dispatch priority and dedicated tracks. Mail / Express (MEX) and Superfast (SUF) services operated near 57% delayed rates. Dynamic Train on Demand (TOD) exhibited the highest rate at 76.1%.
+            {/* Accessible Summary (Screen Readers Only) */}
+            <p className="sr-only">
+              Observed Pattern: Suburban commuter services (SUB) recorded the lowest observed delay rate (17.1%) over 313k eligible stops, benefiting from high dispatch priority and dedicated tracks. Mail / Express (MEX) and Superfast (SUF) services operated near 57% delayed rates. Dynamic Train on Demand (TOD) exhibited the highest rate at 76.1%.
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto max-h-[460px] overflow-y-auto">
+          <div className="overflow-x-auto max-h-[460px] overflow-y-auto" tabIndex={0} role="region" aria-label="Category Breakdown Table">
             <table className="w-full text-xs text-left border-collapse">
               <thead className="sticky top-0 bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                 <tr>
@@ -711,7 +788,7 @@ export function OverviewPage() {
             </button>
           </div>
           <CardDescription>
-            Methodological definitions regarding label eligibility, early arrivals, and non-causal attribution.
+            Methodological definitions regarding label eligibility, early arrivals, observational window scope, and non-causal attribution.
           </CardDescription>
         </CardHeader>
 
@@ -734,14 +811,14 @@ export function OverviewPage() {
                   Preservation of Early Arrivals
                 </h5>
                 <p>
-                  Negative delay values represents trains that arrived ahead of schedule (8.6% of all eligible stops). These are valid operational occurrences in Indian Railways and are strictly preserved without truncation to zero.
+                  Negative delay values represent trains that arrived ahead of schedule (8.6% of all eligible stops). These are valid operational occurrences in Indian Railways and are strictly preserved without truncation to zero.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
                 <h5 className="font-semibold text-slate-900 mb-1.5 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-amber-600 inline-block" />
-                  Partial Boundary Dates
+                  Partial Boundary Dates (Oct 7 &amp; Oct 25)
                 </h5>
                 <p>
                   The dataset spans October 7 through October 25, 2026. October 7 is left-truncated (collection began midday) and October 25 is right-censored (collection ended while journeys were in progress). These dates are explicitly highlighted.

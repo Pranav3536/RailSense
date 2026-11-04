@@ -3,7 +3,6 @@ import { Skeleton } from './Skeleton';
 import { ErrorState } from './ErrorState';
 import { EmptyState } from './EmptyState';
 import { DefinitionNote } from './DefinitionNote';
-import { CHART_THEME } from '../charts/chartTheme';
 
 /**
  * ChartCard Component
@@ -15,6 +14,7 @@ export function ChartCard({
   subtitle,
   definition,
   definitionTitle,
+  badge,
   action,
   loading = false,
   error = null,
@@ -23,17 +23,18 @@ export function ChartCard({
   onRetry,
   children,
   accessibleDescription,
-  height = 'h-80 sm:h-96',
+  height = 'h-auto',
   className = '',
   ...props
 }) {
   return (
     <Card className={`flex flex-col ${className}`} {...props}>
-      {(title || action) && (
-        <CardHeader className="flex items-start justify-between gap-4">
+      {(title || action || badge) && (
+        <CardHeader className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
               <CardTitle>{title}</CardTitle>
+              {badge}
               {definition && (
                 <DefinitionNote title={definitionTitle || title}>
                   {definition}
@@ -46,9 +47,9 @@ export function ChartCard({
         </CardHeader>
       )}
 
-      <CardContent className="flex-1 flex flex-col justify-center">
+      <CardContent className="flex-1 flex flex-col justify-start">
         {loading ? (
-          <div className={`w-full ${height} flex flex-col justify-between p-4 space-y-4`}>
+          <div className="w-full h-80 sm:h-96 flex flex-col justify-between p-4 space-y-4">
             <Skeleton className="h-4 w-1/3" />
             <div className="flex items-end gap-3 h-full pt-4">
               <Skeleton className="h-1/3 flex-1" />
@@ -61,7 +62,7 @@ export function ChartCard({
             <Skeleton className="h-4 w-full" />
           </div>
         ) : error ? (
-          <div className={`w-full ${height} flex items-center justify-center`}>
+          <div className="w-full h-80 sm:h-96 flex items-center justify-center">
             <ErrorState
               compact
               message={typeof error === 'string' ? error : 'Chart data could not be loaded'}
@@ -69,17 +70,14 @@ export function ChartCard({
             />
           </div>
         ) : empty ? (
-          <div className={`w-full ${height} flex items-center justify-center`}>
+          <div className="w-full h-80 sm:h-96 flex items-center justify-center">
             <EmptyState
               compact
               description={emptyMessage || 'No data points available for this visualization.'}
             />
           </div>
         ) : (
-          <div
-            className={`w-full ${height} relative`}
-            style={{ minHeight: `${CHART_THEME.heights.standard}px` }}
-          >
+          <div className={`w-full ${height} relative`}>
             {accessibleDescription && (
               <div className="sr-only">
                 {accessibleDescription}

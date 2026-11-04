@@ -679,3 +679,30 @@ In Phase 10, the session will:
   - **Category C (Plainly useless junk):** Removed redundant `.gitkeep` files in `backend/scripts/`, `docs/eda/`, and `frontend/` (preserved `notebooks/.gitkeep` per D-10), deleted 18 unreferenced UI screenshots in `docs/ui/phase10/` (2.0 MB), and cleared test caches (`test-results/`, `frontend/test-results/`, `.pytest_cache/`).
 - **Verification Baseline Preserved:** Pytest 154 passed / 4 skipped, Vitest 73 passed, Playwright 38 passed / 4 skipped, ESLint 0 warnings, Vite build OK, clean-clone 4 of 4 probes passed with zero regressions.
 
+
+---
+
+## 18. Phase 11.2 Overview UI Polish & Global Branding Cleanup (COMPLETE)
+
+- **Overview Loading Root Cause & Fix:**
+  - Resolved race condition under React 18 `StrictMode` where aborted mount 1 calls cancelled shared in-flight fetch promises for mount 2.
+  - In `frontend/src/api/client.js`, isolated caller signals from shared fetch promise.
+  - In `frontend/src/hooks/useApi.js`, guarded against swallowing real errors or timeouts, ensuring immediate `<ErrorState>` rendering when the backend is offline.
+  - Verified with automated regression test in `frontend/src/test/OverviewPage.test.jsx`.
+- **Global Branding & Disclaimer:**
+  - Removed `"v2.0.4 Community ML Edition"` pill from `Sidebar.jsx` and `AppShell.jsx` mobile header.
+  - Removed footer disclaimer block from `AppShell.jsx`. Maintained attribution and non-affiliation in `README.md` and `docs/ATTRIBUTION.md`.
+- **Overview Page Polish (`OverviewPage.jsx`):**
+  - StatCard titles shortened, `truncate` removed, wrapping to 2 lines with consistent `min-h-[2.5rem]` header alignment across `grid-cols-2 md:grid-cols-3 xl:grid-cols-5`.
+  - Replaced visible grey "Observed Pattern" paragraphs with `sr-only` summaries; added dynamic card header badges (`Fleet baseline: 49.9%`, `≤15m tolerance: 50.1%`, `Lowest: SUB 17.1%`).
+  - Added `info` popover to `SectionHeader.jsx` and removed floating `(i)` icon.
+  - Replaced alert banner with slim white context bar (`DatasetCaveatBanner.jsx`) showing dynamic date-range snapshot pill.
+  - Standardized Trend and Distribution chart containers to `h-[340px]`; replaced boundary days notice with inline legend badge and hover note.
+  - Formatted Category chart YAxis as `"CODE (Name)"` strictly for documented categories in `docs/data_dictionary.md` and added value labels on bars.
+  - Fixed dark navy status card text contrast (`text-slate-400`).
+- **Verification Baseline:**
+  - Pytest: **154 passed, 4 skipped**
+  - Vitest: **74 passed** (13 test files)
+  - Playwright E2E: **38 passed, 4 skipped (live)** across 6 test files
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK**

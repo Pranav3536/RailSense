@@ -753,3 +753,25 @@ Decommissioned obsolete development artifacts and transient test outputs across 
 3. **Plainly Useless Junk & Test Artifacts (Category C):** Removed redundant `.gitkeep` files in `backend/scripts/`, `docs/eda/`, and `frontend/` (kept `notebooks/.gitkeep` to preserve the monorepo directory per D-10), deleted 18 unreferenced UI screenshot PNGs in `docs/ui/phase10/` (saving ~2.0 MB), and cleared untracked test caches (`test-results/`, `frontend/test-results/`, `.pytest_cache/`).
 4. **Preserved Invariants:** Zero changes to ML inference logic, backend API routes, frontend application code, dependencies, serving database, model weights, or test suites. All 154 Pytest, 73 Vitest, 38 Playwright tests, 211 consistency checks, and clean-clone drills continue passing with zero regressions.
 
+
+---
+
+## D-56 — Phase 11.2 Overview UI Polish, Global Branding Cleanup, and StrictMode Dedup Abort Resilience
+
+**Date decided:** 2026-11-05 (Phase 11.2 UI Polish Patch)
+
+**Decision:**
+1. **Overview Loading Resilience & StrictMode Request Isolation:**
+   - **Root Cause:** In React 18 development `StrictMode`, components mount twice. The first mount effect's cleanup ran `AbortController.abort()`. In `client.js`, in-flight GET promise deduplication returned the first mount's in-flight fetch promise to the second mount. When the first abort signal fired, it cancelled the underlying network fetch, causing the promise to reject for the second mount as well. In `useApi.js`, `err.code === 'TIMEOUT'` was treated as an unmount abort and silently ignored without clearing `loading`, permanently trapping the Overview page in the Skeleton loading state.
+   - **Fix:** In `client.js`, individual caller `externalSignal`s now wrap the shared in-flight fetch promise via a private listener so an individual subscriber's abort does not cancel the shared network fetch for other concurrent or subsequent callers. In `useApi.js`, only explicit cancellations on the active hook controller (`currentController.signal.aborted`) are treated as unmount cancellations; all genuine errors, timeouts, and network failures correctly set error state and terminate loading, ensuring `<ErrorState>` with Retry displays immediately when the backend is offline.
+2. **Global Branding & Disclaimer Removal:**
+   - Removed the `"v2.0.4 Community ML Edition"` version pill from the primary navigation brand block in `Sidebar.jsx` and the mobile header in `AppShell.jsx`. Brand header is now simply the blue `TrainFront` badge and "RailSense".
+   - Removed the footer disclaimer block from `AppShell.jsx`. Non-affiliation and third-party dataset provenance are documented transparently in `README.md` and `docs/ATTRIBUTION.md`.
+3. **Overview Page Visual & Analytical Polish:**
+   - **StatCard Titles & Alignment:** Converted titles to concise labels ("Total Stops", "Total Runs", "Train Services", "Stations", "Observation Span", "Fleet Delay Rate", "Median Delay", "Mean Delay", "Early Arrivals", "Data Coverage"), removed `truncate`, and enforced a uniform `min-h-[2.5rem]` header so cards align across 2-line wraps in responsive `grid-cols-2 md:grid-cols-3 xl:grid-cols-5` layouts.
+   - **Concise Header Badges:** Replaced bulky, visible grey "Observed Pattern" paragraphs with `sr-only` accessible summaries and added dynamic header badges ("Fleet baseline: 49.9%", "≤15m tolerance: 50.1%", "Lowest: SUB 17.1%") derived strictly from runtime data without hardcoded values.
+   - **SectionHeader Info Popover:** Added an accessible `info` popover prop to `SectionHeader.jsx` with keyboard navigation, 44px hit area, and `aria-label`, removing the floating `(i)` icon below delay performance cards.
+   - **Slim Context Bar:** Replaced the large alert box with a slim white context bar containing a dynamic date-range pill (`07 Oct – 25 Oct 2026 · 19 days snapshot`). Moved full methodological explanations to the educational collapsible guide.
+   - **Equal-Height Chart Layout:** Standardized Daily Trend and Delay Distribution containers to `h-[340px]`. Replaced the large Boundary Days Notice block with an inline legend badge (amber dot for partial edge dates) and hover tooltip note.
+   - **Category Breakdown Polish:** Formatted YAxis labels as `"CODE (Name)"` strictly for documented categories in `docs/data_dictionary.md` (`MEX`, `SUB`, `MEMU`, `PAS`, `SUF`, `TOD`, `VNDB`) and added value percentage labels (`LabelList`) at the end of each bar with responsive zero-clipping margins.
+   - **WCAG AA Contrast Fix:** Upgraded status subtext in `Sidebar.jsx` from `text-slate-500` to `text-slate-400` on dark navy backgrounds, achieving >= 4.5:1 contrast and zero axe-core violations.

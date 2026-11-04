@@ -1,12 +1,15 @@
+import { DefinitionNote } from './DefinitionNote';
+
 /**
  * SectionHeader Component
- * Uniform section header with title, subtitle, optional badge, and action slot.
+ * Uniform section header with title, subtitle, optional badge, info definition popover, and action slot.
  */
 export function SectionHeader({
   title,
   subtitle,
   badge,
   action,
+  info,
   className = '',
   as: Component = 'div',
   ...props
@@ -17,6 +20,11 @@ export function SectionHeader({
         <div className="flex items-center gap-2.5">
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h2>
           {badge}
+          {info && (
+            <DefinitionNote title={title}>
+              {info}
+            </DefinitionNote>
+          )}
         </div>
         {subtitle && (
           <p className="text-sm text-slate-500 mt-1 leading-relaxed">{subtitle}</p>

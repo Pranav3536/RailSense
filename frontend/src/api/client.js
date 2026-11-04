@@ -138,22 +138,16 @@ export async function apiRequest(endpoint, options = {}) {
     }
   }
 
-  // 2. In-Flight Request Deduplication for GET
-  if (method === 'GET') {
-    const inFlight = inFlightRequests.get(fullUrl);
-    if (inFlight) {
-      return inFlight;
-    }
+  // Pre-check if caller external signal is already aborted
+  if (externalSignal?.aborted) {
+    const abortErr = new Error('The operation was aborted');
+    abortErr.name = 'AbortError';
+    throw abortErr;
   }
 
   const executeFetch = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-    // Chain external abort signal if provided
-    if (externalSignal) {
-      externalSignal.addEventListener('abort', () => controller.abort());
-    }
 
     onFetchStart();
     try {
@@ -248,9 +242,39 @@ export async function apiRequest(endpoint, options = {}) {
     }
   };
 
-  const promise = executeFetch();
+  // 2. In-Flight Request Deduplication for GET
+  let fetchPromise;
   if (method === 'GET') {
-    inFlightRequests.set(fullUrl, promise);
+    fetchPromise = inFlightRequests.get(fullUrl);
+    if (!fetchPromise) {
+      fetchPromise = executeFetch();
+      inFlightRequests.set(fullUrl, fetchPromise);
+    }
+  } else {
+    fetchPromise = executeFetch();
   }
-  return promise;
+
+  // If caller provided an external signal, wrap shared promise so caller can abort individually
+  // without canceling the underlying shared fetch for other concurrent callers
+  if (externalSignal) {
+    return new Promise((resolve, reject) => {
+      const onAbort = () => {
+        const abortErr = new Error('The operation was aborted');
+        abortErr.name = 'AbortError';
+        reject(abortErr);
+      };
+      externalSignal.addEventListener('abort', onAbort, { once: true });
+      fetchPromise
+        .then((data) => {
+          externalSignal.removeEventListener('abort', onAbort);
+          resolve(data);
+        })
+        .catch((err) => {
+          externalSignal.removeEventListener('abort', onAbort);
+          reject(err);
+        });
+    });
+  }
+
+  return fetchPromise;
 }

@@ -24,8 +24,8 @@ test.describe('RailSense E2E — Functional Suite (Real API)', () => {
     await page.waitForLoadState('networkidle');
 
     // Macro Volume StatCards
-    await expect(page.getByText(/Total Stops Observed/i)).toBeVisible();
-    await expect(page.getByText('Observed Delayed Rate', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Total Stops', { exact: true })).toBeVisible();
+    await expect(page.getByText('Fleet Delay Rate', { exact: true })).toBeVisible();
 
     // Chart cards
     await expect(page.getByText(/Daily Observed Delayed Rate Trend/i)).toBeVisible();

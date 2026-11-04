@@ -115,7 +115,7 @@ function ApiStatusCard() {
         {statusConfig.desc}
       </p>
       {status === READINESS_STATES.READY && (
-        <p className="text-xs text-slate-500 font-mono mt-0.5 truncate">
+        <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
           v{modelVersion || '1.0.0'} • As of {dataAsOf || '2026-10-25'}
         </p>
       )}
@@ -139,14 +139,9 @@ export function Sidebar({ onNavigate, className = '' }) {
           <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 flex-shrink-0">
             <TrainFront size={24} aria-hidden="true" />
           </div>
-          <div className="min-w-0">
-            <span className="block text-xl font-bold tracking-tight text-white leading-none truncate">
-              {APP_CONFIG.name}
-            </span>
-            <span className="text-xs text-blue-300 font-mono tracking-tight inline-block mt-1.5 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700/60">
-              {APP_CONFIG.versionPill}
-            </span>
-          </div>
+          <span className="text-xl font-bold tracking-tight text-white leading-none truncate">
+            {APP_CONFIG.name}
+          </span>
         </div>
 
         {/* Dataset Pill */}

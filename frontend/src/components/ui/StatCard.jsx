@@ -27,9 +27,9 @@ export function StatCard({
 
   return (
     <Card className={`relative overflow-hidden ${className}`} {...props}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-semibold tracking-wide text-slate-500 truncate">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 min-h-[2.5rem]">
+          <span className="text-sm font-semibold tracking-wide text-slate-500 leading-snug">
             {label}
           </span>
           {definition && (
