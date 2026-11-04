@@ -739,3 +739,17 @@ No test metrics are ever reported for the deployment model.
    - Tested under sustained 5,000 requests with rate limiter active: 290 HTTP 200s, 4,710 HTTP 429s, throughput 2,923.6 req/s, RSS memory delta +0.75 MB across 5,000 requests.
 6. **Accessibility Suite Expansion:** Added comprehensive a11y leftovers tests verifying ErrorState, mobile drawer, definition popovers, Smart Insights table results, Delay Prediction results, keyboard interactions, 200% zoom reflow, and prefers-reduced-motion with zero WCAG AA violations.
 7. **License Attribution:** Confirmed underlying dataset license as CC-BY-4.0 on upstream HuggingFace Hub, updating attribution documentation accordingly. All live URLs remain unverified until owner deployment.
+
+---
+
+## D-55 — Repository Hygiene, Claude Context Removal, and Per-Phase Working File Cleanup
+
+**Date decided:** 2026-11-04 (Repo-Hygiene Cleanup)
+
+**Decision:**
+Decommissioned obsolete development artifacts and transient test outputs across three bounded categories:
+1. **Claude-Related Files (Category A):** Removed untracked/git-ignored `docs/CLAUDE_HANDOFF.md` context handoff. Updated `docs/HANDOVER.md` references.
+2. **Per-Phase Working Files (Category B):** Removed 10 historical preflight markdown reports (`phase4_preflight.md` through `phase11_preflight.md`, `phase6_1_ui_audit.md`) and 6 obsolete execution runner scripts (`run_preflight.py`, `run_phase5_preflight.py`, `run_phase8_preflight.py`, `run_phase8_5_preflight.py`, `run_phase9_preflight.py`, `capture_phase9_fixtures.py`). Kept `docs/phase5_preflight.json` because it is actively read by `backend/scripts/build_serving_data.py` and `generate_model_comparison_table.py`.
+3. **Plainly Useless Junk & Test Artifacts (Category C):** Removed redundant `.gitkeep` files in `backend/scripts/`, `docs/eda/`, and `frontend/` (kept `notebooks/.gitkeep` to preserve the monorepo directory per D-10), deleted 18 unreferenced UI screenshot PNGs in `docs/ui/phase10/` (saving ~2.0 MB), and cleared untracked test caches (`test-results/`, `frontend/test-results/`, `.pytest_cache/`).
+4. **Preserved Invariants:** Zero changes to ML inference logic, backend API routes, frontend application code, dependencies, serving database, model weights, or test suites. All 154 Pytest, 73 Vitest, 38 Playwright tests, 211 consistency checks, and clean-clone drills continue passing with zero regressions.
+

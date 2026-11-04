@@ -85,7 +85,7 @@ c:\RailSense\
     ├── NLP_EVALUATION.md           # NLP intent benchmarks, false fallbacks, stress evaluation
     ├── ATTRIBUTION.md              # Dataset provenance, citations, and library licenses
     ├── INTERVIEW_NOTES.md          # Technical talking points for Data Science / ML interviews
-    └── CLAUDE_HANDOFF.md           # Compact project state summary (<= 250 lines)
+    └── QA_REPORT.md                # Comprehensive QA benchmarks and verification report
 ```
 
 ---

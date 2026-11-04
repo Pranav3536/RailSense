@@ -75,7 +75,7 @@ Phase 10 executed an exhaustive, multi-dimensional verification of the entire Ra
   19. `functional.spec.js`: Delay Patterns hotspot controls update on Apply
   20. `functional.spec.js`: Smart Insights handles 8 varied query types
   21-25. `responsive.spec.js`: Zero horizontal scroll at 360px, 768px, 1280px, 1366px, 1920px
-  26. `responsive.spec.js`: Visual screenshots saved to `docs/ui/phase10/`
+  26. `responsive.spec.js`: Visual capture verification across all 6 routes
   27. `responsive.spec.js`: Sidebar footer visible without clipping
 
 ---

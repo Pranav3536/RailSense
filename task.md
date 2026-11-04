@@ -667,3 +667,15 @@ In Phase 10, the session will:
   - Task 5: Production rehearsal, security headers, Vercel CSP rehearsal & dist inspection, a11y leftovers (10/10 axe tests pass, 0 violations), package audits, rate limiter load test (5,000 reqs, 290 200s, 4710 429s, RSS delta +0.75 MB), cold start breakdown (3,500 ms OS/import vs 401 ms in-process).
   - Task 6: Dataset license confirmed as CC-BY-4.0 on upstream HuggingFace Hub; zero premature live claims in documentation.
   - Verification: Pytest 154 passed / 4 skipped, Vitest 73 passed (13 files), Playwright 38 passed / 4 skipped (6 files), ESLint 0 errors / 0 warnings.
+
+---
+
+## 17. Repository Hygiene Cleanup (COMPLETE)
+
+- **Branch:** `cleanup/repo-hygiene` (tagged `pre-cleanup` at `55d04a2`).
+- **Decommissioned Categories:**
+  - **Category A (Claude context):** Removed untracked/git-ignored `docs/CLAUDE_HANDOFF.md`.
+  - **Category B (Per-phase working files):** Removed 10 historical preflight reports (`phase4_preflight.md` through `phase11_preflight.md`, `phase6_1_ui_audit.md`) and 6 one-off runner scripts (`run_preflight.py`, `run_phase5_preflight.py`, `run_phase8_preflight.py`, `run_phase8_5_preflight.py`, `run_phase9_preflight.py`, `capture_phase9_fixtures.py`). Kept `docs/phase5_preflight.json` (actively read by `build_serving_data.py`).
+  - **Category C (Plainly useless junk):** Removed redundant `.gitkeep` files in `backend/scripts/`, `docs/eda/`, and `frontend/` (preserved `notebooks/.gitkeep` per D-10), deleted 18 unreferenced UI screenshots in `docs/ui/phase10/` (2.0 MB), and cleared test caches (`test-results/`, `frontend/test-results/`, `.pytest_cache/`).
+- **Verification Baseline Preserved:** Pytest 154 passed / 4 skipped, Vitest 73 passed, Playwright 38 passed / 4 skipped, ESLint 0 warnings, Vite build OK, clean-clone 4 of 4 probes passed with zero regressions.
+
