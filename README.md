@@ -204,5 +204,5 @@ For data provenance and licensing details:
 ## 8. License & Attribution
 
 - **Application Source Code:** MIT License (see repository root).
-- **Underlying Dataset:** Indian Railways Delay Dataset (`pjay-in/indian-railways-delays` on HuggingFace). License: **CC-BY-4.0** (Creative Commons Attribution 4.0 International). See [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) for full attribution.
+- **Underlying Dataset:** Indian Railways Delay Dataset (`pjay-in/indian-railways-delays` on HuggingFace). License: **To be confirmed by owner** (declared as CC-BY-4.0 on upstream repository card; not Apache 2.0). See [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) for full attribution.
 - **Creator & Maintainer:** Pranav ([GitHub Profile](https://github.com/Pranav3536))

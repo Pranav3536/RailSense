@@ -81,14 +81,18 @@ JSON Response Envelope (HTTP 200)
 
 ## 4. Empirical Evaluation Results
 
-Evaluated on held-out test split (`backend/app/nlp/eval/questions.jsonl`, 131 test questions, 87 dev questions):
+Evaluated on held-out test split (`backend/app/nlp/eval/questions.jsonl`, 131 test questions, 87 dev questions) and independent stress/OOD benchmarks:
 
-| Model / Baseline | Test Intent Accuracy | Test Macro-F1 | Median Latency (ms) |
-|---|---|---|---|
-| Keyword Matcher Baseline | 22.90% | 0.2335 | 0.12 ms |
-| TF-IDF + Nearest Centroid | 90.08% | 0.9047 | 0.85 ms |
-| **TF-IDF + Logistic Regression (Deployed)** | **93.89%** | **0.9410** | **1.14 ms** |
+| Model / Baseline | Held-Out Test Intent Accuracy | Phase 10 Random Split (`seed=42`) | Hostile Stress Suite ($N=42$) | Median Latency |
+|---|---|---|---|---|
+| Keyword Matcher Baseline | 22.90% (30/131) | 22.90% | 0.0% (0/42) | 0.12 ms |
+| TF-IDF + Nearest Centroid | 90.08% (118/131) | 88.55% | 19.05% (8/42) | 0.85 ms |
+| **TF-IDF + Logistic Regression (Deployed)** | **96.18% (126/131, dev-tuned)** | **93.89% (123/131)** | **35.71% (15/42)** | **1.14 ms** |
 
+- **Held-Out Test Accuracy ("Dev-Tuned"):** **96.18% (126/131)** raw classifier argmax accuracy on the sequential test split (`EVAL_QUESTIONS[87:]`). The Phase 10 random shuffle split (`seed=42`) scored **93.89% (123/131)**. Both measure 131 questions from the same 218-question corpus.
+- **Stress & Adversarial Robustness:** Tested against hostile inputs (typos, Hinglish slang, word order inversions, prompt injections) scoring **35.71% (15/42)**. Under ambiguous or adversarial queries, conservative confidence (<0.40) and margin (<0.08) gating safely routes queries to suggestion chips instead of hallucinating inaccurate metrics.
+- **Answered In-Domain Accuracy:** Among queries passing confidence gates, **99.07% (107/108)** deliver the correct analytical intent (**89.17% overall in-domain resolution**, 107/120).
+- **Suggestion Recovery:** **91.67% (11/12)** of in-domain queries routed to fallback recover their true intent in the top-3 interactive suggestion chips.
 - **Entity Extraction Accuracy:** 93.33% across held-out queries.
-- **Out-of-Distribution Fallback Trigger Rate:** 100.0% on out-of-scope booking, catering, and PNR questions.
-- **Inference Latency:** Sub-1.5 ms per query, enabling fast responses with zero external API latency.
+- **Out-of-Distribution Safety:** 100.0% (11/11) on test split out-of-scope queries; 97.62% (41/42) on the expanded independent OOD benchmark.
+- **Inference Latency:** Sub-1.5 ms per query (1.14 ms median), enabling fast local responses with zero external API latency or paid tokens.

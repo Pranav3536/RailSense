@@ -738,7 +738,7 @@ No test metrics are ever reported for the deployment model.
    - Standardized `Retry-After: 60` header on HTTP 429 responses.
    - Tested under sustained 5,000 requests with rate limiter active: 290 HTTP 200s, 4,710 HTTP 429s, throughput 2,923.6 req/s, RSS memory delta +0.75 MB across 5,000 requests.
 6. **Accessibility Suite Expansion:** Added comprehensive a11y leftovers tests verifying ErrorState, mobile drawer, definition popovers, Smart Insights table results, Delay Prediction results, keyboard interactions, 200% zoom reflow, and prefers-reduced-motion with zero WCAG AA violations.
-7. **License Attribution:** Confirmed underlying dataset license as CC-BY-4.0 on upstream HuggingFace Hub, updating attribution documentation accordingly. All live URLs remain unverified until owner deployment.
+7. **License Attribution:** Dataset license status noted as to be confirmed by owner (declared as CC-BY-4.0 on upstream HuggingFace Hub, not Apache 2.0). All live URLs remain unverified until owner deployment.
 
 ---
 
