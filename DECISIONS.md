@@ -955,4 +955,42 @@ Decommissioned obsolete development artifacts and transient test outputs across 
      - Total directory size: 316 KB (< 1 MB).
    - Zero horizontal overflow validated across viewports 360, 768, 1280, 1366, 1920.
 
+---
+
+## D-61 — Phase 11.7 Smart Insights NLP Interface Polish & Sidebar Telemetry Refinement
+
+**Date decided:** 2026-11-05 (Phase 11.7 UI Polish Patch)
+
+**Decision:**
+1. **Sidebar Telemetry Status Refinement (Strict 3-Line Widget):**
+   - Refined the Sidebar bottom telemetry card to strictly 3 lines:
+     - Line 1: `"● Systems Operational"` with pulsing emerald-500 status indicator dot and live ping latency tooltip.
+     - Line 2: `"Engine: RailSense Telemetry Core"`.
+     - Line 3: `"v2.0.4"`.
+   - Completely removed `"• Ingestion: 28L+ Stops"` and any raw record size disclosures from the status widget, aligning with standard enterprise cloud service health monitors.
+2. **Purge of Student/Free-Tier/No-LLM Boasting:**
+   - Excised all defensive, student-style README / viva claims (`"100% free"`, `"zero paid APIs"`, `"without runtime LLM dependencies"`) across the user interface and configuration files.
+   - Replaced page subtitle with clear enterprise capability copy: `"Deterministic natural language query engine for instant delay diagnostics, route histories, and fleet-wide benchmarks."`.
+   - Updated architecture banner to: `"Deterministic Query Engine: Evaluates queries via rule-based semantic slot mapping and parameterized analytical templates to guarantee zero hallucination."`.
+3. **Query Search Bar Polish:**
+   - Removed the `"0 / 300"` tweet-style character counter from the query input bar.
+   - Cleaned input label from `"ASK A QUESTION ABOUT DELAY PATTERNS"` to `"Query Telemetry & Historical Trends"`.
+   - Maintained accessible 44px touch target on submit button with clean Send icon and subtle keyboard shortcut hint (`↵`).
+4. **Analysis Result Card & Leak Cleanup:**
+   - Replaced raw debug monospace artifact `Intent: fleet_summary` with a polished category badge: `Query Type: Fleet Summary` (and corresponding title-cased intent labels).
+   - Fixed broken/empty `Understood:` line when querying without entities: merged query cleanly into `Query: «What is the overall delay rate across Indian Railways?»` and rendered entity chips strictly when entities exist.
+   - Standardized confidence pill from all-caps `HIGH Confidence (77%)` to title-case `High Confidence (77%)`.
+5. **Streamlined Footers & Technical Provenance:**
+   - Relocated repetitive technical definitions (`"Definition: Delayed = arrival delay > 15m..."`) out of the result body into the collapsible `"How This Answer Was Generated (Technical Provenance)"` details section under `"Analytical Definition:"`.
+   - Kept primary card focused on core metrics: analytical summary, 4 StatCards, and deep-link actions.
+6. **Responsive Verification & Visual Artifacts:**
+   - Validated zero horizontal scroll across viewports 360, 768, 1280, 1366, 1920.
+   - Generated clean responsive screenshots in `docs/ui/phase11_7/`:
+     - `insights_360.png` (67 KB)
+     - `insights_768.png` (75 KB)
+     - `insights_1280.png` (113 KB)
+     - `insights_1366.png` (127 KB)
+     - `insights_1920.png` (127 KB)
+     - Total directory size: ~510 KB (< 1 MB).
+
 

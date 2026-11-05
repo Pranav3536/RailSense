@@ -20,7 +20,7 @@ describe('SmartInsightsPage (Tab 6)', () => {
     endpoints.queryInsights.mockResolvedValue(insightsQueryFixture);
   });
 
-  it('renders page header, local NLP disclaimer, and character counter', async () => {
+  it('renders page header, deterministic query banner, and query telemetry input without character counter', async () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <SmartInsightsPage />
@@ -29,7 +29,12 @@ describe('SmartInsightsPage (Tab 6)', () => {
 
     expect(screen.getByText('Natural Language Analytics')).toBeInTheDocument();
     expect(screen.getByText('Local NLP Engine')).toBeInTheDocument();
-    expect(screen.getByText(/0\s*\/\s*300/)).toBeInTheDocument();
+    expect(screen.getByText(/Deterministic natural language query engine/i)).toBeInTheDocument();
+    expect(screen.getByText('Query Telemetry & Historical Trends')).toBeInTheDocument();
+    expect(screen.queryByText(/0\s*\/\s*300/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/100%\s*free/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/zero paid APIs/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/without runtime LLM dependencies/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/probability/i)).not.toBeInTheDocument();
   });
 
@@ -92,7 +97,9 @@ describe('SmartInsightsPage (Tab 6)', () => {
 
     // Check table visual items
     expect(screen.getByText('76.10%')).toBeInTheDocument();
-    expect(screen.getByText(/HIGH Confidence/i)).toBeInTheDocument();
+    expect(screen.getByText(/High Confidence/i)).toBeInTheDocument();
+    expect(screen.getByText(/Query Type:\s*Category Ranking/i)).toBeInTheDocument();
+    expect(screen.getByText(/Query:\s*«Which train category is most delayed\?»/i)).toBeInTheDocument();
   });
 
   it('handles clarification response with interactive candidate chips', async () => {

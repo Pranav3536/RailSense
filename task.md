@@ -896,3 +896,46 @@ In Phase 10, the session will:
   - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
   - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
 
+---
+
+## 23. Phase 11.7 Smart Insights UI Polish & Sidebar Telemetry Refinement (COMPLETE)
+
+- **Task 1: Sidebar Status Refinement (Strict 3-Line Widget):**
+  - Updated Sidebar telemetry box strictly to the 3-line format:
+    - Line 1: `"● Systems Operational"` (emerald-500 status dot with ping latency tooltip).
+    - Line 2: `"Engine: RailSense Telemetry Core"`.
+    - Line 3: `"v2.0.4"`.
+  - Completely excised `"• Ingestion: 28L+ Stops"`.
+- **Task 2: Eliminate Student/Free-Tier/No-LLM Boasting:**
+  - Excised all defensive claims (`"100% free"`, `"zero paid APIs"`, `"without runtime LLM dependencies"`) across UI and config.
+  - Page subtitle: `"Deterministic natural language query engine for instant delay diagnostics, route histories, and fleet-wide benchmarks."`.
+  - Architecture banner: `"Deterministic Query Engine: Evaluates queries via rule-based semantic slot mapping and parameterized analytical templates to guarantee zero hallucination."`.
+- **Task 3: Search Interface Polish (Remove Chatbot Counters):**
+  - Removed `"0 / 300"` tweet-style character counter from input bar.
+  - Updated search bar label to `"Query Telemetry & Historical Trends"`.
+  - Accessible 44px submit button with Send icon and keyboard hint (`↵`).
+- **Task 4: Result Card Polish & Remove Debug Leaks:**
+  - Formatted `Intent: fleet_summary` debug code into polished category pill: `Query Type: Fleet Summary` with subtle slate badge styling.
+  - Fixed broken/empty `Understood:` line: cleanly displays `Query: «What is the overall delay rate across Indian Railways?»` and renders entity chips strictly when entities exist.
+  - Converted confidence pill to title-case: `High Confidence (77%)`.
+- **Task 5: Streamline Repetitive Footers & Provenance Accordion:**
+  - Relocated repetitive technical definitions from card body into the collapsible `"How This Answer Was Generated (Technical Provenance)"` details section under `"Analytical Definition:"`.
+  - Kept primary card focused on core metrics: analytical summary, 4 StatCards, and deep-link actions.
+- **Task 6: General Polish, Accessibility & Regression Checks:**
+  - Validated zero horizontal scroll across viewports 360, 768, 1280, 1366, 1920.
+  - Captured full-page screenshots into `docs/ui/phase11_7/`:
+    - `insights_360.png` (67 KB)
+    - `insights_768.png` (75 KB)
+    - `insights_1280.png` (113 KB)
+    - `insights_1366.png` (127 KB)
+    - `insights_1920.png` (127 KB)
+    - Total directory size: ~510 KB (< 1 MB).
+- **Verification Baseline:**
+  - Pytest: **156 passed, 4 skipped in 21.96s**
+  - Vitest: **103 passed across 15 test files in 37.51s** (+1 test)
+  - Playwright E2E: **42 passed, 4 skipped (live)** across 6 test files (+1 test)
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK (9.38s)**
+  - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
+  - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
+

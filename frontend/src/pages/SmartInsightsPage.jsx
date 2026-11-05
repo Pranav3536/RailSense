@@ -26,10 +26,23 @@ import { queryInsights, getInsightsExamples } from '../api/endpoints';
 const MAX_QUESTION_CHARS = 300;
 const MAX_HISTORY_ITEMS = 20;
 
+function formatIntentLabel(intent) {
+  if (!intent) return 'Telemetry Query';
+  return intent
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function formatConfidence(level) {
+  if (!level) return 'High';
+  return level.charAt(0).toUpperCase() + level.slice(1).toLowerCase();
+}
+
 /**
- * SmartInsightsPage — Tab 6 Natural Language Analytics (Phase 9)
- * Local parameterised query interface powered by TF-IDF and RapidFuzz.
- * Zero external LLMs, zero paid APIs, zero concatenated SQL.
+ * SmartInsightsPage — Tab 6 Natural Language Analytics (Phase 9 & 11.7)
+ * Parameterized analytical query interface powered by TF-IDF and RapidFuzz.
+ * Evaluates queries via rule-based semantic slot mapping and template resolution.
  */
 export function SmartInsightsPage() {
   const [searchParams] = useSearchParams();
@@ -164,7 +177,7 @@ export function SmartInsightsPage() {
       {/* 1. Page Header */}
       <PageHeader
         title="Natural Language Analytics"
-        subtitle="Local parameterised query interface answering delay patterns, train histories, and fleet statistics without runtime LLM dependencies."
+        subtitle="Deterministic natural language query engine for instant delay diagnostics, route histories, and fleet-wide benchmarks."
         badge={<Badge variant="primary">Local NLP Engine</Badge>}
       />
 
@@ -183,7 +196,7 @@ export function SmartInsightsPage() {
                 How Smart Insights Works: Deterministic Local NLP
               </h3>
               <p className="text-xs text-slate-500">
-                100% free, runs in your local Python backend, zero paid APIs, zero free-form SQL generation.
+                Deterministic Query Engine: Evaluates queries via rule-based semantic slot mapping and parameterized analytical templates to guarantee zero hallucination.
               </p>
             </div>
           </div>
@@ -226,15 +239,8 @@ export function SmartInsightsPage() {
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="flex items-center justify-between">
               <label htmlFor="smart-insights-input" className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Ask a Question About Delay Patterns
+                Query Telemetry & Historical Trends
               </label>
-              <span
-                className={`text-xs font-mono font-medium ${
-                  isOverLimit ? 'text-rose-600 font-bold' : charCount > 250 ? 'text-amber-600' : 'text-slate-600'
-                }`}
-              >
-                {charCount} / {MAX_QUESTION_CHARS}
-              </span>
             </div>
 
             <div className="relative">
@@ -253,13 +259,13 @@ export function SmartInsightsPage() {
                 placeholder="e.g. Which train category is most delayed? or What are the worst stops for train 12951?"
                 disabled={isLoading}
                 maxLength={MAX_QUESTION_CHARS + 50}
-                className="w-full pl-4 pr-24 py-3 text-sm bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow disabled:bg-slate-50 disabled:opacity-60"
+                className="w-full pl-4 pr-28 py-3 text-sm bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow disabled:bg-slate-50 disabled:opacity-60"
               />
               <button
                 type="submit"
-                aria-label="Ask question"
+                aria-label="Submit telemetry query"
                 disabled={isLoading || !questionText.trim() || isOverLimit || cooldownSeconds > 0}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[44px] px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
               >
                 {isLoading ? (
                   <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -267,6 +273,7 @@ export function SmartInsightsPage() {
                   <>
                     <span>Ask</span>
                     <Send size={13} />
+                    <span className="hidden sm:inline-block text-2xs opacity-75 font-mono ml-0.5" aria-hidden="true">↵</span>
                   </>
                 )}
               </button>
@@ -320,75 +327,88 @@ export function SmartInsightsPage() {
       )}
 
       {/* 5. Primary Answer Card */}
-      {currentResult && (
-        <section role="region" aria-labelledby="answer-heading" aria-live="polite" className="space-y-4">
-          <SectionHeader
-            id="answer-heading"
-            title="Analysis Result"
-            description="Truthfully compiled response from observed historical records."
-            icon={Cpu}
-            badge={
-              <Badge
-                variant={
-                  currentResult.confidence_level === 'HIGH'
-                    ? 'success'
-                    : currentResult.confidence_level === 'MEDIUM'
-                    ? 'primary'
-                    : 'warning'
-                }
-              >
-                {currentResult.confidence_level} Confidence ({Math.round(currentResult.confidence * 100)}%)
-              </Badge>
-            }
-          />
+      {currentResult && (() => {
+        const hasEntities = Boolean(
+          currentResult.entities &&
+          (currentResult.entities.train_number ||
+           currentResult.entities.train_name ||
+           currentResult.entities.station_code ||
+           currentResult.entities.category ||
+           currentResult.entities.weekday ||
+           currentResult.entities.time_of_day)
+        );
 
-          <Card className="border-blue-200 bg-white shadow-sm overflow-hidden">
-            {/* Header: User Question + Understood Entities */}
-            <CardHeader className="bg-slate-50/70 border-b border-slate-100 pb-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-mono font-semibold text-slate-500">
-                  Question: &quot;{currentResult.query}&quot;
-                </span>
-                <span className="text-xs text-slate-600">
-                  Intent: <code className="text-blue-700 font-bold">{currentResult.understood_intent}</code>
-                </span>
-              </div>
+        return (
+          <section role="region" aria-labelledby="answer-heading" aria-live="polite" className="space-y-4">
+            <SectionHeader
+              id="answer-heading"
+              title="Analysis Result"
+              description="Truthfully compiled response from observed historical records."
+              icon={Cpu}
+              badge={
+                <Badge
+                  variant={
+                    currentResult.confidence_level === 'HIGH'
+                      ? 'success'
+                      : currentResult.confidence_level === 'MEDIUM'
+                      ? 'primary'
+                      : 'warning'
+                  }
+                >
+                  {formatConfidence(currentResult.confidence_level)} Confidence ({Math.round(currentResult.confidence * 100)}%)
+                </Badge>
+              }
+            />
 
-              {/* Resolved Entity Chips */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-2">
-                <span className="text-xs text-slate-500 font-medium mr-1">Understood:</span>
-                {currentResult.entities?.train_number && (
-                  <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-mono font-semibold">
-                    Train #{currentResult.entities.train_number}
+            <Card className="border-blue-200 bg-white shadow-sm overflow-hidden">
+              {/* Header: User Question + Understood Entities */}
+              <CardHeader className="bg-slate-50/70 border-b border-slate-100 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-slate-800">
+                    Query: «{currentResult.query}»
                   </span>
-                )}
-                {currentResult.entities?.train_name && (
-                  <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-xs font-medium">
-                    {currentResult.entities.train_name}
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                    Query Type: {formatIntentLabel(currentResult.understood_intent)}
                   </span>
+                </div>
+
+                {/* Resolved Entity Chips */}
+                {hasEntities && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                    <span className="text-xs text-slate-500 font-medium mr-1">Entities:</span>
+                    {currentResult.entities?.train_number && (
+                      <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-mono font-semibold">
+                        Train #{currentResult.entities.train_number}
+                      </span>
+                    )}
+                    {currentResult.entities?.train_name && (
+                      <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-xs font-medium">
+                        {currentResult.entities.train_name}
+                      </span>
+                    )}
+                    {currentResult.entities?.station_code && (
+                      <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold">
+                        Station {currentResult.entities.station_code}
+                      </span>
+                    )}
+                    {currentResult.entities?.category && (
+                      <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 text-xs font-mono">
+                        Category {currentResult.entities.category}
+                      </span>
+                    )}
+                    {currentResult.entities?.weekday && (
+                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">
+                        {currentResult.entities.weekday}
+                      </span>
+                    )}
+                    {currentResult.entities?.time_of_day && (
+                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs capitalize">
+                        {currentResult.entities.time_of_day}
+                      </span>
+                    )}
+                  </div>
                 )}
-                {currentResult.entities?.station_code && (
-                  <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold">
-                    Station {currentResult.entities.station_code}
-                  </span>
-                )}
-                {currentResult.entities?.category && (
-                  <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 text-xs font-mono">
-                    Category {currentResult.entities.category}
-                  </span>
-                )}
-                {currentResult.entities?.weekday && (
-                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">
-                    {currentResult.entities.weekday}
-                  </span>
-                )}
-                {currentResult.entities?.time_of_day && (
-                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs capitalize">
-                    {currentResult.entities.time_of_day}
-                  </span>
-                )}
-              </div>
-            </CardHeader>
+              </CardHeader>
 
             <CardContent className="pt-5 space-y-5">
               {/* Answer Text */}
@@ -512,18 +532,15 @@ export function SmartInsightsPage() {
               )}
 
               {/* Caveats & Integrity Notes */}
-              <div className="pt-3 border-t border-slate-100 space-y-2 text-xs">
-                {currentResult.answer?.definition_note && (
-                  <p className="text-slate-500">
-                    <strong className="text-slate-700">Definition:</strong> {currentResult.answer.definition_note}
-                  </p>
-                )}
-                {currentResult.answer?.caveats?.map((cav, cIdx) => (
-                  <p key={`cav-${cIdx}`} className="text-amber-800/90 font-medium">
-                    • {cav}
-                  </p>
-                ))}
-              </div>
+              {currentResult.answer?.caveats?.length > 0 && (
+                <div className="pt-3 border-t border-slate-100 space-y-1.5 text-xs">
+                  {currentResult.answer.caveats.map((cav, cIdx) => (
+                    <p key={`cav-${cIdx}`} className="text-amber-800/90 font-medium">
+                      • {cav}
+                    </p>
+                  ))}
+                </div>
+              )}
 
               {/* "How This Was Answered" Collapsible */}
               <details className="group border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-xs">
@@ -550,6 +567,12 @@ export function SmartInsightsPage() {
                     <span className="font-bold text-slate-700 font-sans block">Data Source:</span>
                     <span className="font-sans">{currentResult.explanation?.data_source}</span>
                   </div>
+                  {currentResult.answer?.definition_note && (
+                    <div className="sm:col-span-2 pt-1 font-sans text-slate-600">
+                      <span className="font-bold text-slate-700 block">Analytical Definition:</span>
+                      <span>{currentResult.answer.definition_note}</span>
+                    </div>
+                  )}
                   <div className="sm:col-span-2 pt-1 font-sans text-emerald-700 font-semibold">
                     ✓ {currentResult.explanation?.safety_note}
                   </div>
@@ -558,7 +581,8 @@ export function SmartInsightsPage() {
             </CardContent>
           </Card>
         </section>
-      )}
+      );
+    })()}
 
       {/* 6. Session History Section */}
       {sessionHistory.length > 1 && (
@@ -595,11 +619,11 @@ export function SmartInsightsPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-xs font-mono text-slate-500">
-                    {histItem.understood_intent}
+                  <span className="text-xs font-medium text-slate-600 px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
+                    {formatIntentLabel(histItem.understood_intent)}
                   </span>
                   <Badge variant="primary" size="sm">
-                    {histItem.confidence_level}
+                    {formatConfidence(histItem.confidence_level)}
                   </Badge>
                 </div>
               </div>

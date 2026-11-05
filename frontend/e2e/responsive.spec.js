@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -207,7 +208,8 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       if (vp.width >= 1366) {
         await expect(page.getByText('Systems Operational')).toBeVisible({ timeout: 10000 });
         await expect(page.getByText('Engine: RailSense Telemetry Core')).toBeVisible();
-        await expect(page.getByText(/Ingestion: 28L\+ Stops/)).toBeVisible();
+        await expect(page.getByText('v2.0.4')).toBeVisible();
+        await expect(page.getByText(/Ingestion: 28L\+ Stops/)).toHaveCount(0);
         await expect(page.getByText('local snapshot')).toHaveCount(0);
       }
 
@@ -236,6 +238,81 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       // Take screenshot
       await page.screenshot({
         path: path.join(outDir, `patterns_${vp.name}.png`),
+        fullPage: false,
+      });
+    }
+  });
+
+  test('Phase 11.7: Smart Insights visual integrity, telemetry status & query execution (360, 768, 1280, 1366, 1920)', async ({
+    page,
+  }) => {
+    const outDir = path.resolve(__dirname, '../../docs/ui/phase11_7');
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+
+    for (const vp of viewports) {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto('/insights');
+      await page.waitForLoadState('networkidle');
+
+      // 1. Verify zero horizontal overflow
+      const isOverflowing = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      });
+      expect(isOverflowing).toBeFalsy();
+
+      // 2. On desktop viewports (1366+), verify Sidebar telemetry status strictly
+      if (vp.width >= 1366) {
+        await expect(page.getByText('Systems Operational')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByText('Engine: RailSense Telemetry Core')).toBeVisible();
+        await expect(page.getByText('v2.0.4')).toBeVisible();
+        await expect(page.getByText(/Ingestion: 28L\+ Stops/)).toHaveCount(0);
+        await expect(page.getByText('local snapshot')).toHaveCount(0);
+      }
+
+      // 3. Verify student / amateur boasting is removed
+      await expect(page.getByText(/100%\s*free/i)).toHaveCount(0);
+      await expect(page.getByText(/zero paid APIs/i)).toHaveCount(0);
+      await expect(page.getByText(/without runtime LLM dependencies/i)).toHaveCount(0);
+
+      // 4. Verify character counter is removed
+      await expect(page.getByText(/0\s*\/\s*300/)).toHaveCount(0);
+
+      // 5. Verify query label
+      await expect(page.getByText('Query Telemetry & Historical Trends')).toBeVisible();
+
+      // 6. Test query submission and result card on 1366 desktop
+      if (vp.width === 1366) {
+        const input = page.locator('#smart-insights-input');
+        const askBtn = page.getByRole('button', { name: /(Ask|Submit)/i });
+
+        // Query 1: Fleet summary
+        await input.fill('What is the overall delay rate across Indian Railways?');
+        await askBtn.click();
+
+        await expect(page.locator('[role="region"][aria-labelledby="answer-heading"]')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByText(/High Confidence/i)).toBeVisible();
+        await expect(page.getByText(/Query Type:\s*Fleet Summary/i)).toBeVisible();
+        await expect(page.getByText(/Query:\s*«What is the overall delay rate across Indian Railways\?»/i)).toBeVisible();
+
+        // Check raw code snippet and floating Understood: are NOT visible
+        await expect(page.locator('code:has-text("fleet_summary")')).toHaveCount(0);
+        await expect(page.getByText(/^Understood:$/i)).toHaveCount(0);
+
+        // Check definition note is inside technical provenance accordion and not cluttering body
+        const provDetails = page.locator('details:has-text("Technical Provenance")');
+        await expect(provDetails).toBeVisible();
+
+        // Query 2: Category ranking (table result)
+        await input.fill('Which train category is most delayed?');
+        await askBtn.click();
+        await expect(page.getByText(/Query Type:\s*Category Ranking/i)).toBeVisible({ timeout: 10000 });
+      }
+
+      // Take screenshot
+      await page.screenshot({
+        path: path.join(outDir, `insights_${vp.name}.png`),
         fullPage: false,
       });
     }

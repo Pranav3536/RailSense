@@ -96,7 +96,8 @@ describe('Sidebar Layout & Truthful Status suite', () => {
       expect(screen.getByText('Systems Operational')).toBeInTheDocument();
     });
     expect(screen.getByText('Engine: RailSense Telemetry Core')).toBeInTheDocument();
-    expect(screen.getByText(/Ingestion: 28L\+ Stops/)).toBeInTheDocument();
+    expect(screen.getByText('v2.0.4')).toBeInTheDocument();
+    expect(screen.queryByText(/Ingestion: 28L\+ Stops/)).not.toBeInTheDocument();
     expect(screen.queryByText(/local snapshot/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/precomputed/i)).not.toBeInTheDocument();
   });

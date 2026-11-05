@@ -194,4 +194,18 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
     expect(adapters).not.toMatch(/`\[\$\{[^}]+\}%,\s*\$\{[^}]+\}%\]`/);
     expect(patternsPage).not.toContain('{[item.wilsonText]}');
   });
+
+  it('contains zero student/free-tier boasting ("100% free", "zero paid APIs", "without runtime LLM dependencies") in frontend production files', () => {
+    const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
+    const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')));
+
+    const forbiddenPhrases = ['100% free', 'zero paid apis', 'without runtime llm dependencies', 'ingestion: 28l+ stops'];
+
+    nonTestFiles.forEach((file) => {
+      const content = fs.readFileSync(file, 'utf-8').toLowerCase();
+      forbiddenPhrases.forEach((phrase) => {
+        expect(content, `Found forbidden amateur phrase "${phrase}" in ${file}`).not.toContain(phrase);
+      });
+    });
+  });
 });

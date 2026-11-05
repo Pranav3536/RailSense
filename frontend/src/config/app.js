@@ -68,6 +68,6 @@ export const NAV_ITEMS = [
     iconName: 'MessageSquareText',
     phase: 'Phase 9',
     endpoints: ['/api/insights/query'],
-    description: 'Local parameterised NLP query interface (TF-IDF + RapidFuzz) answering structured delay intelligence queries without runtime LLM dependencies.'
+    description: 'Deterministic natural language query interface answering structured delay intelligence queries, route histories, and fleet-wide benchmarks.'
   }
 ];

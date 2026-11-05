@@ -48,7 +48,7 @@ function ApiStatusCard() {
   let statusConfig = {
     title: 'Checking Telemetry...',
     line1: 'Engine: RailSense Telemetry Core',
-    line2: `v${versionString} • Connecting...`,
+    line2: `v${versionString}`,
     dot: (
       <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75" />
@@ -63,7 +63,7 @@ function ApiStatusCard() {
     statusConfig = {
       title: 'Systems Operational',
       line1: 'Engine: RailSense Telemetry Core',
-      line2: `v${versionString} • Ingestion: 28L+ Stops`,
+      line2: `v${versionString}`,
       dot: (
         <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -77,7 +77,7 @@ function ApiStatusCard() {
     statusConfig = {
       title: 'Systems Degraded',
       line1: 'Engine: RailSense Telemetry Core',
-      line2: degradedReason || 'Component degraded',
+      line2: degradedReason || `v${versionString}`,
       dot: (
         <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
