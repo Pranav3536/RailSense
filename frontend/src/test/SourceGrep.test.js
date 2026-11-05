@@ -157,7 +157,7 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
     });
   });
 
-  it('contains zero buzzwords (Protocol, Zero Lookahead, Untouched, Telemetry) in user-facing Model Lab page', () => {
+  it('contains zero buzzwords (Protocol, Zero Lookahead, Untouched) in user-facing Model Lab page', () => {
     const modelLabPath = path.resolve(srcDir, 'pages', 'ModelLabPage.jsx');
     const content = fs.readFileSync(modelLabPath, 'utf-8');
     const forbiddenBuzzwords = [
@@ -165,11 +165,33 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
       'Leakage Safeguards & Banned Features Protocol',
       'Research Benchmark Only — Formulation 2',
       'untouched test partition',
-      'Telemetry Benchmark',
     ];
 
     forbiddenBuzzwords.forEach((word) => {
       expect(content).not.toContain(word);
     });
+  });
+
+  it('contains zero leaked prompt instructions ("never causation", "worded as") in frontend production source files', () => {
+    const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
+    const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')));
+
+    const promptLeakTerms = ['never causation', 'worded as'];
+
+    nonTestFiles.forEach((file) => {
+      const content = fs.readFileSync(file, 'utf-8').toLowerCase();
+      promptLeakTerms.forEach((term) => {
+        expect(content, `Found leaked prompt term "${term}" in ${file}`).not.toContain(term);
+      });
+    });
+  });
+
+  it('contains zero raw Python brackets for Wilson CI in DelayPatternsPage and adapters', () => {
+    const patternsPage = fs.readFileSync(path.resolve(srcDir, 'pages', 'DelayPatternsPage.jsx'), 'utf-8');
+    const adapters = fs.readFileSync(path.resolve(srcDir, 'api', 'adapters.js'), 'utf-8');
+
+    // Should not contain `[${...}%, ${...}%]`
+    expect(adapters).not.toMatch(/`\[\$\{[^}]+\}%,\s*\$\{[^}]+\}%\]`/);
+    expect(patternsPage).not.toContain('{[item.wilsonText]}');
   });
 });

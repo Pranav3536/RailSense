@@ -45,6 +45,7 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-35 | Sequence Number (seq) Primary Keying for Stop Progression | Phase 7 |
 | D-36 | Boundary Days Temporal Marking (Left-Truncated & Right-Censored) | Phase 7 |
 | D-59 | Model Lab Polish, Measured Inference Latency, LaTeX Removal & Feature Ordering | Phase 11.5 |
+| D-60 | Sidebar Telemetry Status Upgrade, Prompt Leak Purge, and Delay Patterns Polish | Phase 11.6 |
 
 ---
 
@@ -912,5 +913,46 @@ Decommissioned obsolete development artifacts and transient test outputs across 
      - `model_lab_1366.png` (150 KB)
      - `model_lab_1920.png` (187 KB)
      - Total directory size: 369 KB (< 1 MB).
+
+---
+
+## D-60 — Phase 11.6 Sidebar Telemetry Status Upgrade, Prompt Leak Purge, and Delay Patterns Polish
+
+**Date decided:** 2026-11-05 (Phase 11.6 UI Polish Patch)
+
+**Decision:**
+1. **Sidebar Telemetry Status Overhaul:**
+   - Replaced demo/mock copy ("API ready", "Data: precomputed local snapshot", "v1.0.0 • As of 2026-10-25") with enterprise telemetry styling:
+     - Header: "● Systems Operational" with emerald-500 pulsing status dot and live ping latency tooltip.
+     - Line 1: "Engine: RailSense Telemetry Core" (font-medium text-slate-300).
+     - Line 2: "v2.0.4 • Ingestion: 28L+ Stops".
+   - Maintained full reactivity in `useReadiness.js` with live request round-trip timing (`latencyMs`), 44px accessible touch target for refresh button (`aria-label="Refresh telemetry health"`), and graceful fallback states ("Systems Degraded", "Systems Offline").
+2. **Prompt Leak Elimination:**
+   - Completely excised leaked internal prompt instruction: `"Worded as observed empirical association with journey progression, never causation."` from `frontend/src/pages/DelayPatternsPage.jsx`.
+   - Replaced subtitle of "Delay Evolution Along Journey Route" with functional product copy: `"Delay accumulation across sequential halt intervals from origin to terminus."`.
+   - Added automated regression grep test in `frontend/src/test/SourceGrep.test.js` asserting zero prompt leak terms ("never causation", "worded as") across all frontend source files.
+3. **Bogus Low-Support Badge Removal on Aggregate Groups:**
+   - Fixed array length bug where `array.length` (7 weekdays, 20 service classes, 5 position bins) was passed to `<SupportBadge threshold={30} />`, causing false "Low Support (<30)" warnings on distributions evaluated across 1.77M halts.
+   - Removed `SupportBadge` entirely from aggregate section headers (Day of Week, Category, Journey Sequence, and Hour).
+   - Confined `SupportBadge` strictly to rare individual entity stops (< 30) in station calling trains sample.
+4. **Methodological Scope Consolidation:**
+   - Replaced bulky top 3-card banner with a concise, clean subtitle pill: `"Fleet-wide delay distributions evaluated across 17.7L label-eligible halts (Oct 7–25, 2026)."`.
+   - Preserved accessible scientific definitions inside a collapsed-by-default guide ("Methodological Scope & Boundary Principles") with 44px accessible toggle.
+5. **Wilson 95% Confidence Interval Formatting:**
+   - Replaced raw bracket notation (`"[98.0%, 100.0%]"`) with clean human-readable range formatting (`"98.0% – 100.0%"` using en-dash and no square brackets).
+   - Implemented `formatConfidenceInterval` utility in `frontend/src/utils/format.js` and updated `frontend/src/api/adapters.js`.
+   - Applied `font-mono tabular-nums` to Hotspots table and Station Historical Profile card.
+6. **Provenance & Footer Alignment:**
+   - Replaced internal technical leak `"Serving store: SQLite + In-Memory Fast Lookup"` with standard unified provenance line: `"Data snapshot: Oct 25, 2026 • Query Engine: In-Memory Indexed Cache"`.
+   - Standardized chart container heights to `h-80 min-h-[320px]`.
+   - Enlarged station drawer close button to 44px touch target with accessible `aria-label="Close station details"`.
+7. **Responsive & Visual Verification:**
+   - Captured full-page screenshots into `docs/ui/phase11_6/`:
+     - `patterns_360.png` (32 KB)
+     - `patterns_768.png` (59 KB)
+     - `patterns_1366.png` (97 KB)
+     - `patterns_1920.png` (128 KB)
+     - Total directory size: 316 KB (< 1 MB).
+   - Zero horizontal overflow validated across viewports 360, 768, 1280, 1366, 1920.
 
 

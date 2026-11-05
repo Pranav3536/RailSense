@@ -155,3 +155,34 @@ export function pluralize(count, singular, plural = null) {
   const word = Math.abs(num) === 1 ? singular : (plural || `${singular}s`);
   return `${formatNumber(num)} ${word}`;
 }
+
+/**
+ * Formats a confidence interval range cleanly as a human-readable string without raw brackets.
+ * Uses an en-dash (–) to separate lower and upper bounds.
+ * E.g., formatConfidenceInterval(98.0, 100.0) -> "98.0% – 100.0%"
+ * Or formatConfidenceInterval("[98.0%, 100.0%]") -> "98.0% – 100.0%"
+ *
+ * @param {number|string} lower Lower bound or full raw string
+ * @param {number|string|null} [upper=null] Upper bound
+ * @param {number} decimals
+ * @returns {string} e.g. "98.0% – 100.0%"
+ */
+export function formatConfidenceInterval(lower, upper = null, decimals = 1) {
+  if (lower === null || lower === undefined || lower === '') return NOT_AVAILABLE;
+
+  // Handle case where raw string like "[98.0%, 100.0%]" is passed as first argument
+  if (typeof lower === 'string' && upper === null && (lower.includes(',') || lower.includes('–') || lower.includes('-'))) {
+    const cleaned = lower.replaceAll('[', '').replaceAll(']', '').trim();
+    const parts = cleaned.split(/[,–-]/).map((p) => p.trim().replace('%', ''));
+    if (parts.length >= 2 && isValidNumber(parts[0]) && isValidNumber(parts[1])) {
+      const lowNum = Number(parts[0]);
+      const upNum = Number(parts[1]);
+      return `${formatNumber(lowNum, decimals)}% – ${formatNumber(upNum, decimals)}%`;
+    }
+  }
+
+  if (!isValidNumber(lower) || !isValidNumber(upper)) return NOT_AVAILABLE;
+  const lowNum = Number(lower);
+  const upNum = Number(upper);
+  return `${formatNumber(lowNum, decimals)}% – ${formatNumber(upNum, decimals)}%`;
+}

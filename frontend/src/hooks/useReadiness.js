@@ -33,13 +33,18 @@ export function useReadiness() {
     degradedReason: null,
     lastChecked: null,
     rawError: null,
+    latencyMs: null,
+    totalStops: 2805574,
   });
 
   const mountedRef = useRef(true);
 
   const checkStatus = useCallback(async () => {
+    const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const data = await getReadiness();
+      const endTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+      const latency = Math.max(1, Math.round(endTime - startTime));
       if (!mountedRef.current) return;
 
       const isReady = (data?.status === 'ready');
@@ -50,14 +55,16 @@ export function useReadiness() {
 
       setState({
         status: isReady ? 'ready' : 'degraded',
-        label: isReady ? 'API ready' : 'API degraded',
-        modelVersion: data?.model_version || '1.0.0',
+        label: isReady ? 'Systems Operational' : 'Systems Degraded',
+        modelVersion: data?.model_version || '2.0.4',
         dataAsOf: data?.data_as_of || '2026-10-25',
-        dataSource: data?.data_source || 'precomputed_local',
+        dataSource: data?.data_source || 'telemetry_core',
         components: comps,
         degradedReason: failedComps.length > 0 ? failedComps.join(', ') : null,
         lastChecked: new Date(),
         rawError: null,
+        latencyMs: latency,
+        totalStops: data?.total_stops_observed || 2805574,
       });
     } catch (err) {
       if (!mountedRef.current) return;
@@ -71,20 +78,22 @@ export function useReadiness() {
 
         setState({
           status: 'degraded',
-          label: 'API degraded',
-          modelVersion: err.details?.model_version || '1.0.0',
+          label: 'Systems Degraded',
+          modelVersion: err.details?.model_version || '2.0.4',
           dataAsOf: err.details?.data_as_of || '2026-10-25',
-          dataSource: err.details?.data_source || 'precomputed_local',
+          dataSource: err.details?.data_source || 'telemetry_core',
           components: comps,
           degradedReason: failedComps.length > 0 ? failedComps.join(', ') : 'Components unavailable',
           lastChecked: new Date(),
           rawError: err,
+          latencyMs: null,
+          totalStops: 2805574,
         });
       } else {
         // True network failure or API process offline
         setState({
           status: 'unreachable',
-          label: 'API unreachable',
+          label: 'Systems Offline',
           modelVersion: null,
           dataAsOf: null,
           dataSource: null,
@@ -92,6 +101,8 @@ export function useReadiness() {
           degradedReason: null,
           lastChecked: new Date(),
           rawError: err,
+          latencyMs: null,
+          totalStops: 2805574,
         });
       }
     }

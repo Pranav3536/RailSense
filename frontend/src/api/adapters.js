@@ -325,7 +325,7 @@ export function adaptPatternsHotspots(raw) {
       delayedCount: Number(item.delayed_count) || 0,
       wilsonLower: wilsonLow,
       wilsonUpper: wilsonUp,
-      wilsonText: `[${wilsonLow.toFixed(1)}%, ${wilsonUp.toFixed(1)}%]`,
+      wilsonText: `${wilsonLow.toFixed(1)}% – ${wilsonUp.toFixed(1)}%`,
     };
   });
 
@@ -357,7 +357,7 @@ export function adaptStationDetail(raw) {
     meanDelay: Number(raw.mean_delay) || 0,
     wilsonLower: Number(raw.wilson_lower) || 0,
     wilsonUpper: Number(raw.wilson_upper) || 0,
-    wilsonText: `[${(Number(raw.wilson_lower) || 0).toFixed(1)}%, ${(Number(raw.wilson_upper) || 0).toFixed(1)}%]`,
+    wilsonText: `${(Number(raw.wilson_lower) || 0).toFixed(1)}% – ${(Number(raw.wilson_upper) || 0).toFixed(1)}%`,
     categoryMix: raw.category_mix || {},
     callingTrainsSample: sample.map((t) => ({
       trainNumber: String(t.train_number),

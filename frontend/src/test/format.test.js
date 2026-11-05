@@ -7,7 +7,8 @@ import {
   formatPercentValue,
   formatMinutes,
   formatDate,
-  pluralize
+  pluralize,
+  formatConfidenceInterval
 } from '../utils/format';
 
 describe('format.js utility suite', () => {
@@ -92,5 +93,15 @@ describe('format.js utility suite', () => {
     expect(pluralize(1000, 'train')).toBe('1,000 trains');
     expect(pluralize(null, 'run')).toBe('Not available');
     expect(pluralize(undefined, 'stop')).toBe('Not available');
+  });
+
+  it('formats Wilson confidence intervals cleanly as ranges without square brackets', () => {
+    expect(formatConfidenceInterval(98.0, 100.0)).toBe('98.0% – 100.0%');
+    expect(formatConfidenceInterval(97.7, 99.7)).toBe('97.7% – 99.7%');
+    expect(formatConfidenceInterval('[98.0%, 100.0%]')).toBe('98.0% – 100.0%');
+    expect(formatConfidenceInterval('[97.7%, 99.7%]')).toBe('97.7% – 99.7%');
+    expect(formatConfidenceInterval(null)).toBe('Not available');
+    expect(formatConfidenceInterval(undefined)).toBe('Not available');
+    expect(formatConfidenceInterval(NaN, 100.0)).toBe('Not available');
   });
 });

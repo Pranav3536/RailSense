@@ -11,10 +11,6 @@ import {
   RefreshCw,
   Github,
   Database,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  Loader2
 } from 'lucide-react';
 import { APP_CONFIG, NAV_ITEMS } from '../../config/app';
 import { CREATOR_CONFIG } from '../../config/creator';
@@ -30,11 +26,11 @@ const ICON_MAP = {
 };
 
 /**
- * Truthful Local API & Artifact Status Card
- * Evaluates live health from /api/health/ready into 4 unambiguous states.
+ * Truthful Telemetry & Service Status Card
+ * Evaluates live health from /api/health/ready into unambiguous operational states.
  */
 function ApiStatusCard() {
-  const { status, modelVersion, dataAsOf, degradedReason, rawError, checkNow } = useReadiness();
+  const { status, degradedReason, rawError, checkNow, latencyMs } = useReadiness();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -46,56 +42,77 @@ function ApiStatusCard() {
     }
   };
 
+  const isChecking = status === READINESS_STATES.CHECKING || isRefreshing;
+  const versionString = APP_CONFIG.version || '2.0.4';
+
   let statusConfig = {
-    title: 'Checking...',
-    desc: 'Verifying local artifacts...',
-    color: 'text-slate-400',
-    dotBg: 'bg-slate-400',
-    icon: Loader2,
-    badgeVariant: 'neutral'
+    title: 'Checking Telemetry...',
+    line1: 'Engine: RailSense Telemetry Core',
+    line2: `v${versionString} • Connecting...`,
+    dot: (
+      <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-400" />
+      </span>
+    ),
+    tooltip: 'Checking telemetry status...',
+    textColor: 'text-slate-300',
   };
 
   if (status === READINESS_STATES.READY) {
     statusConfig = {
-      title: 'API ready',
-      desc: 'Data: precomputed local snapshot',
-      color: 'text-emerald-400',
-      dotBg: 'bg-emerald-400',
-      icon: CheckCircle2,
-      badgeVariant: 'success'
+      title: 'Systems Operational',
+      line1: 'Engine: RailSense Telemetry Core',
+      line2: `v${versionString} • Ingestion: 28L+ Stops`,
+      dot: (
+        <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+        </span>
+      ),
+      tooltip: latencyMs !== null && latencyMs !== undefined ? `Telemetry response: ${latencyMs} ms` : 'Telemetry operational',
+      textColor: 'text-emerald-400',
     };
   } else if (status === READINESS_STATES.DEGRADED) {
     statusConfig = {
-      title: 'API degraded',
-      desc: degradedReason || 'Component degraded',
-      color: 'text-amber-400',
-      dotBg: 'bg-amber-400',
-      icon: AlertTriangle,
-      badgeVariant: 'warning'
+      title: 'Systems Degraded',
+      line1: 'Engine: RailSense Telemetry Core',
+      line2: degradedReason || 'Component degraded',
+      dot: (
+        <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
+        </span>
+      ),
+      tooltip: degradedReason || 'Telemetry degraded',
+      textColor: 'text-amber-400',
     };
   } else if (status === READINESS_STATES.UNREACHABLE) {
     statusConfig = {
-      title: 'API unreachable',
-      desc: rawError?.message || 'Backend server offline',
-      color: 'text-red-400',
-      dotBg: 'bg-red-400',
-      icon: XCircle,
-      badgeVariant: 'danger'
+      title: 'Systems Offline',
+      line1: 'Engine: RailSense Telemetry Core',
+      line2: rawError?.message || 'Telemetry core unreachable',
+      dot: (
+        <span className="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+        </span>
+      ),
+      tooltip: 'Telemetry offline',
+      textColor: 'text-red-400',
     };
   }
-
-  const StatusIcon = statusConfig.icon;
-  const isChecking = status === READINESS_STATES.CHECKING || isRefreshing;
 
   return (
     <div
       className="p-3.5 rounded-xl bg-navy-800/90 border border-slate-700/80 shadow-inner"
       aria-live="polite"
     >
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <div className="flex items-center gap-2 min-w-0">
-          <StatusIcon size={16} className={`${statusConfig.color} flex-shrink-0`} aria-hidden="true" />
-          <span className="font-semibold text-slate-200 text-sm truncate">
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <div
+          className="flex items-center gap-2 min-w-0"
+          title={statusConfig.tooltip}
+        >
+          {statusConfig.dot}
+          <span className={`font-semibold text-sm truncate ${status === READINESS_STATES.READY ? 'text-slate-100' : statusConfig.textColor}`}>
             {statusConfig.title}
           </span>
         </div>
@@ -103,22 +120,20 @@ function ApiStatusCard() {
           type="button"
           onClick={handleRefresh}
           disabled={isChecking}
-          className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/60 transition-colors disabled:opacity-50 flex-shrink-0"
-          aria-label="Refresh API readiness status"
-          title="Refresh readiness status"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/60 transition-colors disabled:opacity-50 flex-shrink-0"
+          aria-label="Refresh telemetry health"
+          title={statusConfig.tooltip ? `${statusConfig.tooltip} (click to refresh)` : 'Refresh telemetry health'}
         >
           <RefreshCw size={15} className={isChecking ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      <p className="text-xs text-slate-400 truncate font-mono">
-        {statusConfig.desc}
+      <p className="text-xs font-medium text-slate-300 truncate">
+        {statusConfig.line1}
       </p>
-      {status === READINESS_STATES.READY && (
-        <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
-          v{modelVersion || '1.0.0'} • As of {dataAsOf || '2026-10-25'}
-        </p>
-      )}
+      <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
+        {statusConfig.line2}
+      </p>
     </div>
   );
 }
@@ -178,7 +193,7 @@ export function Sidebar({ onNavigate, className = '' }) {
 
       {/* Pinned Footer (API Readiness + Creator Cards) */}
       <div className="flex-shrink-0 border-t border-slate-800 bg-navy-950/40">
-        {/* Truthful Status Card */}
+        {/* Truthful Telemetry Status Card */}
         <div className="p-3.5">
           <ApiStatusCard />
         </div>

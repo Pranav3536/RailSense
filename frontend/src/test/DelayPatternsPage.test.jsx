@@ -194,4 +194,48 @@ describe('DelayPatternsPage (Tab 5)', () => {
 
     expect(screen.getAllByRole('button', { name: /Try Again/i }).length).toBeGreaterThan(0);
   });
+
+  it('renders cleaned section headers without false Low Support (<30) badges on aggregate groupings', async () => {
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <DelayPatternsPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Observed Delays by Day of Week')).toBeInTheDocument();
+    });
+
+    // Check that there is NO "7 weekdays Low Support" or "Low Support (<30)" on the aggregate headers
+    expect(screen.queryByText(/7 weekdays Low Support/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/20 classes Low Support/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/5 position buckets Low Support/i)).not.toBeInTheDocument();
+  });
+
+  it('renders formatted Wilson CI without raw Python brackets and clean journey subtitle', async () => {
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <DelayPatternsPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Observed Delay Hotspots Explorer')).toBeInTheDocument();
+    });
+
+    // Subtitle should be clean product copy, not prompt leak
+    expect(screen.getByText('Delay accumulation across sequential halt intervals from origin to terminus.')).toBeInTheDocument();
+    expect(screen.queryByText(/Worded as observed empirical association/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/never causation/i)).not.toBeInTheDocument();
+
+    // Wilson CI formatting check: should contain "98.0% – 100.0%" and NO square brackets
+    await waitFor(() => {
+      expect(screen.getAllByText(/98\.0% – 100\.0%/).length).toBeGreaterThan(0);
+    });
+    expect(screen.queryByText(/\[98\.0%, 100\.0%\]/)).not.toBeInTheDocument();
+
+    // Check unified footer provenance
+    expect(screen.getByText(/Query Engine: In-Memory Indexed Cache/)).toBeInTheDocument();
+    expect(screen.queryByText(/Serving store: SQLite/)).not.toBeInTheDocument();
+  });
 });

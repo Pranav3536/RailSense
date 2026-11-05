@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
   const routes = [
@@ -128,7 +132,7 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
 
   test('captures Phase 11.5 Model Lab screenshots and verifies feature chart labels non-overlap', async ({ page }) => {
     const fs = await import('fs');
-    const outDir = path.resolve('../docs/ui/phase11_5');
+    const outDir = path.resolve(__dirname, '../../docs/ui/phase11_5');
     if (!fs.existsSync(outDir)) {
       fs.mkdirSync(outDir, { recursive: true });
     }
@@ -169,6 +173,69 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
 
       await page.screenshot({
         path: path.join(outDir, `model_lab_${vp.name}.png`),
+        fullPage: false,
+      });
+    }
+  });
+
+  test('verifies Phase 11.6 Sidebar telemetry and Delay Patterns polish', async ({ page }) => {
+    const fs = await import('fs');
+    const outDir = path.resolve(__dirname, '../../docs/ui/phase11_6');
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+
+    const viewports = [
+      { name: '360', width: 360, height: 640 },
+      { name: '768', width: 768, height: 1024 },
+      { name: '1366', width: 1366, height: 768 },
+      { name: '1920', width: 1920, height: 1080 },
+    ];
+
+    for (const vp of viewports) {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto('/patterns');
+      await page.waitForLoadState('networkidle');
+
+      // 1. Verify zero horizontal overflow
+      const isOverflowing = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      });
+      expect(isOverflowing).toBeFalsy();
+
+      // On desktop viewports (1366+), verify Sidebar telemetry status
+      if (vp.width >= 1366) {
+        await expect(page.getByText('Systems Operational')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByText('Engine: RailSense Telemetry Core')).toBeVisible();
+        await expect(page.getByText(/Ingestion: 28L\+ Stops/)).toBeVisible();
+        await expect(page.getByText('local snapshot')).toHaveCount(0);
+      }
+
+      // 2. Check no prompt leak string anywhere on page
+      await expect(page.getByText(/Worded as observed empirical association/i)).toHaveCount(0);
+      await expect(page.getByText(/never causation/i)).toHaveCount(0);
+
+      // 3. Check section headers have NO bogus "Low Support (<30)" warning pills
+      await expect(page.getByText(/7 weekdays Low Support/i)).toHaveCount(0);
+      await expect(page.getByText(/20 classes Low Support/i)).toHaveCount(0);
+      await expect(page.getByText(/5 position buckets Low Support/i)).toHaveCount(0);
+
+      // 4. Check Wilson CI formatting (has "–" and no square brackets)
+      const wilsonCells = page.locator('table tbody tr td').filter({ hasText: /% – / });
+      if ((await wilsonCells.count()) > 0) {
+        const text = await wilsonCells.first().textContent();
+        expect(text).not.toContain('[');
+        expect(text).not.toContain(']');
+        expect(text).toContain('–');
+      }
+
+      // 5. Check journey sequence bins order
+      const sequenceHeading = page.getByRole('heading', { name: /Observed Delays by Journey Sequence Position/i });
+      await expect(sequenceHeading).toBeVisible();
+
+      // Take screenshot
+      await page.screenshot({
+        path: path.join(outDir, `patterns_${vp.name}.png`),
         fullPage: false,
       });
     }

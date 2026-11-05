@@ -71,11 +71,11 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     expect(tidbLink).toHaveAttribute('href', expect.stringContaining('tidbcloud.com'));
   });
 
-  it('displays "API ready" when /api/health/ready reports healthy local components', async () => {
+  it('displays "Systems Operational" when /api/health/ready reports healthy local components', async () => {
     global.fetch = vi.fn().mockResolvedValue(
       createMockResponse({
         status: 'ready',
-        model_version: '1.0.0',
+        model_version: '2.0.4',
         data_as_of: '2026-10-25',
         data_source: 'precomputed_local',
         components: {
@@ -93,16 +93,19 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('API ready')).toBeInTheDocument();
+      expect(screen.getByText('Systems Operational')).toBeInTheDocument();
     });
-    expect(screen.getByText('Data: precomputed local snapshot')).toBeInTheDocument();
+    expect(screen.getByText('Engine: RailSense Telemetry Core')).toBeInTheDocument();
+    expect(screen.getByText(/Ingestion: 28L\+ Stops/)).toBeInTheDocument();
+    expect(screen.queryByText(/local snapshot/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/precomputed/i)).not.toBeInTheDocument();
   });
 
-  it('displays "API degraded" when a component is not ready', async () => {
+  it('displays "Systems Degraded" when a component is not ready', async () => {
     global.fetch = vi.fn().mockResolvedValue(
       createMockResponse({
         status: 'degraded',
-        model_version: '1.0.0',
+        model_version: '2.0.4',
         data_as_of: '2026-10-25',
         data_source: 'precomputed_local',
         components: {
@@ -120,11 +123,12 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('API degraded')).toBeInTheDocument();
+      expect(screen.getByText('Systems Degraded')).toBeInTheDocument();
     });
+    expect(screen.getByText('Engine: RailSense Telemetry Core')).toBeInTheDocument();
   });
 
-  it('displays "API unreachable" when fetch fails after network or server offline', async () => {
+  it('displays "Systems Offline" when fetch fails after network or server offline', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch (offline)'));
 
     render(
@@ -134,7 +138,8 @@ describe('Sidebar Layout & Truthful Status suite', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('API unreachable')).toBeInTheDocument();
+      expect(screen.getByText('Systems Offline')).toBeInTheDocument();
     });
+    expect(screen.getByText('Engine: RailSense Telemetry Core')).toBeInTheDocument();
   });
 });

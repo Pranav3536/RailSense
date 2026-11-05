@@ -22,6 +22,8 @@ import {
   X,
   ExternalLink,
   Filter,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import {
@@ -48,7 +50,7 @@ import {
   adaptPatternsHotspots,
   adaptStationDetail,
 } from '../api/adapters';
-import { formatNumber, formatPercentValue, formatMinutes } from '../utils/format';
+import { formatNumber, formatPercentValue, formatMinutes, formatConfidenceInterval } from '../utils/format';
 import { sortPositionBuckets } from '../utils/positionSort';
 import { CHART_THEME } from '../components/charts/chartTheme';
 
@@ -139,6 +141,9 @@ function PositionTooltip({ active, payload, label }) {
  */
 export function DelayPatternsPage() {
   const navigate = useNavigate();
+
+  // Collapsible guide state
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   // Section 1: Hourly Pattern State
   const [hourData, setHourData] = useState([]);
@@ -307,53 +312,58 @@ export function DelayPatternsPage() {
       {/* 1. Page Header */}
       <PageHeader
         title="Historical Analytics"
-        subtitle="Empirical delay distributions decomposed by scheduled hour, day of week, train category, and journey sequence depth."
+        subtitle="Fleet-wide delay distributions evaluated across 17.7L label-eligible halts (Oct 7–25, 2026)."
         badge={<Badge variant="primary">Observed Dataset</Badge>}
       />
 
-      {/* 2. Methodology & Integrity Intro Card */}
-      <Card className="border-blue-100 bg-gradient-to-br from-white via-blue-50/15 to-white shadow-xs">
-        <CardContent className="pt-6 space-y-4">
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0 mt-0.5">
-              <Info size={22} />
+      {/* 2. Educational Collapsible Guide */}
+      <Card className="border-slate-200 bg-white shadow-xs">
+        <CardHeader
+          className="cursor-pointer select-none hover:bg-slate-50/70 transition-colors py-3 px-4"
+          onClick={() => setIsGuideOpen(!isGuideOpen)}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-primary-600 flex-shrink-0" aria-hidden="true" />
+              <CardTitle className="text-sm font-semibold text-slate-800">
+                Methodological Scope & Boundary Principles
+              </CardTitle>
             </div>
-            <div className="space-y-1.5">
-              <h3 className="text-base font-bold text-slate-900">
-                Methodological Scope: Observed Historical Associations
-              </h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                All metrics on this page represent empirical frequency calculations across{' '}
-                <span className="font-semibold text-slate-800 font-mono">1,773,068</span> label-eligible stop arrivals recorded between{' '}
-                <span className="font-semibold text-slate-800 font-mono">2026-10-07</span> and{' '}
-                <span className="font-semibold text-slate-800 font-mono">2026-10-25</span>.
-                These distributions demonstrate observed historical patterns, not forward journey predictions or operational causation.
-              </p>
-            </div>
+            <button
+              type="button"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded text-slate-400 hover:text-slate-600 transition-colors"
+              aria-label={isGuideOpen ? 'Collapse methodology guide' : 'Expand methodology guide'}
+              aria-expanded={isGuideOpen}
+            >
+              {isGuideOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <span className="font-bold text-slate-700 block mb-1">Standard Delay Threshold</span>
-              <span className="text-slate-600">
-                Arrival delay &gt; 15 min on stops with <code className="text-blue-700">seq &gt; 1</code> and{' '}
-                <code className="text-blue-700">arrival_reported = 1</code>.
-              </span>
+        </CardHeader>
+        {isGuideOpen && (
+          <CardContent className="pt-2 pb-5 px-4 border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed">
+            <p>
+              All metrics represent empirical frequency calculations across{' '}
+              <span className="font-semibold text-slate-800 font-mono">1,773,068</span> label-eligible stop arrivals recorded between{' '}
+              <span className="font-semibold text-slate-800 font-mono">2026-10-07</span> and{' '}
+              <span className="font-semibold text-slate-800 font-mono">2026-10-25</span>.
+              Distributions demonstrate observed historical patterns, not forward journey predictions or operational causation.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-700 block mb-0.5">Standard Delay Threshold</span>
+                <span>Arrival delay &gt; 15 min on label-eligible stops (seq &gt; 1, arrival_reported = 1).</span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-700 block mb-0.5">Early Arrivals Preserved</span>
+                <span>Negative delays represent valid operational outcomes and are never truncated to zero.</span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-700 block mb-0.5">Non-Causal Association</span>
+                <span>Observational distributions indicate statistical association, not physical dispatch causes.</span>
+              </div>
             </div>
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <span className="font-bold text-slate-700 block mb-1">Early Arrivals Preserved</span>
-              <span className="text-slate-600">
-                Negative delays (early arrivals) are valid operational outcomes and are never truncated to zero.
-              </span>
-            </div>
-            <div className="p-3 rounded-lg bg-amber-50/70 border border-amber-200">
-              <span className="font-bold text-amber-900 block mb-1">Non-Causal Ground Rule</span>
-              <span className="text-amber-800">
-                Observational data cannot isolate physical causes (signaling, track allocation, or dispatch decisions).
-              </span>
-            </div>
-          </div>
-        </CardContent>
+          </CardContent>
+        )}
       </Card>
 
       {/* 3. Section 1: By Hour of Day */}
@@ -389,7 +399,7 @@ export function DelayPatternsPage() {
             }
           >
             {hourView === 'chart' ? (
-              <div className="h-72 w-full pt-2">
+              <div className="h-80 min-h-[320px] w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={hourData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
@@ -494,7 +504,7 @@ export function DelayPatternsPage() {
             }
           >
             {dowView === 'chart' ? (
-              <div className="h-72 w-full pt-2">
+              <div className="h-80 min-h-[320px] w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dowData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
@@ -552,8 +562,7 @@ export function DelayPatternsPage() {
           title="Observed Delays by Service Category"
           description="Delayed arrival frequency across train operational service classifications."
           icon={Layers}
-          badge={<SupportBadge count={catData.length} label="classes" />}
-        />
+          />
 
         {catError ? (
           <ErrorState
@@ -579,7 +588,7 @@ export function DelayPatternsPage() {
             }
           >
             {catView === 'chart' ? (
-              <div className="h-72 w-full pt-2">
+              <div className="h-80 min-h-[320px] w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={catData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
@@ -649,8 +658,7 @@ export function DelayPatternsPage() {
           title="Observed Delays by Journey Sequence Position"
           description="Delayed arrival frequency as trains progress from origin departure to terminal destination."
           icon={Milestone}
-          badge={<SupportBadge count={posData.length} label="position buckets" />}
-        />
+          />
 
         {posError ? (
           <ErrorState
@@ -664,7 +672,7 @@ export function DelayPatternsPage() {
         ) : (
           <ChartCard
             title="Delay Evolution Along Journey Route"
-            subtitle="Worded as observed empirical association with journey progression, never causation."
+            subtitle="Delay accumulation across sequential halt intervals from origin to terminus."
             action={<ChartTableToggle view={posView} onViewChange={setPosView} />}
             footer={
               <p className="text-xs text-slate-500">
@@ -675,7 +683,7 @@ export function DelayPatternsPage() {
             }
           >
             {posView === 'chart' ? (
-              <div className="h-72 w-full pt-2">
+              <div className="h-80 min-h-[320px] w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={posData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
@@ -930,7 +938,7 @@ export function DelayPatternsPage() {
                             {formatPercentValue(item.delayedRate)}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-slate-600">{item.wilsonText}</td>
+                        <td className="py-3 px-4 text-slate-600 font-mono tabular-nums">{formatConfidenceInterval(item.wilsonText)}</td>
                         <td className="py-3 px-4 text-slate-700">{formatMinutes(item.meanDelay)}</td>
                         <td className="py-3 px-4 text-slate-600">{formatNumber(item.stopsCount)}</td>
                         <td className="py-3 px-4 text-right font-sans">
@@ -974,7 +982,8 @@ export function DelayPatternsPage() {
               <button
                 type="button"
                 onClick={() => setSelectedStationCode(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                aria-label="Close station details"
                 title="Close station details"
               >
                 <X size={18} />
@@ -1006,8 +1015,8 @@ export function DelayPatternsPage() {
                     </div>
                     <div className="p-3 bg-white rounded-xl border border-slate-200">
                       <span className="text-xs text-slate-500 font-medium block">Wilson 95% Confidence</span>
-                      <span className="text-sm font-semibold font-mono text-slate-700 pt-1 block">
-                        {stationDetail.wilsonText}
+                      <span className="text-sm font-semibold font-mono tabular-nums text-slate-700 pt-1 block">
+                        {formatConfidenceInterval(stationDetail.wilsonText)}
                       </span>
                     </div>
                     <div className="p-3 bg-white rounded-xl border border-slate-200">
@@ -1023,7 +1032,7 @@ export function DelayPatternsPage() {
                     <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                       Calling Trains Sample ({stationDetail.callingTrainsSample.length} services)
                     </h4>
-                    <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white max-h-52">
+                    <div className="overflow-x-auto overflow-y-auto max-h-52 border border-slate-200 rounded-xl bg-white overscroll-contain">
                       <table className="w-full text-left text-xs">
                         <thead className="bg-slate-50 font-semibold text-slate-600 sticky top-0 border-b border-slate-200">
                           <tr>
@@ -1055,7 +1064,7 @@ export function DelayPatternsPage() {
                                 {formatPercentValue(tr.delayedRate)}
                               </td>
                               <td className="py-1.5 px-3 text-slate-600">{formatMinutes(tr.meanDelay)}</td>
-                              <td className="py-1.5 px-3 text-slate-500">{tr.observedStops}</td>
+                              <td className="py-1.5 px-3 text-slate-500 font-mono">{tr.observedStops < 30 ? <span className="inline-flex items-center gap-1">{tr.observedStops} <SupportBadge count={tr.observedStops} threshold={30} label="stops" /></span> : tr.observedStops}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -1072,15 +1081,15 @@ export function DelayPatternsPage() {
       {/* 8. Footer */}
       <footer className="pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
         <div>
-          <span>Data as of: </span>
-          <span className="font-mono font-medium text-slate-700">2026-10-25</span>
+          <span>Data snapshot: </span>
+          <span className="font-medium text-slate-700">Oct 25, 2026</span>
           <span className="mx-2">•</span>
           <span>Source: </span>
           <span className="font-medium text-slate-700">Observed Railway Dataset</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
-          <span>Serving store: SQLite + In-Memory Fast Lookup</span>
+          <span>Query Engine: In-Memory Indexed Cache</span>
         </div>
       </footer>
     </div>

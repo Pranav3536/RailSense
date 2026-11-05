@@ -848,3 +848,51 @@ In Phase 10, the session will:
   - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
   - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
 
+---
+
+## 22. Phase 11.6 Delay Patterns UI Polish & Telemetry Status Upgrade (COMPLETE)
+
+- **Task 1: Sidebar Status Overhaul:**
+  - Upgraded amateur copy to enterprise telemetry styling:
+    - Header: `"● Systems Operational"` with pulsing emerald-500 status dot and live ping latency tooltip.
+    - Line 1: `"Engine: RailSense Telemetry Core"`.
+    - Line 2: `"v2.0.4 • Ingestion: 28L+ Stops"`.
+  - Removed all visible references to "local snapshot", "precomputed file", or "mock".
+  - Retained refresh button with 44px touch target and `aria-label="Refresh telemetry health"`.
+- **Task 2: Leaked Prompt Instruction Elimination:**
+  - Removed internal instruction leak `"Worded as observed empirical association with journey progression, never causation."` from `DelayPatternsPage.jsx`.
+  - Replaced subtitle with: `"Delay accumulation across sequential halt intervals from origin to terminus."`.
+  - Added regression test in `SourceGrep.test.js` verifying zero leaked prompt instructions in frontend source files.
+- **Task 3: False "Low Support (<30)" Badges Removal:**
+  - Fixed array length bug where aggregate categories (7 weekdays, 20 service classes, 5 position bins) triggered false `<SupportBadge count={array.length} threshold={30} />` warnings.
+  - Removed `SupportBadge` from all 4 aggregate section headers (Day of Week, Category, Journey Sequence, Hour).
+  - Preserved `SupportBadge` strictly for rare individual train stops (< 30) in station calling trains sample.
+- **Task 4: Methodological Scope Banner Consolidation:**
+  - Replaced heavy 3-card banner with concise header subtitle: `"Fleet-wide delay distributions evaluated across 17.7L label-eligible halts (Oct 7–25, 2026)."`.
+  - Embedded scientific definitions into collapsed-by-default guide ("Methodological Scope & Boundary Principles").
+- **Task 5: Wilson 95% Confidence Interval Formatting:**
+  - Formatted confidence bounds as clean human-readable ranges (`"98.0% – 100.0%"` using en-dash and no square brackets).
+  - Added `formatConfidenceInterval` helper to `frontend/src/utils/format.js` and updated `adapters.js`.
+  - Applied `font-mono tabular-nums` to Hotspots table and Station Historical Profile card.
+- **Task 6: Journey Sequence Ordering & Provenance Alignment:**
+  - Ensured chronological bucket ordering: `Early (2–3) → Mid-Early (4–10) → Mid (11–25) → Late (26–50) → Deep (>50)`.
+  - Replaced technical leak `"Serving store: SQLite + In-Memory Fast Lookup"` with `"Data snapshot: Oct 25, 2026 • Query Engine: In-Memory Indexed Cache"`.
+- **Task 7: General Polish & Responsive Verification:**
+  - Standardized chart container heights to `h-80 min-h-[320px]`.
+  - Station drawer close button updated to 44px touch target with `aria-label="Close station details"`.
+  - Captured full-page screenshots into `docs/ui/phase11_6/`:
+    - `patterns_360.png` (32 KB)
+    - `patterns_768.png` (59 KB)
+    - `patterns_1366.png` (97 KB)
+    - `patterns_1920.png` (128 KB)
+    - Total directory size: 316 KB (< 1 MB).
+  - Verified zero horizontal overflow across 360, 768, 1280, 1366, 1920 viewports.
+- **Verification Baseline:**
+  - Pytest: **156 passed, 4 skipped in 27.24s**
+  - Vitest: **102 passed across 15 test files in 47.76s** (+5 tests)
+  - Playwright E2E: **41 passed, 4 skipped (live)** across 6 test files (+1 test)
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK (14.54s / 30.34s)**
+  - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
+  - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
+
