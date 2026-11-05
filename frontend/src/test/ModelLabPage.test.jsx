@@ -63,15 +63,15 @@ describe('ModelLabPage (Tab 4)', () => {
     expect(screen.getByText(/78,276/)).toBeInTheDocument(); // TP
 
     // Check Feature Importance
-    expect(screen.getByText('Feature Importance (Gain Metric)')).toBeInTheDocument();
+    expect(screen.getByText('Feature Importance')).toBeInTheDocument();
 
-    // Check Banned Features Card
-    expect(screen.getByText(/Leakage Safeguards & Banned Features Protocol/i)).toBeInTheDocument();
+    // Check Excluded Fields Card
+    expect(screen.getByText(/Feature governance: excluded fields/i)).toBeInTheDocument();
     expect(screen.getByText('departure_delay_min')).toBeInTheDocument();
     expect(screen.getByText('actual_arrival')).toBeInTheDocument();
 
-    // Check Formulation 2 (En-Route) Research card
-    expect(screen.getByText(/Research Benchmark Only — Formulation 2/i)).toBeInTheDocument();
+    // Check En-Route Research benchmark row in table
+    expect(screen.getByText('En-Route LightGBM')).toBeInTheDocument();
     expect(screen.getAllByText('0.9289').length).toBeGreaterThanOrEqual(1);
   });
 
@@ -91,7 +91,7 @@ describe('ModelLabPage (Tab 4)', () => {
       expect(endpoints.getModelInfo).toHaveBeenCalled();
     });
 
-    const valBtn = screen.getByRole('button', { name: /Validation Split/i });
+    const valBtn = screen.getByRole('button', { name: /Validation/i });
     fireEvent.click(valBtn);
 
     // Val AP values should now be rendered (e.g. 0.8608 for LightGBM Calibrated)

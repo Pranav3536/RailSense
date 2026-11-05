@@ -54,7 +54,7 @@
 ### Step 2: Deploy Backend to Render
 
 1. Log in to your [Render Dashboard](https://dashboard.render.com/).
-2. Click **New +** $\rightarrow$ **Web Service**.
+2. Click **New +** → **Web Service**.
 3. Select **Build and deploy from a Git repository** and connect your `RailSense` repo.
 4. Configure the service settings:
    - **Name:** `railsense-backend`
@@ -65,7 +65,7 @@
    - **Build Command:** `pip install -r backend/requirements.txt`
    - **Start Command:** `python backend/wsgi.py`
    - **Instance Type:** `Free`
-5. Click **Advanced** $\rightarrow$ **Add Environment Variable** and add the following keys (matches `render.yaml` exactly):
+5. Click **Advanced** → **Add Environment Variable** and add the following keys (matches `render.yaml` exactly):
    | Key | Value | Purpose |
    |---|---|---|
    | `RAILSENSE_ENV` | `production` | Enables artifact checksum verification on startup |
@@ -112,7 +112,7 @@
 ### Step 4: Deploy Frontend to Vercel
 
 1. Log in to your [Vercel Dashboard](https://vercel.com/dashboard).
-2. Click **Add New...** $\rightarrow$ **Project**.
+2. Click **Add New...** → **Project**.
 3. Import your `RailSense` GitHub repository.
 4. In the **Configure Project** screen:
    - **Framework Preset:** `Vite`
@@ -134,7 +134,7 @@
 
 ### Step 5: Lock Down Production CORS on Render
 
-1. Return to your [Render Dashboard](https://dashboard.render.com/) $\rightarrow$ `railsense-backend` $\rightarrow$ **Environment**.
+1. Return to your [Render Dashboard](https://dashboard.render.com/) → `railsense-backend` → **Environment**.
 2. Find `CORS_ORIGINS` and change its value from `http://localhost:5173` to your production frontend domain (exact Vercel https origin, no trailing slash, never `*`):
    ```
    CORS_ORIGINS=https://railsense.vercel.app
@@ -166,7 +166,7 @@ npx --prefix frontend playwright test e2e/deployed.spec.js
 | **Linux / Render Startup Fails:** `libgomp.so.1: cannot open shared object file` | Missing OpenMP runtime required by LightGBM on bare Linux distros | Check the Render first deploy logs. Render native Python runtime provides `libgomp1`; on custom or bare Linux servers, install via `apt-get install -y libgomp1`. |
 | **Render Out of Memory (OOM / Error 137)** | Worker threads or process count exceeded 512 MB memory limit | Ensure `FLASK_THREADS` is set to `4` (default). Never start multiple worker processes (Waitress single process with 4 threads consumes ~177 MB RSS). |
 | **Render Web Service Timeout / Sleep** | Render free tier enters idle sleep after 15 minutes without requests | Normal behavior. First request takes ~40–50s to wake up. The RailSense frontend displays an automated `WakeUpNotice` banner informing the visitor. |
-| **Frontend Network Error / Failed to Fetch** | `VITE_API_BASE_URL` misconfigured or missing in Vercel | In Vercel Project Settings $\rightarrow$ Environment Variables, check `VITE_API_BASE_URL`. It must match your live Render backend URL WITH `/api` suffix (e.g., `https://railsense-backend.onrender.com/api`) without trailing slash. Redeploy after editing. |
-| **CORS Error in Browser Console** | Render `CORS_ORIGINS` does not match the Vercel URL | In Render $\rightarrow$ Environment, set `CORS_ORIGINS=https://your-app.vercel.app` (the exact Vercel https origin, no trailing slash, never `*` as production rejects it). Ensure protocol `https://` matches. |
+| **Frontend Network Error / Failed to Fetch** | `VITE_API_BASE_URL` misconfigured or missing in Vercel | In Vercel Project Settings → Environment Variables, check `VITE_API_BASE_URL`. It must match your live Render backend URL WITH `/api` suffix (e.g., `https://railsense-backend.onrender.com/api`) without trailing slash. Redeploy after editing. |
+| **CORS Error in Browser Console** | Render `CORS_ORIGINS` does not match the Vercel URL | In Render → Environment, set `CORS_ORIGINS=https://your-app.vercel.app` (the exact Vercel https origin, no trailing slash, never `*` as production rejects it). Ensure protocol `https://` matches. |
 | **Vercel 404 on Direct Route Refresh (`/predict`)** | Missing SPA rewrite rule in static host | Verify `frontend/vercel.json` exists in git with `"source": "/(.*)", "destination": "/index.html"`. |
 | **Delay Prediction Returns 429 Too Many Requests** | IP exceeded 120 req/minute rate limit | Wait 20 seconds. The UI features an automatic cooldown timer countdown that disables the button until the rate window reopens. |

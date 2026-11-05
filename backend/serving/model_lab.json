@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "built_at": "2026-10-30 17:51:14 UTC",
+    "built_at": "2026-11-05 14:03:31 UTC",
     "source": "TiDB Cloud railsense.train_records (via local cache)",
     "row_count": 2805574,
     "runs_count": 147367,
@@ -22,7 +22,15 @@
       "arrival_reported",
       "status",
       "run_quality"
-    ]
+    ],
+    "latency": {
+      "measured_single_prediction_p95_ms": 30.41,
+      "measured_single_prediction_p50_ms": 27.26,
+      "measured_single_prediction_p99_ms": 34.33,
+      "target_p95_ms": 25.0,
+      "method": "In-process Python 3.10 CPU single-threaded predict_single calls on real schedule inputs with factor extraction",
+      "provenance": "machine-local, single-threaded, in-process Python CPU (excludes network/HTTP framing)"
+    }
   },
   "model_comparison": {
     "Majority Baseline": {

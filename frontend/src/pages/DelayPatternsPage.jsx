@@ -49,6 +49,7 @@ import {
   adaptStationDetail,
 } from '../api/adapters';
 import { formatNumber, formatPercentValue, formatMinutes } from '../utils/format';
+import { sortPositionBuckets } from '../utils/positionSort';
 import { CHART_THEME } from '../components/charts/chartTheme';
 
 /**
@@ -226,7 +227,7 @@ export function DelayPatternsPage() {
     setPosError(null);
     try {
       const raw = await getPatterns('position');
-      setPosData(adaptPatternsPosition(raw));
+      setPosData(sortPositionBuckets(adaptPatternsPosition(raw)));
     } catch (err) {
       setPosError(err);
     } finally {

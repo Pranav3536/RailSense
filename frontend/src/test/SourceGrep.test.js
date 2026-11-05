@@ -142,4 +142,34 @@ describe('Source Code Integrity & Grep Audit Suite', () => {
       expect(match, `Found forbidden sparkle/AI-style icon '${match?.[0]}' in ${file}`).toBeNull();
     });
   });
+
+  it('contains zero raw LaTeX math syntax in frontend production source files', () => {
+    const srcFiles = getFilesRecursively(srcDir, (f) => f.endsWith('.js') || f.endsWith('.jsx'));
+    const nonTestFiles = srcFiles.filter((f) => !f.includes(path.join('src', 'test')) && !f.includes('sanitizeText.js'));
+
+    const latexPatterns = [/\$\\ge\$/, /\$\\le\$/, /\$\\rightarrow\$/, /\\ge\b/, /\\le\b/, /\\rightarrow\b/, /\\times\b/];
+
+    nonTestFiles.forEach((file) => {
+      const content = fs.readFileSync(file, 'utf-8');
+      latexPatterns.forEach((pattern) => {
+        expect(content, `Found raw LaTeX ${pattern} in ${file}`).not.toMatch(pattern);
+      });
+    });
+  });
+
+  it('contains zero buzzwords (Protocol, Zero Lookahead, Untouched, Telemetry) in user-facing Model Lab page', () => {
+    const modelLabPath = path.resolve(srcDir, 'pages', 'ModelLabPage.jsx');
+    const content = fs.readFileSync(modelLabPath, 'utf-8');
+    const forbiddenBuzzwords = [
+      'STRICT TEMPORAL SPLITTING (ZERO LOOKAHEAD)',
+      'Leakage Safeguards & Banned Features Protocol',
+      'Research Benchmark Only — Formulation 2',
+      'untouched test partition',
+      'Telemetry Benchmark',
+    ];
+
+    forbiddenBuzzwords.forEach((word) => {
+      expect(content).not.toContain(word);
+    });
+  });
 });

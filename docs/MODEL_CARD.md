@@ -59,7 +59,7 @@ Splitting is performed strictly on journey `start_date` to prevent run cross-con
 
 All metrics are programmatically measured and verified via `docs/phase5_preflight.json` and `docs/experiments/final_test_results.json`:
 
-| Model / Baseline | Paradigm | Average Precision (AP) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec $\ge$ 0.80 | Brier Score | ECE |
+| Model / Baseline | Paradigm | Average Precision (AP) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec ≥ 0.80 | Brier Score | ECE |
 |------------------|----------|------------------------|---------|----------|-----------|--------|-----------------------|-------------|-----|
 | **Majority Prevalence** | Baseline | 0.4920 | 0.5000 | 0.6595 | 0.4920 | 1.0000 | 0.4920 | 0.2501 | 0.0127 |
 | **Category Prior Lookup** | Baseline | 0.5972 | 0.6539 | 0.7101 | 0.5755 | 0.9270 | 0.5802 | 0.2211 | 0.0086 |
@@ -81,8 +81,8 @@ All metrics are programmatically measured and verified via `docs/phase5_prefligh
 
 ### Threshold Calibration & Operational Decisions
 - **Balanced F1 Threshold:** **0.410** (Test Recall: 82.03%, Precision: 74.02%, F1: 0.7782).
-- **Recall $\ge$ 80% Threshold:** **0.455** (Test Recall: 80.00%, Precision: 74.76%, F1: 0.7729).
-- **Calibration Honesty:** In-sample validation ECE was reduced from 0.0307 to 0.0093 by Isotonic Regression. On the untouched test split, calibration is neutral (ECE 0.0161 $\rightarrow$ 0.0213, Brier 0.1533 $\rightarrow$ 0.1536). Calibrated probabilities faithfully reflect empirical frequencies.
+- **Recall ≥ 80% Threshold:** **0.455** (Test Recall: 80.00%, Precision: 74.76%, F1: 0.7729).
+- **Calibration Honesty:** In-sample validation ECE was reduced from 0.0307 to 0.0093 by Isotonic Regression. On the held-out test set, calibration is neutral (ECE 0.0161 → 0.0213, Brier 0.1533 → 0.1536). Calibrated probabilities faithfully reflect empirical frequencies.
 - **Model Deployment Fidelity:** The full deployment model (fitted on Train + Validation) correlates at $r = 0.9919$ with the evaluation model, with a mean absolute probability shift of only 0.0275.
 
 ### Confusion Matrix on Test Split (Threshold = 0.410)

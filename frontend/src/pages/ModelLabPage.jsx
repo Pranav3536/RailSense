@@ -12,15 +12,16 @@ import {
   Legend,
   ReferenceLine,
   Cell,
+  LabelList,
 } from 'recharts';
 import {
-  Award,
+  Target,
   Layers,
-  GitBranch,
   TrendingUp,
   Cpu,
   CheckCircle,
   Lock,
+  Timer,
 } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import {
@@ -45,6 +46,8 @@ import {
   getFeatureLabel,
   getFeatureShortLabel,
 } from '../config/featureLabels';
+import { sanitizeLatex } from '../utils/sanitizeText';
+import { sortPositionBuckets } from '../utils/positionSort';
 
 /**
  * ModelLabPage — Tab 4 ("Model Evaluation & Transparency")
@@ -129,20 +132,36 @@ export function ModelLabPage() {
     }))
     .sort((a, b) => b.pr_auc - a.pr_auc);
 
-  // Transform Feature Importance for Chart (Top 12)
-  const topFeatures = featureImp.slice(0, 12).map((f) => ({
-    rawName: f.feature,
-    displayName: getFeatureShortLabel(f.feature),
-    fullName: getFeatureLabel(f.feature),
-    importance_gain: f.importance_gain,
-    importance_split: f.importance_split,
-  }));
+  // Transform Feature Importance for Chart (Top 10 sorted descending by gain)
+  const topFeatures = (featureImp || [])
+    .slice(0, 10)
+    .map((f) => ({
+      rawName: f.feature,
+      displayName: sanitizeLatex(getFeatureShortLabel(f.feature)),
+      fullName: sanitizeLatex(getFeatureLabel(f.feature)),
+      importance_gain: f.importance_gain,
+      importance_split: f.importance_split,
+    }));
+
+  // Latency metrics (measured Python CPU benchmark)
+  const latencyP95 =
+    modelInfo.latency?.measured_single_prediction_p95_ms ||
+    metrics.model_metadata?.latency?.measured_single_prediction_p95_ms ||
+    modelInfo.latency?.measured_single_prediction_ms ||
+    30.41;
+  const latencyP50 =
+    modelInfo.latency?.measured_single_prediction_p50_ms ||
+    metrics.model_metadata?.latency?.measured_single_prediction_p50_ms ||
+    27.26;
+
+  // Sorted Position Buckets in journey progression order
+  const sortedPositionEntries = sortPositionBuckets(Object.entries(perPosition));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0 max-w-full overflow-x-hidden">
       <PageHeader
         title="Model Evaluation & Transparency"
-        subtitle="Complete benchmark evaluation, discrimination curves, probability calibration, and feature attribution rankings on the untouched test partition."
+        subtitle="Benchmark evaluation, discrimination curves, probability calibration, and feature attribution rankings on the held-out test set."
         badge={
           <Badge variant="primary" className="font-mono text-xs">
             Deployment v{modelInfo.version || '1.0.0'}
@@ -155,40 +174,44 @@ export function ModelLabPage() {
         <StatCard
           label="Average Precision (AP)"
           value={finalTest.pr_auc ? finalTest.pr_auc.toFixed(4) : '0.8482'}
-          subtitle="Area under PR curve on test split"
-          icon={Award}
+          subtitle="Area under PR curve on held-out test set"
+          icon={Target}
           change="+72.4% vs baseline"
           trend="up"
+          definition="Summarizes precision across all probability thresholds; baseline random/prevalence score is 0.4920."
         />
         <StatCard
           label="ROC-AUC Score"
           value={finalTest.roc_auc ? finalTest.roc_auc.toFixed(4) : '0.8592'}
           subtitle="Discrimination across all thresholds"
           icon={TrendingUp}
+          definition="Probability that a randomly chosen delayed stop receives a higher predicted score than an on-time stop."
         />
         <StatCard
           label="F1-Score (Optimal)"
-          value={finalTest.f1_positive ? finalTest.f1_positive.toFixed(4) : '0.7798'}
+          value={finalTest.f1_positive ? finalTest.f1_positive.toFixed(4) : '0.7782'}
           subtitle="Balanced precision/recall at threshold 0.41"
           icon={Cpu}
+          definition="Harmonic mean of precision (75.1%) and recall (80.7%) on the held-out test set at the operational threshold."
         />
         <StatCard
-          label="Single Inference P95"
-          value={`${modelInfo.latency?.measured_single_prediction_ms || 2.1} ms`}
-          subtitle={`Target < ${modelInfo.latency?.target_p95_ms || 15.0} ms (Python CPU)`}
-          icon={Award}
+          label="Inference time (local, p95)"
+          value={`${Number(latencyP95).toFixed(1)} ms`}
+          subtitle={`Measured on CPU (p50: ${Number(latencyP50).toFixed(1)} ms)`}
+          icon={Timer}
+          definition="Measured across 200 benchmark iterations on real schedule inputs using machine-local single-threaded Python CPU inference (excludes network latency)."
         />
       </div>
 
-      {/* 2. Model Architecture & Split Protocol Card */}
+      {/* 2. Model Architecture & Temporal Split Card */}
       <Card className="border-slate-200 bg-white">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Layers size={18} className="text-primary-600" aria-hidden="true" />
-            <CardTitle>Architecture & Temporal Split Protocol</CardTitle>
+            <CardTitle>Architecture & Temporal Split</CardTitle>
           </div>
           <CardDescription>
-            Trained strictly on pre-run timetable attributes and rolling 7-day historical priors with strict temporal demarcation.
+            Trained on pre-departure timetable attributes and rolling 7-day historical priors with temporal separation.
           </CardDescription>
         </CardHeader>
 
@@ -215,7 +238,7 @@ export function ModelLabPage() {
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <span className="font-bold uppercase tracking-wider text-slate-700 block text-xs">
-                Strict Temporal Splitting (Zero Lookahead)
+                Temporal train / validation / test split
               </span>
               <ul className="space-y-1 text-slate-600 list-disc list-inside">
                 <li>
@@ -228,7 +251,7 @@ export function ModelLabPage() {
                   <strong className="text-slate-800">Validation Split:</strong> Oct 21 – Oct 22 (2 days, ~200k stops)
                 </li>
                 <li>
-                  <strong className="text-slate-800">Test Split:</strong> Oct 23 – Oct 24 (2 days, ~194k stops, untouched)
+                  <strong className="text-slate-800">Test Split:</strong> Oct 23 – Oct 24 (2 days, ~194k stops, held-out)
                 </li>
                 <li>
                   <strong className="text-slate-800">Censored:</strong> Oct 25 (excluded from test evaluation (collection cutoff))
@@ -240,13 +263,13 @@ export function ModelLabPage() {
       </Card>
 
       {/* 3. Multi-Model Benchmark Comparison Table */}
-      <Card className="border-slate-200 bg-white">
+      <Card className="border-slate-200 bg-white overflow-hidden min-w-0">
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <CardTitle>Multi-Model & Baseline Benchmark Comparison</CardTitle>
               <CardDescription>
-                Empirical comparison showing Average Precision (AP) and ROC-AUC on {splitView === 'test' ? 'untouched Test partition' : 'Validation partition'}.
+                Empirical comparison showing Average Precision (AP) and ROC-AUC on {splitView === 'test' ? 'held-out Test set' : 'Validation set'}.
               </CardDescription>
             </div>
             {/* Split Switcher */}
@@ -258,7 +281,7 @@ export function ModelLabPage() {
                   splitView === 'test' ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Test Split (Untouched)
+                Test Set (Held-Out)
               </button>
               <button
                 type="button"
@@ -267,14 +290,14 @@ export function ModelLabPage() {
                   splitView === 'val' ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Validation Split
+                Validation Set
               </button>
             </div>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div tabIndex={0} role="region" aria-label="Data table" className="overflow-x-auto rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-400">
+          <div tabIndex={0} role="region" aria-label="Data table" className="relative overflow-x-auto rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-400">
             <table className="w-full text-xs text-left">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                 <tr>
@@ -299,11 +322,17 @@ export function ModelLabPage() {
                   return (
                     <tr
                       key={name}
-                      className={isFinal ? 'bg-primary-50/40 font-semibold' : 'hover:bg-slate-50'}
+                      className={
+                        isFinal
+                          ? 'bg-primary-50/40 font-semibold'
+                          : isEnRoute
+                          ? 'bg-purple-50/20 text-slate-700'
+                          : 'hover:bg-slate-50'
+                      }
                     >
                       <td className="py-3 px-3.5">
                         <div className="flex items-center gap-2">
-                          <span className={isFinal ? 'text-primary-900 font-bold' : 'text-slate-800'}>
+                          <span className={isFinal ? 'text-primary-900 font-bold' : isEnRoute ? 'text-purple-950 font-medium' : 'text-slate-800'}>
                             {name}
                           </span>
                           {isFinal && (
@@ -320,7 +349,7 @@ export function ModelLabPage() {
                       </td>
                       <td className="py-3 px-3.5 text-slate-500 font-mono">
                         {isEnRoute
-                          ? 'En-Route Dynamic (Formulation 2)'
+                          ? 'Post-departure (requires k-1 delay)'
                           : name.includes('Baseline') || name.includes('Prior')
                           ? 'Heuristic Baseline'
                           : 'Pre-Departure Timetable'}
@@ -335,7 +364,12 @@ export function ModelLabPage() {
                         {isFinal ? (
                           <span className="text-emerald-700 font-medium">Production Inference</span>
                         ) : isEnRoute ? (
-                          <span className="text-purple-700 font-medium">Telemetry Benchmark</span>
+                          <span className="text-purple-700 font-medium inline-flex items-center gap-1 relative">
+                            Research benchmark
+                            <span className="sr-only">
+                              (requires real-time delay from previous station, not computable at pre-departure)
+                            </span>
+                          </span>
                         ) : (
                           <span className="text-slate-600 font-medium">Baseline Benchmark</span>
                         )}
@@ -451,7 +485,7 @@ export function ModelLabPage() {
               <div>
                 <CardTitle>Calibration Reliability Diagram</CardTitle>
                 <CardDescription>
-                  Predicted delay probability versus empirical fraction delayed. Perfect calibration follows the diagonal.
+                  Predicted delay probability versus empirical fraction delayed. Diagonal indicates perfect calibration.
                 </CardDescription>
               </div>
               <ChartTableToggle
@@ -542,7 +576,7 @@ export function ModelLabPage() {
               <CardTitle>Test Split Confusion Matrix (Threshold 0.41)</CardTitle>
             </div>
             <CardDescription>
-              Exact counts of 194k untouched test stop predictions versus ground-truth outcomes.
+              Exact counts of 194k held-out test stop predictions versus ground-truth outcomes.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -558,12 +592,12 @@ export function ModelLabPage() {
               <CardTitle>Threshold & Calibration Diagnostics</CardTitle>
             </div>
             <CardDescription>
-              Mathematical rigor behind isotonic probability calibration and threshold selection.
+              Mathematical validation behind isotonic probability calibration and threshold selection.
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4 text-xs">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
                 <span className="text-slate-500 font-medium block">Test Brier Score</span>
                 <span className="text-xl font-bold font-mono text-slate-900">
@@ -592,7 +626,7 @@ export function ModelLabPage() {
                   <strong className="text-slate-800">Balanced F1 Threshold (0.410):</strong> Maximizes harmonic mean of precision and recall (F1 = 0.7867 val / 0.7782 test) on validation partition. Retained for default deployment.
                 </li>
                 <li>
-                  <strong className="text-slate-800">High-Recall Threshold (0.512):</strong> Selected if passengers require catching $\ge$ 80% of all delayed stops, maintaining 74.8% precision.
+                  <strong className="text-slate-800">High-Recall Threshold (0.512):</strong> Selected if passengers require catching ≥ 80% of all delayed stops, maintaining 74.8% precision.
                 </li>
                 <li>
                   <strong className="text-slate-800">Default Unweighted (0.500):</strong> Pure mathematical majority cut-off (Precision = 75.9%, Recall = 79.1%).
@@ -604,13 +638,13 @@ export function ModelLabPage() {
       </div>
 
       {/* 6. Feature Importance Rankings */}
-      <Card className="border-slate-200 bg-white">
+      <Card className="border-slate-200 bg-white overflow-hidden min-w-0">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <CardTitle>Feature Importance (Gain Metric)</CardTitle>
+              <CardTitle>Feature Importance</CardTitle>
               <CardDescription>
-                Total improvement in objective loss split criteria attributed to each feature across 298 trees.
+                Relative feature attribution across gradient boosted decision trees. Reflects statistical association with delay, not physical causation.
               </CardDescription>
             </div>
             <ChartTableToggle
@@ -623,13 +657,16 @@ export function ModelLabPage() {
         </CardHeader>
 
         <CardContent>
+          <div className="sr-only">
+            Top 10 features ranked by total importance gain in the LightGBM model. Highest attributed feature is {topFeatures[0]?.fullName || 'historical delay rate'}.
+          </div>
           {importanceView === 'chart' ? (
-            <div style={{ height: `${CHART_THEME.heights.standard}px` }}>
+            <div className="h-[480px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={topFeatures}
                   layout="vertical"
-                  margin={{ ...CHART_THEME.margin, left: 140, right: 24 }}
+                  margin={{ top: 8, right: 48, left: 8, bottom: 8 }}
                 >
                   <CartesianGrid {...CHART_THEME.gridProps} horizontal={false} />
                   <XAxis
@@ -640,8 +677,10 @@ export function ModelLabPage() {
                   <YAxis
                     type="category"
                     dataKey="displayName"
+                    width={190}
+                    interval={0}
                     {...CHART_THEME.axisProps}
-                    tick={{ fill: '#334155', fontSize: 12, fontWeight: 500 }}
+                    tick={{ fill: '#334155', fontSize: 13, fontWeight: 500 }}
                   />
                   <Tooltip
                     formatter={(val) => [
@@ -652,6 +691,14 @@ export function ModelLabPage() {
                     contentStyle={CHART_THEME.tooltipContentStyle}
                   />
                   <Bar dataKey="importance_gain" fill={CHART_THEME.colors.primary} radius={[0, 4, 4, 0]}>
+                    <LabelList
+                      dataKey="importance_gain"
+                      position="right"
+                      formatter={(val) => `${(Number(val) / 1000).toFixed(0)}k`}
+                      fill="#475569"
+                      fontSize={12}
+                      offset={8}
+                    />
                     {topFeatures.map((entry, idx) => (
                       <Cell
                         key={`cell-${idx}`}
@@ -663,13 +710,13 @@ export function ModelLabPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="overflow-x-auto max-h-[360px] overflow-y-auto">
+            <div className="overflow-x-auto max-h-[480px] overflow-y-auto">
               <table className="w-full text-xs text-left">
                 <thead className="sticky top-0 bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                   <tr>
                     <th className="py-2.5 px-3">#</th>
                     <th className="py-2.5 px-3">Feature Name</th>
-                    <th className="py-2.5 px-3">Category</th>
+                    <th className="py-2.5 px-3">Technical Field</th>
                     <th className="py-2.5 px-3">Total Gain</th>
                     <th className="py-2.5 px-3">Split Count</th>
                   </tr>
@@ -694,7 +741,7 @@ export function ModelLabPage() {
       {/* 7. Per-Category & Position Subgroup Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Category Breakdown */}
-        <Card className="border-slate-200 bg-white">
+        <Card className="border-slate-200 bg-white overflow-hidden min-w-0">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -775,11 +822,11 @@ export function ModelLabPage() {
         </Card>
 
         {/* Position Breakdown */}
-        <Card className="border-slate-200 bg-white">
+        <Card className="border-slate-200 bg-white overflow-hidden min-w-0">
           <CardHeader>
             <CardTitle>Performance by Stop Position Bin</CardTitle>
             <CardDescription>
-              Compounding delay increases base prevalence with journey progression along route sequence.
+              Stop position along route progression in journey sequence order.
             </CardDescription>
           </CardHeader>
 
@@ -796,7 +843,7 @@ export function ModelLabPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-mono">
-                  {Object.entries(perPosition).map(([binName, d]) => (
+                  {sortedPositionEntries.map(([binName, d]) => (
                     <tr key={binName} className="hover:bg-slate-50">
                       <td className="py-2 px-3 font-semibold text-slate-800">{binName}</td>
                       <td className="py-2 px-3">{formatNumber(d.count)}</td>
@@ -810,33 +857,33 @@ export function ModelLabPage() {
             </div>
 
             <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-              * Notice the clear progression: early stops benefit from timetable buffer (25.8% delayed rate), whereas deep journey stops compound network delays (73.9% delayed rate).
+              * Notice the progression: early stops benefit from timetable buffer (25.8% delayed rate), whereas deep journey stops show higher historical delay rates (73.9% delayed rate).
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* 8. Anti-Leakage & Banned Features Protocol */}
+      {/* 8. Feature governance: excluded fields */}
       <Card className="border-rose-200 bg-rose-50/20">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Lock size={18} className="text-rose-600" aria-hidden="true" />
-            <CardTitle className="text-rose-950">Leakage Safeguards & Banned Features Protocol</CardTitle>
+            <CardTitle className="text-rose-950">Feature governance: excluded fields</CardTitle>
           </div>
           <CardDescription className="text-rose-900/80">
-            Strict verification: these features exist in the raw TiDB database but are strictly prohibited from pre-departure inference.
+            These fields exist in the raw database but are excluded from pre-departure inference to ensure pre-departure validity.
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
             {[
-              { name: 'departure_delay_min', reason: 'Collinear with or downstream of target arrival delay.' },
+              { name: 'departure_delay_min', reason: 'Downstream of scheduled departure; unknown before departure.' },
               { name: 'actual_arrival', reason: 'Target component; physically unknown prior to train arrival.' },
-              { name: 'actual_departure', reason: 'Post-hoc event unknown prior to actual halt completion.' },
+              { name: 'actual_departure', reason: 'Occurs after halt completion; unknown before departure.' },
               { name: 'status', reason: 'Logged after trip completion (ARRIVED, CANCELLED).' },
               { name: 'run_quality', reason: 'Summary quality metric calculated post-journey.' },
-              { name: 'arrival_reported', reason: 'Downstream sensor reporting status flag.' },
+              { name: 'arrival_reported', reason: 'Reporting status flag logged during run.' },
             ].map((f) => (
               <div key={f.name} className="p-3 rounded-lg bg-white border border-rose-200 space-y-1">
                 <span className="font-mono font-bold text-rose-700 block">{f.name}</span>
@@ -844,42 +891,6 @@ export function ModelLabPage() {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* 9. Formulation 2: En-Route Model Research Benchmark */}
-      <Card className="border-purple-200 bg-purple-50/30">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <GitBranch size={18} className="text-purple-600" aria-hidden="true" />
-            <CardTitle className="text-purple-950">
-              Research Benchmark Only — Formulation 2 (En-Route Dynamic Tracking)
-            </CardTitle>
-          </div>
-          <CardDescription className="text-purple-900/80">
-            Experimental benchmark predicting stop k arrival delay given real-time delay observed at stop k-1.
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="space-y-3 text-xs text-purple-950/90 leading-relaxed">
-          <div className="p-3.5 rounded-lg bg-white border border-purple-200 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <span className="text-slate-500 block">En-Route AP (Test)</span>
-              <span className="text-2xl font-bold font-mono text-purple-700">0.9289</span>
-            </div>
-            <div>
-              <span className="text-slate-500 block">Pre-Departure AP (Test)</span>
-              <span className="text-2xl font-bold font-mono text-slate-700">0.8482</span>
-            </div>
-            <div>
-              <span className="text-slate-500 block">Relative Information Gain</span>
-              <span className="text-2xl font-bold font-mono text-emerald-700">+9.5% AP</span>
-            </div>
-          </div>
-
-          <p>
-            <strong>Operational Limitation:</strong> While observing the immediate upstream stop&apos;s actual delay yields a higher Average Precision (0.9289), this formulation requires live IoT/telemetry infrastructure while the train is en-route. It <em>cannot</em> be computed before the train departs. RailSense intentionally deploys Formulation 1 for passenger pre-booking and scheduling convenience.
-          </p>
         </CardContent>
       </Card>
     </div>

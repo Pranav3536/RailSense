@@ -801,3 +801,50 @@ In Phase 10, the session will:
   - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
   - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
 
+---
+
+## 21. Phase 11.5 Model Lab UI Polish & Measured Latency (COMPLETE)
+
+- **Task 1: LaTeX Leak Elimination & Sanitization:**
+  - Audited and purged LaTeX tokens (`$\ge$`, `$\le$`, `\rightarrow`, `\times`, `\$`, etc.) across frontend source code, serving data, and docs.
+  - Added `sanitizeLatex` helper in `frontend/src/utils/sanitizeText.js` with comprehensive unit tests (`frontend/src/test/sanitizeText.test.js`).
+  - Added regression test `frontend/src/test/SourceGrep.test.js` checking for LaTeX fragments across `frontend/src/` and `backend/serving/`.
+- **Task 2: Feature Importance Chart Overlap Fix:**
+  - Truncated feature importance chart to Top 10 features descending by gain.
+  - Fixed container height `h-[480px]`, widened `YAxis` width to `190px` with `interval={0}` and font 13px, preventing truncation.
+  - Added plain-English feature labels (`featureLabels.js`).
+  - Positioned values on right of bars (`LabelList`) and added non-causal statistical association subtitle.
+  - Added `ChartTableToggle` for accessible tabular view.
+- **Task 3: Stop Position Sequence Ordering:**
+  - Implemented journey progression ordering (`Early (2-3) -> Mid-Early (4-10) -> Mid (11-25) -> Late (26-50) -> Deep (>50)`) via `sortPositionBuckets` in `frontend/src/utils/positionSort.js`.
+  - Applied to both Model Lab and Delay Patterns pages.
+  - Added unit test in `frontend/src/test/positionSort.test.js`.
+- **Task 4: Wording & Buzzword Elimination:**
+  - Replaced internal jargon: "untouched test partition" -> "held-out test set", "STRICT TEMPORAL SPLITTING (ZERO LOOKAHEAD)" -> "Temporal train / validation / test split", "Leakage Safeguards & Banned Features Protocol" -> "Feature governance: excluded fields".
+  - Updated API `/api/model/info` to use clean wording.
+- **Task 5: En-Route Benchmark Card Consolidation:**
+  - Removed standalone Card 9 ("Research Benchmark Only — Formulation 2").
+  - Retained En-Route LightGBM in the Model Comparison table with a "Research" badge and post-departure note.
+  - Eliminated speculative "telemetry" and "IoT" references.
+- **Task 6: Measured Inference Latency:**
+  - Benchmarked real in-process CPU prediction latency (`backend/scripts/benchmark_predict.py`, 200 iterations):
+    - p50: **27.26 ms**, p95: **30.41 ms**, p99: **34.33 ms**, Mean: **27.42 ms**.
+  - Saved to `docs/experiments/inference_latency.json` and `backend/serving/model_lab.json`.
+  - Exposed via `/api/model/info` and displayed in Model Lab StatCard with `Timer` icon and label `"Inference time (local, p95)"`.
+- **Task 7: Responsive Verification & Visual Capture:**
+  - Fixed horizontal scroll at 360px (resolved unparented `.sr-only` table cell child leak).
+  - Verified zero horizontal scroll across 360, 768, 1280, 1366, 1920 viewports.
+  - Captured full-page screenshots into `docs/ui/phase11_5/`:
+    - `model_lab_360.png` (32 KB)
+    - `model_lab_1366.png` (150 KB)
+    - `model_lab_1920.png` (187 KB)
+    - Total directory size: 369 KB (< 1 MB).
+- **Verification Baseline:**
+  - Pytest: **156 passed, 4 skipped in 27.24s**
+  - Vitest: **97 passed across 15 test files in 52.88s** (+12 tests)
+  - Playwright E2E: **40 passed, 4 skipped (live)** across 6 test files
+  - ESLint: **0 errors, 0 warnings**
+  - Vite Build: **OK (18.66s)**
+  - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
+  - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
+

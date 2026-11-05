@@ -16,6 +16,8 @@ export function StatCard({
   delta,
   definition,
   definitionTitle,
+  subtext,
+  subtitle,
   icon: Icon,
   loading = false,
   error = null,
@@ -69,6 +71,9 @@ export function StatCard({
               <span className="text-sm font-medium text-slate-500">{unit}</span>
             )}
           </div>
+        )}
+        {(subtext || subtitle) && !loading && !error && (
+          <p className="mt-1 text-xs text-slate-500 font-medium">{subtext || subtitle}</p>
         )}
       </div>
 

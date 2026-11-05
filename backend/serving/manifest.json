@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "generated_at": "2026-10-30T23:30:00+05:30",
   "total_artifacts": 9,
-  "total_size_bytes": 48124610,
+  "total_size_bytes": 48125059,
   "total_size_mb": 45.9,
   "artifacts": [
     {
@@ -17,21 +17,21 @@
       "filename": "overview.json",
       "size_bytes": 11182,
       "size_mb": 0.01,
-      "sha256": "9f336f947232e6d61911e20f99a451a270c36945aca6442c9a8c342ea0bab229"
+      "sha256": "6d09ffd7191c07747f12423168777c0f0b12a6c3f8b8396b87a6d22fdd598070"
     },
     {
       "path": "serving/patterns.json",
       "filename": "patterns.json",
       "size_bytes": 55917,
       "size_mb": 0.05,
-      "sha256": "6aa43258c0b7ecaa72e098afef010f11478f2c80b2c2f475eed88d30bc8c5e70"
+      "sha256": "6710ac421532abec50b08f822768a3317688318d235d11fd708482c6aaea2340"
     },
     {
       "path": "serving/model_lab.json",
       "filename": "model_lab.json",
-      "size_bytes": 21235,
+      "size_bytes": 21684,
       "size_mb": 0.02,
-      "sha256": "f376e125383a03bdcf226928058f5f2e8f7485bcfad586c9910b0c927b1b7451"
+      "sha256": "474e5db1c0ef4ad064f61b33c7f50d649d0b0fdb5e4699ad0f356aeea9388227"
     },
     {
       "path": "models/deployment_model.joblib",

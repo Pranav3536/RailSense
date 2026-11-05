@@ -125,4 +125,52 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       fullPage: false,
     });
   });
+
+  test('captures Phase 11.5 Model Lab screenshots and verifies feature chart labels non-overlap', async ({ page }) => {
+    const fs = await import('fs');
+    const outDir = path.resolve('../docs/ui/phase11_5');
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+
+    const viewports = [
+      { name: '360', width: 360, height: 640 },
+      { name: '1366', width: 1366, height: 768 },
+      { name: '1920', width: 1920, height: 1080 },
+    ];
+
+    for (const vp of viewports) {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto('/model-lab');
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.getByText('Feature Importance')).toBeVisible({ timeout: 10000 });
+
+      // Verify no horizontal overflow
+      const isOverflowing = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      });
+      expect(isOverflowing).toBeFalsy();
+
+      // Feature Importance chart tick labels non-overlap check
+      const tickTexts = page.locator('.recharts-yAxis .recharts-cartesian-axis-tick text');
+      const count = await tickTexts.count();
+      if (count > 1) {
+        let prevBox = null;
+        for (let i = 0; i < count; i++) {
+          const box = await tickTexts.nth(i).boundingBox();
+          if (box && prevBox) {
+            const overlap = Math.max(0, Math.min(prevBox.y + prevBox.height, box.y + box.height) - Math.max(prevBox.y, box.y));
+            expect(overlap).toBeLessThanOrEqual(2);
+          }
+          if (box) prevBox = box;
+        }
+      }
+
+      await page.screenshot({
+        path: path.join(outDir, `model_lab_${vp.name}.png`),
+        fullPage: false,
+      });
+    }
+  });
 });

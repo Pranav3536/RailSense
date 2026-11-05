@@ -44,6 +44,7 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-34 | Overview & Train Explorer Real API Ingestion with Normalization Adapters | Phase 7 |
 | D-35 | Sequence Number (seq) Primary Keying for Stop Progression | Phase 7 |
 | D-36 | Boundary Days Temporal Marking (Left-Truncated & Right-Censored) | Phase 7 |
+| D-59 | Model Lab Polish, Measured Inference Latency, LaTeX Removal & Feature Ordering | Phase 11.5 |
 
 ---
 
@@ -861,5 +862,55 @@ Decommissioned obsolete development artifacts and transient test outputs across 
      - Collapsible open (1366x768): `predict_collapsible_1366.png` (114 KB)
      - Total directory size: 524 KB (< 1 MB).
    - Verified zero horizontal overflow across 360, 768, 1280, 1366, and 1920 viewports.
+
+---
+
+## D-59 — Phase 11.5 Model Lab Polish, Measured Inference Latency, LaTeX Removal & Feature Ordering
+
+**Date decided:** 2026-11-05 (Phase 11.5 UI Polish Patch)
+
+**Decision:**
+1. **LaTeX Token Purging & Sanitization Helper:**
+   - Created `sanitizeLatex(text)` in `frontend/src/utils/sanitizeText.js` to strip all LaTeX math delimiters and symbols (`$\ge$`, `$\le$`, `\rightarrow`, `\times`, `\$`, etc.) replacing them with standard unicode equivalents (`≥`, `≤`, `→`, `×`, `$`).
+   - Audited and purged LaTeX tokens across frontend source (`ModelLabPage.jsx`, `featureLabels.js`), serving files (`backend/serving/model_lab.json`), and documentation (`docs/MODEL_CARD.md`, `docs/serving_design.md`).
+   - Added unit test in `frontend/src/test/sanitizeText.test.js` and a regression grep test in `frontend/src/test/SourceGrep.test.js` verifying zero LaTeX tokens in `frontend/src/` and `backend/serving/`.
+2. **Feature Importance Chart Usability & Layout:**
+   - Truncated feature importance chart to Top 10 features descending by gain to prevent visual crowding.
+   - Assigned fixed container height `h-[480px]` and expanded `YAxis` width to `190px` with `interval={0}` and font size 13px, preventing truncation of human-readable feature labels (from `frontend/src/config/featureLabels.js`).
+   - Positioned `<LabelList>` tags right-aligned at bar tips (`formatter={v => v.toLocaleString()}`) for direct readability.
+   - Replaced causal phrasing with statistical association subtitle: `"Gain metric represents relative contribution to split decisions across the ensemble. Features indicate statistical association with delay risk, not direct causal factors."`.
+   - Included `ChartTableToggle` for accessible tabular view.
+3. **Stop Position Sequence Ordering:**
+   - Replaced alphabetical/lexicographical sorting of journey stop position buckets with true temporal progression order:
+     `Early (2-3) -> Mid-Early (4-10) -> Mid (11-25) -> Late (26-50) -> Deep (>50)`.
+   - Created `sortPositionBuckets(buckets)` in `frontend/src/utils/positionSort.js` with regex-based numeric lower-bound extraction (`parsePositionBucketOrder`).
+   - Applied to both `ModelLabPage.jsx` and `DelayPatternsPage.jsx`.
+4. **Wording & Buzzword Elimination:**
+   - Replaced academic/internal jargon across API (`/api/model/info`), UI, and docs:
+     - `"untouched test partition"` → `"held-out test set"`.
+     - `"STRICT TEMPORAL SPLITTING (ZERO LOOKAHEAD)"` → `"Temporal train / validation / test split"`.
+     - `"Leakage Safeguards & Banned Features Protocol"` → `"Feature governance: excluded fields"`.
+   - Standardized on clean, professional noun phrases without synthetic claims.
+5. **En-Route Benchmark Card Consolidation:**
+   - Deleted standalone Card 9 ("Research Benchmark Only — Formulation 2").
+   - Integrated En-Route LightGBM as a distinct row within the Model Comparison table with a `"Research"` badge, an accessible info tooltip, and an `sr-only` note stating the post-departure operational requirement.
+   - Removed speculative "telemetry" and "IoT" references.
+6. **Measured In-Process Inference Latency:**
+   - Eliminated the hardcoded `2.1 ms` placeholder.
+   - Benchmarked real in-process CPU prediction latency on real schedule test inputs (`backend/scripts/benchmark_predict.py`, 200 iterations):
+     - **p50:** 27.26 ms
+     - **p95:** 30.41 ms
+     - **p99:** 34.33 ms
+     - **Mean:** 27.42 ms
+   - Persisted benchmark results in `docs/experiments/inference_latency.json` and serving store `backend/serving/model_lab.json`.
+   - Updated StatCard in `ModelLabPage.jsx` with `Timer` icon, label `"Inference time (local, p95)"`, value `"30.4 ms"`, and subtext `"27.3 ms p50 (in-process CPU)"`.
+7. **Responsive Layout & Visual Regression Verification:**
+   - Fixed horizontal overflow at 360px caused by an unparented `position: absolute` `.sr-only` table cell child by establishing a `relative` boundary and `overflow-x-hidden`.
+   - Validated zero horizontal scroll at 360x640, 768x1024, 1280x800, 1366x768, and 1920x1080.
+   - Captured full-page screenshots into `docs/ui/phase11_5/`:
+     - `model_lab_360.png` (32 KB)
+     - `model_lab_1366.png` (150 KB)
+     - `model_lab_1920.png` (187 KB)
+     - Total directory size: 369 KB (< 1 MB).
 
 

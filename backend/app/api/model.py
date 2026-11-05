@@ -29,6 +29,12 @@ def get_model_info():
             with open(calib_meta_file, "r", encoding="utf-8") as f:
                 calib_meta = json.load(f)
 
+        latency_file = Path(__file__).resolve().parent.parent.parent.parent / "docs" / "experiments" / "inference_latency.json"
+        latency_info = {}
+        if latency_file.exists():
+            with open(latency_file, "r", encoding="utf-8") as f:
+                latency_info = json.load(f)
+
         response_data = {
             "model_name": model_meta.get("model_name", "lightgbm_classifier"),
             "version": model_meta.get("version", "1.0.0"),
@@ -42,8 +48,8 @@ def get_model_info():
                 "positive_prevalence_test": 0.492
             },
             "split_design": {
-                "protocol": "Strict temporal causal ordering (no random cross-validation)",
-                "warmup_partition": "2026-10-07 (used strictly for rolling historical lag population)",
+                "protocol": "Temporal train / validation / test split",
+                "warmup_partition": "2026-10-07 (used for rolling historical lag population)",
                 "train_partition": "2026-10-08 to 2026-10-20 (13 days, ~1.3M stops)",
                 "validation_partition": "2026-10-21 to 2026-10-22 (2 days, ~200k stops)",
                 "test_partition": "2026-10-23 to 2026-10-24 (2 days, ~194k stops)",
@@ -53,7 +59,7 @@ def get_model_info():
                 "balanced_f1_threshold": 0.410,
                 "recall_80_threshold": 0.455,
                 "default_threshold": 0.500,
-                "note": "Calibrated probabilities reflect true historical empirical frequencies. The 0.410 threshold maximizes F1 score (0.7782 on untouched test split)."
+                "note": "Calibrated probabilities reflect true historical empirical frequencies. The 0.410 threshold maximizes F1 score (0.7782 on held-out test set)."
             },
             "calibration": {
                 "method": "Isotonic Regression (sklearn.isotonic.IsotonicRegression)",
@@ -70,8 +76,13 @@ def get_model_info():
                 ])
             },
             "latency": {
-                "target_p95_ms": 15.0,
-                "measured_single_prediction_ms": 2.1
+                "target_p95_ms": latency_info.get("target_p95_ms", 25.0),
+                "measured_single_prediction_ms": latency_info.get("measured_single_prediction_p95_ms", 30.41),
+                "measured_single_prediction_p95_ms": latency_info.get("measured_single_prediction_p95_ms", 30.41),
+                "measured_single_prediction_p50_ms": latency_info.get("measured_single_prediction_p50_ms", 27.26),
+                "measured_single_prediction_p99_ms": latency_info.get("measured_single_prediction_p99_ms", 34.33),
+                "method": latency_info.get("method", "In-process Python 3.10 CPU single-threaded predict_single calls on real schedule inputs"),
+                "provenance": latency_info.get("provenance", "machine-local, single-threaded, in-process Python CPU (excludes network/HTTP framing)")
             },
             "data_as_of": "2026-10-25"
         }

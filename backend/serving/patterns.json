@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "built_at": "2026-10-30 17:51:14 UTC",
+    "built_at": "2026-11-05 14:03:31 UTC",
     "source": "TiDB Cloud railsense.train_records (via local cache)",
     "row_count": 2805574,
     "runs_count": 147367,

@@ -54,7 +54,7 @@ def generate_table():
     }
     rows.append(("LightGBM + Calibrated (FINAL, Thresh 0.41)", "Schedule-Time", ap_map["lightgbm_calibrated"], calib_041))
 
-    header = "| Model / Baseline | Paradigm | Average Precision (AP) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec $\\ge$ 0.80 | Brier Score | ECE |"
+    header = "| Model / Baseline | Paradigm | Average Precision (AP) | ROC-AUC | F1-Score | Precision | Recall | Prec @ Rec ≥ 0.80 | Brier Score | ECE |"
     sep = "|---|---|---|---|---|---|---|---|---|---|"
     lines = [header, sep]
 

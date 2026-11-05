@@ -115,7 +115,7 @@ CREATE TABLE train_date_stats (
 - **Hour-of-Day Dynamics:** 24 hourly buckets with delay probabilities and mean delays.
 - **Day-of-Week Dynamics:** 7 days with volume and punctuality metrics.
 - **Sequence Position Compounding:** 5 journey sequence buckets showing delay accumulation.
-- **Observed Hotspots & Punctual Nodes:** Top 50 hotspot and punctual stations/trains filtered by minimum support ($N \ge 100$ stops) and ranked by Wilson lower/upper confidence bounds.
+- **Observed Hotspots & Punctual Nodes:** Top 50 hotspot and punctual stations/trains filtered by minimum support (N ≥ 100 stops) and ranked by Wilson lower/upper confidence bounds.
 
 ### 3.3 `model_lab.json` (Powers Model Lab Tab)
 - **Benchmark Table:** Recomputed Average Precision, ROC-AUC, F1, Precision, Recall, Brier, and ECE across Baselines, LR, RF, LightGBM, and En-Route.

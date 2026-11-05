@@ -31,7 +31,7 @@
 | **Raw Classifier Argmax Accuracy** | **96.18%** (`126/131`) | **93.89%** (`123/131`) | Argmax probability matches true intent |
 | **In-Domain Questions ($N$)** | **120** | **125** | Valid Indian Railways delay analytics queries |
 | **In-Domain Conservative Fallbacks** | **10.0%** (`12/120`) | **20.0%** (`25/125`) | Queries routed to suggestion chips due to low confidence/margin |
-| **In-Domain Answered Queries** | **108** (`108/120`) | **100** (`100/125`) | Queries passing threshold gates (conf $\ge 0.40$, margin $\ge 0.08$) |
+| **In-Domain Answered Queries** | **108** (`108/120`) | **100** (`100/125`) | Queries passing threshold gates (conf ≥ 0.40, margin ≥ 0.08) |
 | **Accuracy on Answered In-Domain** | **99.07%** (`107/108`) | **99.0%** (`99/100`) | Correct intent delivered when model elects to answer |
 | **Overall In-Domain Resolution** | **89.17%** (`107/120`) | **79.2%** (`99/125`) | Proportion of all in-domain queries resolved without fallback |
 | **Top-3 Suggestion Chip Hit Rate** | **91.67%** (`11/12`) | **92.00%** (23/25) | Fallbacks containing true target intent in top-3 suggestions |
@@ -51,7 +51,7 @@
 | Evaluation Track | Benchmark Subset | Size ($N$) | Score / Accuracy | Evaluation Condition & Robustness Profile |
 |---|---|---|---|---|
 | **Held-Out Test (Dev-Tuned)** | Raw Classifier Argmax | 131 | **96.18%** (`126/131`) | Clean phrasing, evaluated with production normalizer |
-| **Held-Out Test (Dev-Tuned)** | Answered In-Domain Accuracy | 108 | **99.07%** (`107/108`) | Confidence $\ge 0.40$ and margin $\ge 0.08$ satisfied |
+| **Held-Out Test (Dev-Tuned)** | Answered In-Domain Accuracy | 108 | **99.07%** (`107/108`) | Confidence ≥ 0.40 and margin ≥ 0.08 satisfied |
 | **Expanded OOD Suite** | Out-of-Scope Safe Interception | 42 | **97.62%** (`41/42`) | Unseen IRCTC ticketing, PNR, food, GPS, chitchat |
 | **Hostile Stress Suite** | Dedicated Stress Robustness | 42 | **35.71%** (`15/42`) | **Adversarial, typos, Hinglish, word inversion, edge cases** |
 
