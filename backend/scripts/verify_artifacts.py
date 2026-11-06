@@ -14,12 +14,18 @@ from pathlib import Path
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 
-def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
+def get_file_bytes_and_hash(path: Path):
     with open(path, "rb") as f:
-        while chunk := f.read(65536):
-            h.update(chunk)
-    return h.hexdigest()
+        content = f.read()
+    
+    # If it's a JSON text file, normalize CRLF to LF so hash matches regardless of OS checkout
+    if path.suffix.lower() == ".json":
+        normalized = content.replace(b"\r\n", b"\n")
+        return len(content), len(normalized), hashlib.sha256(content).hexdigest(), hashlib.sha256(normalized).hexdigest()
+    
+    # For binary files (.sqlite, .joblib), strict raw bytes
+    raw_hash = hashlib.sha256(content).hexdigest()
+    return len(content), len(content), raw_hash, raw_hash
 
 
 def verify_artifacts() -> bool:
@@ -45,17 +51,23 @@ def verify_artifacts() -> bool:
             all_passed = False
             continue
 
-        actual_size = path.stat().st_size
-        if actual_size != entry["size_bytes"]:
-            print(f"[FAIL] Size mismatch for {entry['path']}: expected {entry['size_bytes']}, got {actual_size}")
+        raw_size, norm_size, raw_sha, norm_sha = get_file_bytes_and_hash(path)
+        expected_size = entry["size_bytes"]
+        expected_sha = entry["sha256"]
+
+        # Check if either raw or normalized matches expected (handles Windows vs Linux line endings)
+        size_match = (raw_size == expected_size) or (norm_size == expected_size)
+        sha_match = (raw_sha == expected_sha) or (norm_sha == expected_sha)
+
+        if not size_match:
+            print(f"[FAIL] Size mismatch for {entry['path']}: expected {expected_size}, got {raw_size}")
             all_passed = False
             continue
 
-        actual_sha256 = sha256_file(path)
-        if actual_sha256 != entry["sha256"]:
+        if not sha_match:
             print(f"[FAIL] Checksum mismatch for {entry['path']}")
-            print(f"       Expected: {entry['sha256']}")
-            print(f"       Actual:   {actual_sha256}")
+            print(f"       Expected: {expected_sha}")
+            print(f"       Actual:   {raw_sha}")
             all_passed = False
             continue
 
