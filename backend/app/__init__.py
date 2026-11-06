@@ -98,11 +98,11 @@ def create_app(config: Optional[dict] = None) -> Flask:
     
     # Agar * set ho ya origins list ho
     CORS(
-        app,
-        resources={r"/api/*": {"origins": "*" if "*" in origins else origins}},
-        methods=["GET", "POST", "OPTIONS"],
-        allow_headers=["Content-Type", "Authorization", "X-Request-ID"]
-    )
+            app,
+            resources={r"/*": {"origins": "*"}},
+            methods=["GET", "POST", "OPTIONS"],
+            allow_headers="*"
+        )
 
     # 2. In-Memory Rate Limiter
     limiter = InMemoryRateLimiter(
