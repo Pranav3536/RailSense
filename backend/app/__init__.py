@@ -89,12 +89,17 @@ def create_app(config: Optional[dict] = None) -> Flask:
             x_port=trusted_proxies
         )
 
-    # 1. CORS Configuration
-    cors_origins_raw = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173")
+# 1. CORS Configuration
+    cors_origins_raw = os.environ.get(
+        "CORS_ORIGINS",
+        "https://railsense-app.vercel.app,http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173"
+    )
     origins = [orig.strip() for orig in cors_origins_raw.split(",") if orig.strip()]
+    
+    # Agar * set ho ya origins list ho
     CORS(
         app,
-        resources={r"/api/*": {"origins": origins}},
+        resources={r"/api/*": {"origins": "*" if "*" in origins else origins}},
         methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "Authorization", "X-Request-ID"]
     )
