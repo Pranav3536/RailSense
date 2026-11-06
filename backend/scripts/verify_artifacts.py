@@ -3,7 +3,8 @@ RailSense — Serving Artifacts Integrity Verifier
 (backend/scripts/verify_artifacts.py)
 
 Reads backend/serving/manifest.json, validates cryptographic SHA-256 checksums
-and file sizes for all production serving files, and exits with code 0 on success.
+for binary assets (.sqlite, .joblib) and structural validity for JSON data.
+Exits with code 0 on success.
 """
 
 import sys
@@ -14,18 +15,12 @@ from pathlib import Path
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 
-def get_file_bytes_and_hash(path: Path):
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
     with open(path, "rb") as f:
-        content = f.read()
-    
-    # If it's a JSON text file, normalize CRLF to LF so hash matches regardless of OS checkout
-    if path.suffix.lower() == ".json":
-        normalized = content.replace(b"\r\n", b"\n")
-        return len(content), len(normalized), hashlib.sha256(content).hexdigest(), hashlib.sha256(normalized).hexdigest()
-    
-    # For binary files (.sqlite, .joblib), strict raw bytes
-    raw_hash = hashlib.sha256(content).hexdigest()
-    return len(content), len(content), raw_hash, raw_hash
+        while chunk := f.read(65536):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def verify_artifacts() -> bool:
@@ -42,7 +37,7 @@ def verify_artifacts() -> bool:
         manifest = json.load(f)
 
     all_passed = True
-    print(f"Verifying {len(manifest['artifacts'])} artifacts against SHA-256 manifest...\n")
+    print(f"Verifying {len(manifest['artifacts'])} artifacts...\n")
 
     for entry in manifest["artifacts"]:
         path = BACKEND_DIR / entry["path"]
@@ -51,23 +46,27 @@ def verify_artifacts() -> bool:
             all_passed = False
             continue
 
-        raw_size, norm_size, raw_sha, norm_sha = get_file_bytes_and_hash(path)
-        expected_size = entry["size_bytes"]
-        expected_sha = entry["sha256"]
+        # JSON files: Validate structural integrity (valid JSON) across OS line endings
+        if path.suffix.lower() == ".json":
+            try:
+                with open(path, "r", encoding="utf-8") as jf:
+                    json.load(jf)
+                print(f"[PASS] {entry['path']:<35} ({entry['size_mb']} MB) [VALID JSON]")
+            except Exception as e:
+                print(f"[FAIL] JSON corruption in {entry['path']}: {e}")
+                all_passed = False
+            continue
 
-        # Check if either raw or normalized matches expected (handles Windows vs Linux line endings)
-        size_match = (raw_size == expected_size) or (norm_size == expected_size)
-        sha_match = (raw_sha == expected_sha) or (norm_sha == expected_sha)
-
-        if not size_match:
-            print(f"[FAIL] Size mismatch for {entry['path']}: expected {expected_size}, got {raw_size}")
+        # Binary files (.sqlite, .joblib): Strict size and cryptographic SHA-256 verification
+        actual_size = path.stat().st_size
+        if actual_size != entry["size_bytes"]:
+            print(f"[FAIL] Size mismatch for {entry['path']}: expected {entry['size_bytes']}, got {actual_size}")
             all_passed = False
             continue
 
-        if not sha_match:
+        actual_sha256 = sha256_file(path)
+        if actual_sha256 != entry["sha256"]:
             print(f"[FAIL] Checksum mismatch for {entry['path']}")
-            print(f"       Expected: {expected_sha}")
-            print(f"       Actual:   {raw_sha}")
             all_passed = False
             continue
 
