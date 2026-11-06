@@ -232,7 +232,7 @@ export function OverviewPage() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Railway Network Overview"
+          title="Railway at a Glance"
           subtitle="Explore railway network coverage, arrival delays and historical operating patterns."
         />
 

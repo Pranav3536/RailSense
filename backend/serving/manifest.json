@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-10-30T23:30:00+05:30",
+  "generated_at": "2026-11-06T23:30:00+05:30",
   "total_artifacts": 9,
   "total_size_bytes": 48125059,
   "total_size_mb": 45.9,
@@ -15,21 +15,21 @@
     {
       "path": "serving/overview.json",
       "filename": "overview.json",
-      "size_bytes": 11182,
+      "size_bytes": 10741,
       "size_mb": 0.01,
       "sha256": "6d09ffd7191c07747f12423168777c0f0b12a6c3f8b8396b87a6d22fdd598070"
     },
     {
       "path": "serving/patterns.json",
       "filename": "patterns.json",
-      "size_bytes": 55917,
+      "size_bytes": 53869,
       "size_mb": 0.05,
       "sha256": "6710ac421532abec50b08f822768a3317688318d235d11fd708482c6aaea2340"
     },
     {
       "path": "serving/model_lab.json",
       "filename": "model_lab.json",
-      "size_bytes": 21684,
+      "size_bytes": 20759,
       "size_mb": 0.02,
       "sha256": "474e5db1c0ef4ad064f61b33c7f50d649d0b0fdb5e4699ad0f356aeea9388227"
     },
@@ -57,14 +57,14 @@
     {
       "path": "models/historical_tables.json",
       "filename": "historical_tables.json",
-      "size_bytes": 2440181,
+      "size_bytes": 2354547,
       "size_mb": 2.33,
       "sha256": "0f10ac218989343f5f6c40c893ec745fd26c9e566b41119fbf9a2080360c9c1d"
     },
     {
       "path": "models/model_metadata.json",
       "filename": "model_metadata.json",
-      "size_bytes": 1506,
+      "size_bytes": 1438,
       "size_mb": 0.0,
       "sha256": "88fc5e54dcc6d13b97417e52c896872730f704506a2e85cbc217811547de0054"
     }

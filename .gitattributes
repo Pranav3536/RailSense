@@ -1,0 +1,2 @@
+backend/serving/* text eol=lf
+backend/models/* text eol=lf
