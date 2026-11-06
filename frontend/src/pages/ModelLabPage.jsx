@@ -124,10 +124,9 @@ export function ModelLabPage() {
     <div className="space-y-8 min-w-0 max-w-full overflow-x-hidden">
       <PageHeader
         title="Model Lab"
-        subtitle="Evaluation metrics, baseline comparisons, and feature importance on the held-out test set."
+        subtitle="Evaluation metrics, baseline comparisons and feature importance on the held-out test set."
         badge={
           <Badge variant="primary" className="font-mono text-xs">
-            Deployment v{modelInfo.version || '1.0.0'}
           </Badge>
         }
       />

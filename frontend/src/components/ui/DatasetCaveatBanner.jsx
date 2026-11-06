@@ -28,7 +28,6 @@ export function DatasetCaveatBanner({
         </span>
       </div>
       <span className="text-xs text-slate-500">
-        Precomputed serving store · Strictly label-eligible stops (seq &gt; 1)
       </span>
     </div>
   );

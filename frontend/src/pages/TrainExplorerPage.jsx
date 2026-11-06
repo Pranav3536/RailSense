@@ -272,7 +272,7 @@ export function TrainExplorerPage() {
 
           <PageHeader
             title={`${train.trainNumber} — ${train.trainName || 'Express Service'}`}
-            subtitle={`Timetable, intermediate halts, and observed delay intelligence across ${pluralize(train.runsCount, 'observed run', 'observed runs')}.`}
+            subtitle={`Timetable, intermediate halts and observed delay intelligence across ${pluralize(train.runsCount, 'observed run', 'observed runs')}.`}
             action={
               <button
                 type="button"
@@ -751,7 +751,7 @@ export function TrainExplorerPage() {
       {/* Page Header */}
       <PageHeader
         title="Train Explorer"
-        subtitle="Search and explore canonical timetables, sequence numbers, and observed delay intelligence across registered train services."
+        subtitle="Search and explore canonical timetables, sequence numbers and observed delay intelligence across registered train services."
       />
 
       {/* Search & Filter Toolbar */}

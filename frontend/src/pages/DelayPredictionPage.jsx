@@ -185,7 +185,7 @@ export function DelayPredictionPage() {
         subtitle="Pre-departure schedule-time arrival delay probability forecasting based on timetable attributes, route position, and rolling 7-day priors."
         badge={
           <Badge variant="primary" className="font-mono text-xs">
-            LightGBM + Isotonic Calibration
+            LightGBM
           </Badge>
         }
       />
