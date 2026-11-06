@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Layers, Info, HelpCircle } from 'lucide-react';
+import { HelpCircle, TrendingUp, TrendingDown } from 'lucide-react';
 import { FEATURE_LABELS } from '../../config/featureLabels';
 
 /**
@@ -79,83 +79,71 @@ function normalizeFactor(factor, idx) {
 }
 
 /**
- * FactorBars — Displays model feature associations and attribution factors.
- * Strictly non-causal language: displays characteristics associated with the model's estimate.
- * Diverging horizontal bars (red = raises estimate, green = lowers estimate).
- * Units are raw model log-odds (never percentages).
+ * FactorBars — "Why This Prediction?"
+ * Displays top 3 factors associated with the model's delay estimate.
+ * Plain-English labels + direction phrases ("Raised the delay estimate" / "Lowered the delay estimate")
+ * with visual mini bars WITHOUT any numbers.
  */
 export function FactorBars({ factors = [], className = '' }) {
   if (!factors || factors.length === 0) {
     return (
       <div className={`p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-500 ${className}`}>
-        No significant individual skew factors detected; prediction follows baseline schedule priors.
+        Explanation not available for this prediction.
       </div>
     );
   }
 
-  // Top 5 (or max 6)
-  const parsedFactors = factors.slice(0, 6).map((f, i) => normalizeFactor(f, i));
+  // Top 3 factors strictly
+  const parsedFactors = factors.slice(0, 3).map((f, i) => normalizeFactor(f, i));
 
-  // Find max magnitude for scaling relative diverging bars
+  // Find max magnitude for scaling relative bar widths
   const maxAbs = Math.max(...parsedFactors.map((f) => Math.abs(f.contribution)), 0.1);
 
   return (
     <div className={`space-y-3 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Layers size={16} className="text-primary-600" aria-hidden="true" />
-          <h4 className="text-sm font-bold text-slate-800">
-            Model Feature Associations
-          </h4>
-        </div>
-        <div
-          className="flex items-center gap-1 text-xs text-slate-600 cursor-help"
-          title="relative influence on this estimate, in model log-odds units; not causes"
-          tabIndex={0}
-          aria-label="Factor information: relative influence on this estimate, in model log-odds units; not causes"
+        <h4 className="text-sm font-bold text-slate-800">
+          Why This Prediction?
+        </h4>
+        <button
+          type="button"
+          className="cursor-help text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded p-0.5"
+          title="Factors the model associated with this estimate; not proven causes of delay."
+          aria-label="Factors the model associated with this estimate; not proven causes of delay."
         >
-          <HelpCircle size={14} className="text-slate-500" aria-hidden="true" />
-          <span className="hidden sm:inline">Log-odds influence</span>
-        </div>
+          <HelpCircle size={15} aria-hidden="true" />
+        </button>
       </div>
 
-      <p className="text-xs text-slate-600">
-        Attributes associated with this estimate (correlational signals used during inference; not physical causes).
+      <p className="text-xs text-slate-500">
+        Factors the model associated with this estimate; not proven causes of delay.
       </p>
 
-      {/* Mini Horizontal Diverging Bars */}
+      {/* Top 3 Factor Items with Visual Mini Bars (No numbers) */}
       <div className="space-y-3 pt-1">
         {parsedFactors.map((f, idx) => {
           const ratio = Math.min(Math.abs(f.contribution) / maxAbs, 1.0);
-          const percentWidth = Math.max(ratio * 50, 4); // max 50% for either side of center line
-          const signedVal = f.contribution >= 0 ? `+${f.contribution.toFixed(2)}` : f.contribution.toFixed(2);
-          const directionText = f.isPositive ? 'raises the estimate' : 'lowers the estimate';
+          const percentWidth = Math.max(Math.round(ratio * 100), 12);
+          const directionText = f.isPositive ? 'Raised the delay estimate' : 'Lowered the delay estimate';
 
           return (
             <div
               key={f.key || idx}
-              className="p-3 rounded-lg bg-slate-50/80 border border-slate-200/80 space-y-2 hover:border-slate-300 transition-colors"
+              className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-2 hover:border-slate-300 transition-colors"
             >
-              {/* Factor Label & Direction */}
+              {/* Factor Label & Direction with icon */}
               <div className="flex items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="font-semibold text-slate-800 truncate" title={f.description}>
-                    {f.label}
-                  </span>
-                  {f.description && (
-                    <button
-                      type="button"
-                      title={f.description}
-                      className="cursor-help text-slate-500 hover:text-slate-700 flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded"
-                      aria-label={f.description}
-                    >
-                      <Info size={13} aria-hidden="true" />
-                    </button>
-                  )}
-                </div>
+                <span className="font-semibold text-slate-800 truncate" title={f.description || f.label}>
+                  {f.label}
+                </span>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  {f.isPositive ? (
+                    <TrendingUp size={14} className="text-rose-600" aria-hidden="true" />
+                  ) : (
+                    <TrendingDown size={14} className="text-emerald-600" aria-hidden="true" />
+                  )}
                   <span
                     className={`font-medium text-xs px-2 py-0.5 rounded-full ${
                       f.isPositive
@@ -165,62 +153,40 @@ export function FactorBars({ factors = [], className = '' }) {
                   >
                     {directionText}
                   </span>
-                  <span
-                    className="font-mono text-xs text-slate-700 font-semibold cursor-help"
-                    title={`Model contribution: ${signedVal} (log-odds space)`}
-                  >
-                    {signedVal}
-                  </span>
                 </div>
               </div>
 
-              {/* Diverging Bar Track */}
+              {/* Visual relative bar WITHOUT numbers */}
               <div
-                className="relative h-2 w-full bg-slate-200/70 rounded-full overflow-hidden"
+                className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden"
                 role="presentation"
               >
-                {/* Center marker line */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-400/60 -translate-x-1/2 z-10" />
-
-                {/* Left side (negative / lowers) */}
-                {!f.isPositive && (
-                  <div
-                    className="absolute top-0 bottom-0 right-1/2 bg-emerald-500 rounded-l-full transition-all duration-300"
-                    style={{ width: `${percentWidth}%` }}
-                    title={`Lowers estimate (${signedVal})`}
-                  />
-                )}
-
-                {/* Right side (positive / raises) */}
-                {f.isPositive && (
-                  <div
-                    className="absolute top-0 bottom-0 left-1/2 bg-rose-500 rounded-r-full transition-all duration-300"
-                    style={{ width: `${percentWidth}%` }}
-                    title={`Raises estimate (${signedVal})`}
-                  />
-                )}
+                <div
+                  className={`h-full rounded-full transition-all duration-300 ${
+                    f.isPositive ? 'bg-rose-500' : 'bg-emerald-500'
+                  }`}
+                  style={{ width: `${percentWidth}%` }}
+                />
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Screen Reader Only Table Alternative */}
+      {/* Screen Reader Only Accessible Alternative */}
       <table className="sr-only">
-        <caption>Model Feature Associations and Log-Odds Influence</caption>
+        <caption>Key factors associated with this prediction</caption>
         <thead>
           <tr>
-            <th scope="col">Feature</th>
+            <th scope="col">Factor</th>
             <th scope="col">Direction</th>
-            <th scope="col">Log-Odds Contribution</th>
           </tr>
         </thead>
         <tbody>
           {parsedFactors.map((f, idx) => (
             <tr key={`sr-${f.key || idx}`}>
               <td>{f.label}</td>
-              <td>{f.isPositive ? 'raises the estimate' : 'lowers the estimate'}</td>
-              <td>{f.contribution >= 0 ? `+${f.contribution.toFixed(2)}` : f.contribution.toFixed(2)}</td>
+              <td>{f.isPositive ? 'Raised the delay estimate' : 'Lowered the delay estimate'}</td>
             </tr>
           ))}
         </tbody>

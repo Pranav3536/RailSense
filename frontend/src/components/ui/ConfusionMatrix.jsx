@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types';
-import { formatNumber, formatPercent } from '../../utils/format';
+import { formatNumber, formatFractionAsPercent } from '../../utils/format';
 
 /**
  * ConfusionMatrix — Accessible 2x2 contingency table displaying classification counts and rates.
+ * Plain-English categories:
+ * - True Positive: Delays correctly identified
+ * - False Positive: False delay alerts
+ * - True Negative: On-time correctly identified
+ * - False Negative: Missed delays
  */
 export function ConfusionMatrix({ matrix, className = '' }) {
   if (!matrix) return null;
@@ -21,7 +26,7 @@ export function ConfusionMatrix({ matrix, className = '' }) {
         <table className="w-full text-xs border-collapse">
           <thead>
             <tr>
-              <th className="p-2 border border-slate-200 bg-slate-50 text-slate-500 font-medium text-left">
+              <th className="p-2.5 border border-slate-200 bg-slate-50 text-slate-500 font-medium text-left">
                 Predicted \ Actual
               </th>
               <th className="p-2.5 border border-slate-200 bg-slate-100 font-bold text-slate-800 text-center w-1/3">
@@ -43,9 +48,11 @@ export function ConfusionMatrix({ matrix, className = '' }) {
                   {formatNumber(tn)}
                 </div>
                 <div className="text-xs font-semibold text-emerald-700 mt-0.5">
-                  True Negative ({formatPercent(tnPct)})
+                  On-time correctly identified
                 </div>
-                <div className="text-xs text-slate-500">Correctly on-time</div>
+                <div className="text-xs text-slate-500 font-mono">
+                  {formatFractionAsPercent(tnPct, 1)}
+                </div>
               </td>
               {/* False Negative */}
               <td className="p-3 border border-slate-200 bg-rose-50/60 text-center">
@@ -53,9 +60,11 @@ export function ConfusionMatrix({ matrix, className = '' }) {
                   {formatNumber(fn)}
                 </div>
                 <div className="text-xs font-semibold text-rose-700 mt-0.5">
-                  False Negative ({formatPercent(fnPct)})
+                  Missed delays
                 </div>
-                <div className="text-xs text-slate-500">Missed late arrival</div>
+                <div className="text-xs text-slate-500 font-mono">
+                  {formatFractionAsPercent(fnPct, 1)}
+                </div>
               </td>
             </tr>
             <tr>
@@ -68,9 +77,11 @@ export function ConfusionMatrix({ matrix, className = '' }) {
                   {formatNumber(fp)}
                 </div>
                 <div className="text-xs font-semibold text-amber-700 mt-0.5">
-                  False Positive ({formatPercent(fpPct)})
+                  False delay alerts
                 </div>
-                <div className="text-xs text-slate-500">False delay alert</div>
+                <div className="text-xs text-slate-500 font-mono">
+                  {formatFractionAsPercent(fpPct, 1)}
+                </div>
               </td>
               {/* True Positive */}
               <td className="p-3 border border-slate-200 bg-emerald-50/60 text-center">
@@ -78,20 +89,25 @@ export function ConfusionMatrix({ matrix, className = '' }) {
                   {formatNumber(tp)}
                 </div>
                 <div className="text-xs font-semibold text-emerald-700 mt-0.5">
-                  True Positive ({formatPercent(tpPct)})
+                  Delays correctly identified
                 </div>
-                <div className="text-xs text-slate-500">Correct delay alert</div>
+                <div className="text-xs text-slate-500 font-mono">
+                  {formatFractionAsPercent(tpPct, 1)}
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div className="text-xs text-slate-500 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-        <span className="font-semibold text-slate-700">Total test evaluations:</span>{' '}
-        <span className="font-mono">{formatNumber(total)}</span> stops. At threshold 0.41, the model achieves{' '}
-        <span className="font-semibold text-slate-700">74.2% Precision</span> (TP / (TP + FP)) and{' '}
-        <span className="font-semibold text-slate-700">82.2% Recall</span> (TP / (TP + FN)).
+      <div className="text-xs text-slate-500 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200 flex items-center justify-between">
+        <span>
+          <strong className="text-slate-700">Total test evaluations:</strong>{' '}
+          <span className="font-mono">{formatNumber(total)}</span> stops
+        </span>
+        <span className="text-slate-500">
+          Held-out test split
+        </span>
       </div>
     </div>
   );

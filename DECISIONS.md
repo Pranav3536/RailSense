@@ -46,6 +46,8 @@ Each entry records a decision, its rationale, and trade-offs considered. New dec
 | D-36 | Boundary Days Temporal Marking (Left-Truncated & Right-Censored) | Phase 7 |
 | D-59 | Model Lab Polish, Measured Inference Latency, LaTeX Removal & Feature Ordering | Phase 11.5 |
 | D-60 | Sidebar Telemetry Status Upgrade, Prompt Leak Purge, and Delay Patterns Polish | Phase 11.6 |
+| D-61 | Smart Insights NLP Interface Polish & Sidebar Telemetry Refinement | Phase 11.7 |
+| D-62 | Model Lab & Delay Prediction UI Simplification Patch | Phase 11.6 |
 
 ---
 
@@ -993,4 +995,42 @@ Decommissioned obsolete development artifacts and transient test outputs across 
      - `insights_1920.png` (127 KB)
      - Total directory size: ~510 KB (< 1 MB).
 
+---
 
+## D-62 — Phase 11.6 Model Lab & Delay Prediction UI Simplification Patch
+
+**Date decided:** 2026-11-06 (Phase 11.6 UI Simplification Patch)
+
+**Decision:**
+1. **Model Lab Simplification (/model-lab):**
+   - Streamlined top KPI summary to strictly 3 metrics on held-out test data:
+     - Precision: 74.0% (at operational decision threshold 0.410)
+     - Recall: 82.0%
+     - F1 Score: 0.7782 (0.778)
+   - Excised latency card, AP, ROC-AUC, Brier score, ECE, and lift bars from the primary KPI dashboard to maintain focused enterprise clarity.
+   - Added Model Overview card summarizing model type (LightGBM), target definition (> 15 minutes arrival delay), and pre-departure timetable timing.
+   - Replaced multi-tab / split comparison table with a concise 3-column table: `Model Name | F1 Score | Status` (highlighting the deployed `LightGBM (Calibrated)` model, noting baselines as `Baseline` with F1 `N/A`, and labeling `En-Route LightGBM` as `Research (not available in the app)` with educational tooltip).
+   - Upgraded 2x2 Confusion Matrix to plain-English terminology: "Delays correctly identified" (78,276), "False delay alerts" (27,470), "On-time correctly identified" (71,067), and "Missed delays" (17,152), removing hardcoded precision/recall explanatory text.
+   - Refined Top 5 Features horizontal bar chart with plain-English factor labels (Train's past delay rate, Train's past average delay, Station's past delay rate, Journey stop number, Station's past average delay) and removed chart/table toggle.
+   - Preserved Performance by Train Category table with low support warnings (< 30 stops).
+
+2. **Delay Prediction Results Polish (/predict):**
+   - Replaced multi-metric gauge and decision boxes with a unified Prediction Result Card:
+     - Large risk band indicator (Low / Moderate / High)
+     - Calibrated delay probability percentage (formatFractionAsPercent)
+     - High-level classification: "Likely Delayed" / "Likely On Time"
+     - Clear threshold context: "The model flags a delay when the estimate is above 41%."
+     - Status chips for dataset window boundaries and cold-start fallback.
+   - Revamped "Why This Prediction?" factor section using FactorBars:
+     - Slices top 3 contributing factors strictly.
+     - Displays plain-English direction indicators ("Raised the delay estimate" / "Lowered the delay estimate") with up/down trend icons.
+     - Relative visual mini bars without raw log-odds or percentage numbers.
+     - Non-causal explanation note: "Factors the model associated with this estimate; not proven causes of delay."
+   - Retained Station Delay History showing historical delay rate, average delay, observed arrivals count, and scheduled arrival time.
+   - Streamlined assumptions and caveats into a single closed collapsible "About this prediction".
+
+3. **Accessibility & Design System Verification:**
+   - 100% WCAG 2.1 AA compliant (Axe-core automated audit passed with 0 critical/serious violations).
+   - Fixed text contrast on muted category identifiers.
+   - Verified zero horizontal overflow across 360, 768, 1280, 1366, 1920 viewports.
+   - Full automated test pass: 156 pytest, 104 vitest, 42 playwright E2E, 0 lint warnings, 9/9 serving artifacts verified.

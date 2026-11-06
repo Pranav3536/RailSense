@@ -103,25 +103,21 @@ test.describe('RailSense E2E — Functional Suite (Real API)', () => {
     await submitBtn.click();
 
     // Verify results panel renders
-    await expect(page.getByText(/Estimated Delay Risk|Delay Risk Estimation/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Prediction Result', exact: true })).toBeVisible({ timeout: 10000 });
     await expect(page.getByText(/Estimated (above|below) alert threshold/i)).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Model Feature Associations/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Why This Prediction\?|Model Feature Associations/i })).toBeVisible();
   });
 
-  test('Model Lab renders benchmark table, curves, and split toggle', async ({ page }) => {
+  test('Model Lab renders benchmark comparison, 3 KPI cards, and confusion matrix', async ({ page }) => {
     await page.goto('/model-lab');
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByText(/Multi-Model & Baseline Benchmark Comparison/i)).toBeVisible();
-    await expect(page.getByText(/Precision-Recall \(PR\) Curve/i)).toBeVisible();
-    await expect(page.getByText(/Calibration Reliability Diagram/i)).toBeVisible();
-
-    // Toggle validation split
-    const valToggle = page.getByRole('button', { name: /Validation Split/i });
-    if (await valToggle.isVisible()) {
-      await valToggle.click();
-      await expect(page.getByText(/Validation partition/i).first()).toBeVisible();
-    }
+    await expect(page.getByRole('heading', { name: 'Model Lab' })).toBeVisible();
+    await expect(page.getByText('Precision')).toBeVisible();
+    await expect(page.getByText('Recall')).toBeVisible();
+    await expect(page.getByText('Model Comparison')).toBeVisible();
+    await expect(page.getByText('Confusion Matrix')).toBeVisible();
+    await expect(page.getByText('Top 5 Features')).toBeVisible();
   });
 
   test('Delay Patterns hotspot controls update only after Apply click', async ({ page }) => {

@@ -101,7 +101,7 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       await expect(submitBtn).toBeEnabled();
       await submitBtn.click();
 
-      await expect(page.getByText(/Estimated Delay Risk/i)).toBeVisible({ timeout: 10000 });
+      await expect(page.getByRole('heading', { name: 'Prediction Result', exact: true })).toBeVisible({ timeout: 10000 });
       await page.waitForTimeout(500);
 
       await page.screenshot({
@@ -118,11 +118,11 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
     const submitBtn = page.getByRole('button', { name: /Run Prediction|Predict Delay/i });
     await expect(submitBtn).toBeEnabled();
     await submitBtn.click();
-    await expect(page.getByText(/Estimated Delay Risk/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Prediction Result', exact: true })).toBeVisible({ timeout: 10000 });
 
-    const collapsibleBtn = page.getByRole('button', { name: /Model assumptions and caveats/i });
+    const collapsibleBtn = page.getByRole('button', { name: /About this prediction|Model assumptions and caveats/i });
     await collapsibleBtn.click();
-    await expect(page.getByRole('heading', { name: /Calibration & Operational/i })).toBeVisible();
+    await expect(page.getByText(/Operational threshold|Calibration & Operational/i)).toBeVisible();
     await page.waitForTimeout(300);
 
     await page.screenshot({
@@ -149,7 +149,7 @@ test.describe('RailSense E2E — Responsive Viewports & Visual Capture', () => {
       await page.goto('/model-lab');
       await page.waitForLoadState('networkidle');
 
-      await expect(page.getByText('Feature Importance')).toBeVisible({ timeout: 10000 });
+      await expect(page.getByRole('heading', { name: 'Top 5 Features' })).toBeVisible({ timeout: 10000 });
 
       // Verify no horizontal overflow
       const isOverflowing = await page.evaluate(() => {

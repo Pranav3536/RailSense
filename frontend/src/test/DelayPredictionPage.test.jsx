@@ -14,12 +14,12 @@ vi.mock('../api/endpoints', () => ({
   predictDelay: vi.fn(),
 }));
 
-describe('DelayPredictionPage (Tab 3)', () => {
+describe('DelayPredictionPage (Phase 11.6 Simplified)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders form inputs and handles prediction submit with result display', async () => {
+  it('renders form inputs and handles prediction submit with simplified result display', async () => {
     endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
     endpoints.predictDelay.mockResolvedValue(predictNormalFixture);
 
@@ -39,8 +39,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
       expect(screen.getByText(/Choose arrival stop/i)).toBeInTheDocument();
     });
 
-    // Check stop selector has options
-    // Submit prediction using new "Run Prediction" button text
+    // Submit prediction using "Run Prediction" button text
     const submitBtn = screen.getByRole('button', { name: /Run Prediction/i });
     fireEvent.click(submitBtn);
 
@@ -58,26 +57,34 @@ describe('DelayPredictionPage (Tab 3)', () => {
       expect(screen.getByText('Prediction Result & Risk Profile')).toBeInTheDocument();
     });
 
-    // Check result card title and plain words decision
-    expect(screen.getByText('Estimated Delay Risk')).toBeInTheDocument();
+    // Check result card title and classification
+    expect(screen.getByText('Prediction Result')).toBeInTheDocument();
+    expect(screen.getByText('Likely On Time')).toBeInTheDocument();
     expect(screen.getByText(/Estimated below alert threshold/i)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Model Feature Associations/i })).toBeInTheDocument();
+    expect(screen.getByText('15.8%')).toBeInTheDocument();
+    expect(screen.getByText(/Delayed means arriving more than 15 minutes after the scheduled time/i)).toBeInTheDocument();
+
+    // Check "Why This Prediction?" section
+    expect(screen.getByRole('heading', { name: /Why This Prediction\?/i })).toBeInTheDocument();
+    expect(screen.getByText(/Factors the model associated with this estimate; not proven causes of delay/i)).toBeInTheDocument();
 
     // Check compact status chip for in-window date
     expect(screen.getByText('Date inside training window')).toBeInTheDocument();
 
-    // Check collapsible "Model assumptions and caveats" is present and closed by default
-    const caveatsBtn = screen.getByRole('button', { name: /Model assumptions and caveats/i });
-    expect(caveatsBtn).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByText(/What the Model Predicts/i)).not.toBeInTheDocument();
+    // Check Station Delay History card
+    expect(screen.getByText('Station Delay History')).toBeInTheDocument();
+    expect(screen.getByText(/Past observed rate at this stop; separate from the model's estimate above/i)).toBeInTheDocument();
+
+    // Check collapsible "About this prediction" is present and closed by default
+    const aboutBtn = screen.getByRole('button', { name: /About this prediction/i });
+    expect(aboutBtn).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText(/Pre-departure forecast:/i)).not.toBeInTheDocument();
 
     // Open collapsible
-    fireEvent.click(caveatsBtn);
-    expect(caveatsBtn).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText(/What the Model Predicts/i)).toBeInTheDocument();
-
-    // Check model version
-    expect(screen.getByText('1.0.0')).toBeInTheDocument();
+    fireEvent.click(aboutBtn);
+    expect(aboutBtn).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText(/Pre-departure forecast:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Information boundaries:/i)).toBeInTheDocument();
   });
 
   it('displays prospective date notice chip when date is outside dataset window', async () => {
@@ -323,32 +330,13 @@ describe('DelayPredictionPage (Tab 3)', () => {
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText('Historical Observed Context')).toBeInTheDocument();
+      expect(screen.getByText('Station Delay History')).toBeInTheDocument();
     });
 
     // Must show 88.2% and NEVER 8,824.0%
     expect(screen.getByText('88.2%')).toBeInTheDocument();
     expect(screen.queryByText(/8,824/)).not.toBeInTheDocument();
     expect(screen.getByText('17 observed runs')).toBeInTheDocument();
-  });
-
-  it('verifies form footer contains no internal rate-limit or threshold strings', async () => {
-    endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
-
-    render(
-      <MemoryRouter initialEntries={['/predict?train=12951&seq=2&date=2026-10-15']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <Routes>
-          <Route path="predict" element={<DelayPredictionPage />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(endpoints.getTrainDetail).toHaveBeenCalledWith('12951');
-    });
-
-    expect(screen.queryByText(/Rate limited to 120 requests\/minute/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Model threshold: 0\.410/i)).not.toBeInTheDocument();
   });
 
   it('verifies date picker helper text displays observed snapshot range dynamically', async () => {
@@ -365,7 +353,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
     expect(screen.getByText(/Observed snapshot: 7 Oct 2026 – 25 Oct 2026\./i)).toBeInTheDocument();
   });
 
-  it('verifies factor bars display raw log-odds and contain zero percent signs', async () => {
+  it('verifies factor bars display plain directions and contain zero numbers or percentages', async () => {
     endpoints.getTrainDetail.mockResolvedValue(trainDetailFixture);
     endpoints.predictDelay.mockResolvedValue({
       ...predictNormalFixture,
@@ -398,14 +386,15 @@ describe('DelayPredictionPage (Tab 3)', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Model Feature Associations/i })).toBeInTheDocument();
-      expect(screen.getAllByText(/lowers the estimate/i).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/raises the estimate/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByRole('heading', { name: /Why This Prediction\?/i })).toBeInTheDocument();
+      expect(screen.getAllByText(/Lowered the delay estimate/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/Raised the delay estimate/i).length).toBeGreaterThanOrEqual(1);
     });
 
-    // Verify factor container does not print percent signs on factor items
-    const factorSection = screen.getByRole('heading', { name: /Model Feature Associations/i }).closest('div');
+    // Check that factor section contains no numbers like +0.42 or -0.38
+    const factorSection = screen.getByRole('heading', { name: /Why This Prediction\?/i }).closest('.space-y-3');
     expect(factorSection).not.toBeNull();
+    expect(factorSection.textContent).not.toMatch(/[+-]\d+\.\d+/);
   });
 
   it('verifies that no rendered text contains an unintended percentage above 100 or 4-digit percentage', async () => {
@@ -427,7 +416,7 @@ describe('DelayPredictionPage (Tab 3)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Run Prediction/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Estimated Delay Risk')).toBeInTheDocument();
+      expect(screen.getByText('Prediction Result')).toBeInTheDocument();
     });
 
     // Regex checks for bug pattern like 8,824.0% or 5702.0%

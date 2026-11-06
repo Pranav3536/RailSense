@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   SlidersHorizontal,
   Play,
   Calendar,
-  Clock,
   MapPin,
   AlertCircle,
   HelpCircle,
   ChevronDown,
   ChevronUp,
-  ArrowRight,
   Info,
   AlertTriangle,
 } from 'lucide-react';
@@ -25,19 +23,18 @@ import {
   Badge,
   Spinner,
   TrainPicker,
-  ProbabilityGauge,
   RiskBadge,
   FactorBars,
   CategoryLabel,
   SupportBadge,
 } from '../components/ui';
 import { getTrainDetail, predictDelay } from '../api/endpoints';
-import { formatPercentValue, formatMinutes, formatDate, pluralize } from '../utils/format';
+import { formatPercentValue, formatFractionAsPercent, formatMinutes, formatDate, pluralize } from '../utils/format';
 import { LOW_SUPPORT_THRESHOLD, DATASET_WINDOW } from '../config/constants';
 
 /**
- * DelayPredictionPage — Tab 3 ("Delay Prediction Engine")
- * Interactive schedule-time pre-departure delay probability forecasting.
+ * DelayPredictionPage — Tab 3 ("Delay Prediction")
+ * Interactive schedule-time pre-departure delay forecasting.
  */
 export function DelayPredictionPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,8 +61,8 @@ export function DelayPredictionPage() {
   // Rate Limiting (429) Cooldown State
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
-  // Collapsible for Model Assumptions & Caveats (Task 3b: closed by default)
-  const [isCaveatsOpen, setIsCaveatsOpen] = useState(false);
+  // Collapsible for About This Prediction (closed by default)
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   // Handle Rate Limit Countdown
   useEffect(() => {
@@ -177,6 +174,10 @@ export function DelayPredictionPage() {
 
   const isColdStart = Boolean(prediction?.historical_context?.is_cold_start);
 
+  const thresholdPercent = prediction?.threshold_used
+    ? Math.round(prediction.threshold_used * 100)
+    : 41;
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -189,7 +190,7 @@ export function DelayPredictionPage() {
         }
       />
 
-      {/* 1. Interactive Prediction Form (Task 2: SlidersHorizontal icon, "Prediction Inputs", Task 5 & 6) */}
+      {/* 1. Interactive Prediction Form */}
       <Card className="border-slate-200 bg-white">
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -280,7 +281,7 @@ export function DelayPredictionPage() {
                 </p>
               </div>
 
-              {/* Journey Date Input (Task 6: Dynamic snapshot text) */}
+              {/* Journey Date Input */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="journey-date-input" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -319,7 +320,7 @@ export function DelayPredictionPage() {
               </div>
             )}
 
-            {/* Actions Bar (Task 5: removed rate-limit text; Task 2: "Run Prediction") */}
+            {/* Actions Bar */}
             <div className="flex items-center justify-end pt-2 border-t border-slate-100">
               <button
                 type="submit"
@@ -356,37 +357,58 @@ export function DelayPredictionPage() {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* 2a. Primary Gauge & Estimated Delay Risk Card (Tasks 2 & 3) */}
+              {/* 2a. Primary Prediction Result Card */}
               <Card className="lg:col-span-2 border-slate-200 bg-white">
                 <CardHeader>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-primary-600" aria-hidden="true" />
-                      <CardTitle>Estimated Delay Risk</CardTitle>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold text-slate-600">
-                        {prediction.predicted_delayed
-                          ? `Estimated above alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(3)})`
-                          : `Estimated below alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(3)})`}
-                      </span>
-                      <RiskBadge riskBand={prediction.risk_band} size="md" />
-                    </div>
+                    <CardTitle>Prediction Result</CardTitle>
+                    <RiskBadge riskBand={prediction.risk_band} size="md" />
                   </div>
                   <CardDescription>
-                    Calibrated probability that this train arrives more than 15 minutes late at this stop.
+                    Calibrated delay probability and risk classification for this scheduled arrival.
                   </CardDescription>
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                  {/* Gauge */}
-                  <ProbabilityGauge
-                    probability={prediction.probability_delayed}
-                    rawProbability={prediction.probability_raw || prediction.raw_probability}
-                    threshold={prediction.threshold_used || 0.41}
-                  />
+                  {/* Clean Result Presentation */}
+                  <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                      <div className="space-y-1">
+                        <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          Classification
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={`text-2xl font-bold ${
+                              prediction.predicted_delayed ? 'text-rose-700' : 'text-emerald-700'
+                            }`}
+                          >
+                            {prediction.predicted_delayed ? 'Likely Delayed' : 'Likely On Time'}
+                          </span>
+                          <span className="text-xs font-semibold text-slate-500">
+                            {prediction.predicted_delayed
+                              ? `Estimated above alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(2)})`
+                              : `Estimated below alert threshold (${(prediction.threshold_used ?? 0.41).toFixed(2)})`}
+                          </span>
+                        </div>
+                      </div>
 
-                  {/* Task 3a: Compact Status Chip Row */}
+                      <div className="text-left sm:text-right">
+                        <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          Estimated Delay Probability
+                        </div>
+                        <div className="text-3xl font-bold font-mono text-slate-900">
+                          {formatFractionAsPercent(prediction.probability_delayed, 1)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-200/80">
+                      Delayed means arriving more than 15 minutes after the scheduled time. The model flags a delay when the estimate is above {thresholdPercent}%.
+                    </p>
+                  </div>
+
+                  {/* Compact Status Chips Row */}
                   {(isInWindow || isOutOfWindow || isColdStart) && (
                     <div
                       className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100"
@@ -431,18 +453,18 @@ export function DelayPredictionPage() {
                     </div>
                   )}
 
-                  {/* Associated Factors (Task 4: horizontal diverging bars in log-odds space) */}
+                  {/* Why This Prediction? (Top 3 factors with visual relative bars, no numbers) */}
                   <FactorBars factors={prediction.contributing_factors} />
                 </CardContent>
               </Card>
 
-              {/* 2b. Context & Empirical Baseline Card (Task 1: formatPercentValue fix) */}
+              {/* 2b. Station Delay History */}
               <div className="space-y-6">
                 <Card className="border-slate-200 bg-white">
                   <CardHeader>
                     <div className="flex items-center gap-2">
                       <MapPin size={18} className="text-slate-600" aria-hidden="true" />
-                      <CardTitle>Historical Observed Context</CardTitle>
+                      <CardTitle>Station Delay History</CardTitle>
                     </div>
                     <CardDescription>
                       Empirical baseline metrics observed on this exact stop across recorded runs.
@@ -453,7 +475,7 @@ export function DelayPredictionPage() {
                     {currentStop ? (
                       <>
                         <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-                          <div className="text-xs text-slate-500 font-medium">Observed Delayed Rate</div>
+                          <div className="text-xs text-slate-500 font-medium">Historical Delay Rate</div>
                           <div className="text-2xl font-bold font-mono text-slate-900">
                             {currentStop.observed_delayed_rate !== null && currentStop.observed_delayed_rate !== undefined
                               ? formatPercentValue(currentStop.observed_delayed_rate, 1)
@@ -472,7 +494,7 @@ export function DelayPredictionPage() {
 
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                            <span className="text-slate-500 block">Mean Observed Delay</span>
+                            <span className="text-slate-500 block">Average Delay</span>
                             <span className="font-mono font-bold text-slate-800 text-sm">
                               {currentStop.observed_mean_delay_min !== null && currentStop.observed_mean_delay_min !== undefined
                                 ? formatMinutes(currentStop.observed_mean_delay_min)
@@ -488,7 +510,7 @@ export function DelayPredictionPage() {
                         </div>
 
                         <p className="text-xs text-slate-500 leading-relaxed italic">
-                          * Note: Observed rate represents historical empirical proportion in the 19-day dataset. It is distinct from the model&apos;s forward-looking probability prediction.
+                          Past observed rate at this stop; separate from the model&apos;s estimate above.
                         </p>
                       </>
                     ) : (
@@ -498,104 +520,49 @@ export function DelayPredictionPage() {
                     )}
                   </CardContent>
                 </Card>
-
-                {/* Model Metadata Snapshot */}
-                <Card className="border-slate-200 bg-slate-50/70">
-                  <CardContent className="pt-4 pb-4 space-y-2 text-xs text-slate-600">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-700">Model Version:</span>
-                      <span className="font-mono font-medium">{prediction.model_version || '1.0.0'}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-700">Dataset Baseline As Of:</span>
-                      <span className="font-mono font-medium">{prediction.data_as_of || '2026-10-25'}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-700">Calibration Method:</span>
-                      <span>Isotonic Regression</span>
-                    </div>
-                    <div className="pt-2 border-t border-slate-200/80">
-                      <Link
-                        to="/model-lab"
-                        className="inline-flex items-center gap-1.5 text-primary-700 hover:text-primary-900 font-semibold transition-colors"
-                      >
-                        <span>Inspect Evaluation & Curves in Model Lab</span>
-                        <ArrowRight size={13} />
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </div>
 
-            {/* Task 3b: ONE collapsed collapsible "Model assumptions and caveats" (closed by default, aria-expanded, keyboard accessible) */}
+            {/* 3. About This Prediction (ONE closed collapsible by default) */}
             <Card className="border-slate-200 bg-white">
               <button
                 type="button"
-                onClick={() => setIsCaveatsOpen(!isCaveatsOpen)}
+                onClick={() => setIsAboutOpen(!isAboutOpen)}
                 className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
-                aria-expanded={isCaveatsOpen}
-                aria-controls="model-assumptions-content"
+                aria-expanded={isAboutOpen}
+                aria-controls="about-prediction-content"
               >
                 <div className="flex items-center gap-2">
                   <HelpCircle size={18} className="text-primary-600" aria-hidden="true" />
                   <span className="text-sm font-bold text-slate-900">
-                    Model assumptions and caveats
+                    About this prediction
                   </span>
                 </div>
-                {isCaveatsOpen ? <ChevronUp size={18} className="text-slate-500" /> : <ChevronDown size={18} className="text-slate-500" />}
+                {isAboutOpen ? <ChevronUp size={18} className="text-slate-500" /> : <ChevronDown size={18} className="text-slate-500" />}
               </button>
 
-              {isCaveatsOpen && (
-                <CardContent id="model-assumptions-content" className="pt-0 pb-5 text-xs text-slate-600 space-y-3.5 leading-relaxed border-t border-slate-100">
-                  <div>
-                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">What the Model Predicts</h5>
-                    <p>
-                      The model forecasts pre-departure arrival delay exceeding 15 minutes at scheduled intermediate or terminus halts, evaluated strictly on label-eligible service stops.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Timetable Inputs &amp; Information Boundaries</h5>
-                    <p>
-                      Inference relies strictly on pre-departure schedule attributes (train service classification, route sequence, arrival time of day) and rolling 7-day empirical priors. It does not observe dynamic real-time physical track events, signal disruptions, weather, or tactical dispatch interventions.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Observation Window &amp; Demonstration Context</h5>
-                    <p>
-                      The baseline model was fitted on observations spanning {formatDate(DATASET_WINDOW.startDate)} to {formatDate(DATASET_WINDOW.endDate)} (data snapshot baseline as of {prediction.data_as_of || '2026-10-25'}). When inspecting journey dates within this snapshot, results illustrate in-sample statistical patterns rather than prospective checks.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Calibration &amp; Operational Decision Threshold</h5>
-                    <p>
-                      Raw ensemble tree outputs are calibrated via Isotonic Regression on held-out validation data. The operational decision threshold is set at {(prediction.threshold_used ?? 0.41).toFixed(3)} to balance precision and recall on late arrivals.
-                    </p>
-                  </div>
-
-                  {prediction.caveats && prediction.caveats.length > 0 && (
-                    <div>
-                      <h5 className="font-bold text-slate-800 uppercase tracking-wider text-xs mb-1">Operating Caveats</h5>
-                      <ul className="list-disc list-inside space-y-1 text-slate-600">
-                        {prediction.caveats.map((c, idx) => (
-                          <li key={idx}>{c}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="pt-2 border-t border-slate-100">
-                    <Link
-                      to="/model-lab"
-                      className="inline-flex items-center gap-1.5 text-primary-700 hover:text-primary-900 font-semibold"
-                    >
-                      <span>Explore validation metrics and calibration curves in Model Lab</span>
-                      <ArrowRight size={13} />
-                    </Link>
-                  </div>
+              {isAboutOpen && (
+                <CardContent id="about-prediction-content" className="pt-0 pb-5 text-xs text-slate-600 space-y-3 leading-relaxed border-t border-slate-100">
+                  <ul className="list-disc list-inside space-y-2 pt-3">
+                    <li>
+                      <strong className="text-slate-800">Delay definition:</strong> A train is classified as delayed when its arrival delay exceeds 15 minutes at the scheduled stop.
+                    </li>
+                    <li>
+                      <strong className="text-slate-800">Pre-departure forecast:</strong> Estimates are computed before departure using scheduled timetable attributes, route sequence, and rolling 7-day historical delay patterns.
+                    </li>
+                    <li>
+                      <strong className="text-slate-800">Information boundaries:</strong> The model does not observe live en-route track events, signal disruptions, weather, or tactical dispatch interventions.
+                    </li>
+                    <li>
+                      <strong className="text-slate-800">Operational threshold:</strong> The decision threshold is set at {(prediction.threshold_used ?? 0.41).toFixed(2)} ({thresholdPercent}%) to optimize the balance between precision and recall on late arrivals.
+                    </li>
+                    <li>
+                      <strong className="text-slate-800">Data snapshot:</strong> Model parameters and historical priors were computed from observations between {formatDate(DATASET_WINDOW.startDate)} and {formatDate(DATASET_WINDOW.endDate)} (data as of {prediction.data_as_of || '2026-10-25'}).
+                    </li>
+                    {prediction.caveats && prediction.caveats.map((c, idx) => (
+                      <li key={idx} className="text-slate-600">{c}</li>
+                    ))}
+                  </ul>
                 </CardContent>
               )}
             </Card>

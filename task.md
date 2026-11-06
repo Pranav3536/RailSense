@@ -939,3 +939,34 @@ In Phase 10, the session will:
   - Serving Artifacts: **9/9 SHA-256 match** (`verify_artifacts.py`)
   - Data-Consistency QA: **211/211 checks PASSED** (`qa_consistency.py`)
 
+---
+
+## Phase 11.6 — Model Lab & Delay Prediction UI Simplification Patch (Completed 2026-11-06)
+
+### Objective
+Transform Model Lab and Delay Prediction results into a clean, intuitive, professional Data Science product suitable for confident interview walkthroughs, strictly preserving truthfulness and underlying serving models without modifications.
+
+### Completed Work
+1. **Model Lab (/model-lab):**
+   - Kept exactly 3 KPI cards: Precision (74.0%), Recall (82.0%), and F1 Score (0.7782).
+   - Model Overview card: LightGBM, arrival delay > 15 min, pre-departure inference.
+   - 3-column benchmark comparison table: Model Name, F1 Score, Status.
+   - 2x2 confusion matrix with 4 plain-English labels (delays correctly identified, false delay alerts, on-time correctly identified, missed delays).
+   - Top 5 features horizontal bar chart with plain-English labels.
+   - Performance by train category table with low-support flags.
+   - Small footer line with held-out test size (193,965 stops) and observation period.
+   - Excised all complex diagrams, curves, latency benchmarks, and LaTeX tokens.
+
+2. **Delay Prediction (/predict):**
+   - Clean Prediction Result Card: Risk band, calibrated delay probability, Likely Delayed / On Time classification, threshold explanation sentence, and compact status chips.
+   - "Why This Prediction?" factor attribution: top 3 factors with plain labels, direction phrases, and relative bars without numbers.
+   - Station Delay History: 4 items (historical delay rate, average delay, observed arrivals, scheduled time) with low support flag (< 30).
+   - "About this prediction": single closed collapsible with clean bullet points.
+
+3. **Verification Results:**
+   - Pytest: 156 passed, 4 skipped in ~60s
+   - Vitest: 104 passed across 15 test files in ~38s
+   - Playwright E2E: 42 passed, 4 skipped in ~2.3m
+   - ESLint: 0 errors, 0 warnings
+   - Build: OK (Vite production build)
+   - Serving Artifacts: 9/9 SHA-256 match

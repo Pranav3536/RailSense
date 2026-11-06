@@ -90,18 +90,18 @@ Unlike toy ML tutorials using random train/test splits that leak future temporal
    - Route timetable keyed strictly by canonical sequence number (`seq`), handling circular/loop routes where station codes repeat.
    - Stop-level delay accumulation profile and per-date run history.
 
-3. **Tab 3 — Delay Prediction ("ML Inference Engine"):**
-   - Schedule-time pre-departure arrival delay probability forecasting for arbitrary train, destination stop, and journey date.
-   - Calibrated probability gauge with visual operational decision threshold marker (`0.410`).
-   - Educational risk band classification (`Low`, `Medium`, `High`) and top SHAP feature associations.
-   - Prospective date generalization alerts and cold-start fallback indicators.
+3. **Tab 3 — Delay Prediction ("Delay Prediction Engine"):**
+   - Schedule-time pre-departure arrival delay probability forecasting for any train, destination stop, and journey date.
+   - Clean prediction result card showing calibrated delay probability, risk band, classification ("Likely Delayed" / "Likely On Time"), and operational threshold context.
+   - "Why This Prediction?" attribution highlighting top predictive factors with directional indicators without fabricated numbers.
+   - Empirical stop-level delay history and prospective / cold-start fallback indicators.
 
 4. **Tab 4 — Model Lab ("Model Evaluation & Transparency"):**
-   - Transparent multi-model benchmark table comparing Majority, Category Prior, Train History Prior, Raw LightGBM, and Calibrated LightGBM across Validation and Test splits.
-   - Interactive Precision-Recall (PR) Curve, Calibration Reliability Diagram, and ROC Curve.
-   - Test partition confusion matrix at the operational threshold (`78,276` True Positives).
-   - Top 10 feature importance gain ranking and Banned Features protocol transparency.
-   - Formulation 2 (En-Route Dynamic Telemetry) research benchmark card.
+   - Core performance metrics on held-out test set: Precision (74.0%), Recall (82.0%), and F1 Score (0.7782).
+   - Multi-model comparison table benchmarking the deployed LightGBM model against heuristic baselines and research paradigms.
+   - 2x2 confusion matrix detailing delays correctly identified, false delay alerts, on-time arrivals, and missed delays across 193,965 test stops.
+   - Top 5 feature importance attribution rankings with plain-English descriptions.
+   - Performance breakdown across major train service classifications.
 
 5. **Tab 5 — Delay Patterns ("Historical Analytics"):**
    - Diurnal hour-of-day progression highlighting late-night delay accumulation.
@@ -167,10 +167,10 @@ npm run dev
 The RailSense repository includes comprehensive automated test suites covering backend units, API contracts, frontend components, and browser accessibility:
 
 ```bash
-# 1. Backend Pytest Suite (154 passed, 4 skipped in ~64s)
+# 1. Backend Pytest Suite (156 passed, 4 skipped in ~60s)
 pytest backend/tests/ -v
 
-# 2. Frontend Vitest Unit Suite (73 passed in ~38s)
+# 2. Frontend Vitest Unit Suite (104 passed in 15 test files)
 npm --prefix frontend test -- --run
 
 # 3. Frontend ESLint Check (0 warnings, 0 errors)
@@ -179,7 +179,7 @@ npm --prefix frontend run lint
 # 4. Production Frontend Build Check
 npm --prefix frontend run build
 
-# 5. Playwright Browser E2E Suite (38 passed, 4 live skipped in ~2.0m)
+# 5. Playwright Browser E2E Suite (42 passed, 4 live skipped in ~2.3m)
 npm --prefix frontend run test:e2e
 
 # 6. Post-Deployment Verification Tooling (when live URLs are provided)
