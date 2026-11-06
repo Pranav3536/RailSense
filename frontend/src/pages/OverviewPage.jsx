@@ -210,7 +210,7 @@ export function OverviewPage() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Railway at a Glance"
+          title="Railway Network Overview"
           subtitle="Explore railway network coverage, arrival delays and historical operating patterns."
         />
 
@@ -232,7 +232,7 @@ export function OverviewPage() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Railway at a Glance"
+          title="Railway Network Overview"
           subtitle="Explore railway network coverage, arrival delays and historical operating patterns."
         />
 
@@ -286,7 +286,7 @@ export function OverviewPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <PageHeader
-        title="Railway at a Glance"
+        title="Railway Network Overview"
         subtitle="An overview of railway network coverage, arrival delays, service categories and daily travel patterns."
         action={
           <button
