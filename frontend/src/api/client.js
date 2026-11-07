@@ -43,7 +43,7 @@ function onFetchEnd() {
 }
 
 const DEFAULT_BASE_URL = 'http://localhost:5000/api';
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 60000;
 
 // In-memory cache: URL -> { data, expiresAt }
 const cacheStore = new Map();
@@ -230,10 +230,10 @@ export async function apiRequest(endpoint, options = {}) {
 
       // Browser network failure / server offline
       throw new ApiClientError(
-        'Unable to connect to RailSense API server. Please verify backend is running on port 5000.',
-        0,
-        'NETWORK_ERROR'
-      );
+              'Unable to connect to RailSense API server. The backend may be waking up, please wait a few seconds and try again.',
+              0,
+              'NETWORK_ERROR'
+            );
     } finally {
       onFetchEnd();
       if (method === 'GET') {
