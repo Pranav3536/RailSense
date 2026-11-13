@@ -1,0 +1,573 @@
+{
+  "dist": {
+    "total_eligible": 1773068,
+    "neg_pct": 8.561431372062437,
+    "zero_pct": 2.8762574249831365,
+    "pos_pct": 88.56231120295442,
+    "delayed_15_pct": 49.91111452014248,
+    "mean_delay": 38.10323715209961,
+    "median_delay": 15.0,
+    "p25": 5.0,
+    "p75": 40.0,
+    "p90": 96.0,
+    "p99": 372.0
+  },
+  "time": {
+    "peak_hour": 2,
+    "lowest_hour": 5,
+    "peak_hour_rate": 62.21355728854229,
+    "lowest_hour_rate": 41.775435530555406,
+    "dow_stats": [
+      {
+        "dow": "Monday",
+        "delayed_rate": 0.49607809640024403,
+        "mean_delay": 38.42677307128906,
+        "count": 204875
+      },
+      {
+        "dow": "Tuesday",
+        "delayed_rate": 0.4840695273343748,
+        "mean_delay": 36.270198822021484,
+        "count": 202913
+      },
+      {
+        "dow": "Wednesday",
+        "delayed_rate": 0.4961576131997288,
+        "mean_delay": 37.146671295166016,
+        "count": 212368
+      },
+      {
+        "dow": "Thursday",
+        "delayed_rate": 0.4964469577835404,
+        "mean_delay": 37.29502868652344,
+        "count": 288063
+      },
+      {
+        "dow": "Friday",
+        "delayed_rate": 0.5097990333924998,
+        "mean_delay": 38.600101470947266,
+        "count": 300846
+      },
+      {
+        "dow": "Saturday",
+        "delayed_rate": 0.510261206583321,
+        "mean_delay": 39.45164108276367,
+        "count": 297236
+      },
+      {
+        "dow": "Sunday",
+        "delayed_rate": 0.4936330205760083,
+        "mean_delay": 38.82052993774414,
+        "count": 266767
+      }
+    ]
+  },
+  "cat": [
+    {
+      "category": "SUB",
+      "count": 313903,
+      "delayed_rate": 0.17065462897774153,
+      "mean_delay": 9.566917419433594,
+      "median_delay": 6.0
+    },
+    {
+      "category": "VNDS",
+      "count": 382,
+      "delayed_rate": 0.2486910994764398,
+      "mean_delay": 7.759162425994873,
+      "median_delay": 9.0
+    },
+    {
+      "category": "SHT",
+      "count": 4644,
+      "delayed_rate": 0.2801464254952627,
+      "mean_delay": 13.562015533447266,
+      "median_delay": 8.0
+    },
+    {
+      "category": "VNDB",
+      "count": 16940,
+      "delayed_rate": 0.2882526564344746,
+      "mean_delay": 11.641735076904297,
+      "median_delay": 8.0
+    },
+    {
+      "category": "TEJ",
+      "count": 558,
+      "delayed_rate": 0.33691756272401435,
+      "mean_delay": 40.27239990234375,
+      "median_delay": 10.0
+    },
+    {
+      "category": "VNDM",
+      "count": 605,
+      "delayed_rate": 0.3487603305785124,
+      "mean_delay": 12.826446533203125,
+      "median_delay": 11.0
+    },
+    {
+      "category": "JSH",
+      "count": 9389,
+      "delayed_rate": 0.4511662583874747,
+      "mean_delay": 23.94802474975586,
+      "median_delay": 13.0
+    },
+    {
+      "category": "RAJ",
+      "count": 5489,
+      "delayed_rate": 0.46128620878119875,
+      "mean_delay": 33.806522369384766,
+      "median_delay": 14.0
+    },
+    {
+      "category": "DMU",
+      "count": 80397,
+      "delayed_rate": 0.5058273318656169,
+      "mean_delay": 31.061519622802734,
+      "median_delay": 16.0
+    },
+    {
+      "category": "DRNT",
+      "count": 1730,
+      "delayed_rate": 0.5317919075144508,
+      "mean_delay": 89.95954132080078,
+      "median_delay": 17.0
+    },
+    {
+      "category": "PAS",
+      "count": 235974,
+      "delayed_rate": 0.5521921906650733,
+      "mean_delay": 38.59150314331055,
+      "median_delay": 19.0
+    },
+    {
+      "category": "MEX",
+      "count": 571895,
+      "delayed_rate": 0.5702480350413974,
+      "mean_delay": 39.408016204833984,
+      "median_delay": 20.0
+    },
+    {
+      "category": "GBR",
+      "count": 4234,
+      "delayed_rate": 0.5722720831365139,
+      "mean_delay": 55.51346206665039,
+      "median_delay": 21.0
+    },
+    {
+      "category": "SUF",
+      "count": 217500,
+      "delayed_rate": 0.5741333333333334,
+      "mean_delay": 53.09342575073242,
+      "median_delay": 20.0
+    },
+    {
+      "category": "MEMU",
+      "count": 249068,
+      "delayed_rate": 0.5935045850932276,
+      "mean_delay": 42.182823181152344,
+      "median_delay": 22.0
+    },
+    {
+      "category": "TRST",
+      "count": 40,
+      "delayed_rate": 0.6,
+      "mean_delay": 60.07500076293945,
+      "median_delay": 35.0
+    },
+    {
+      "category": "AMTB",
+      "count": 7055,
+      "delayed_rate": 0.6092133238837704,
+      "mean_delay": 60.67413330078125,
+      "median_delay": 25.0
+    },
+    {
+      "category": "PEXP",
+      "count": 324,
+      "delayed_rate": 0.7283950617283951,
+      "mean_delay": 226.04937744140625,
+      "median_delay": 147.5
+    },
+    {
+      "category": "EMU",
+      "count": 11129,
+      "delayed_rate": 0.7579297331296613,
+      "mean_delay": 56.3704719543457,
+      "median_delay": 40.0
+    },
+    {
+      "category": "TOD",
+      "count": 41812,
+      "delayed_rate": 0.7609777097483976,
+      "mean_delay": 146.74554443359375,
+      "median_delay": 73.0
+    }
+  ],
+  "seq": {
+    "seq_2_rate": 24.328478964401295,
+    "seq_20_rate": 54.991894251153504,
+    "seq_50_rate": 70.82352941176471
+  },
+  "stn": {
+    "top_hotspot": {
+      "station_code": "RJN",
+      "count": 607,
+      "delayed_rate": 0.9686985172981878,
+      "mean_delay": 166.2504119873047
+    },
+    "top_punctual": {
+      "station_code": "STMM",
+      "count": 827,
+      "delayed_rate": 0.0,
+      "mean_delay": -2.319226026535034
+    },
+    "hotspots_list": [
+      {
+        "station_code": "RJN",
+        "count": 607,
+        "delayed_rate": 0.9686985172981878,
+        "mean_delay": 166.2504119873047
+      },
+      {
+        "station_code": "CPH",
+        "count": 650,
+        "delayed_rate": 0.9661538461538461,
+        "mean_delay": 158.24461364746094
+      },
+      {
+        "station_code": "RIG",
+        "count": 545,
+        "delayed_rate": 0.9522935779816514,
+        "mean_delay": 211.86972045898438
+      },
+      {
+        "station_code": "PC",
+        "count": 501,
+        "delayed_rate": 0.9321357285429142,
+        "mean_delay": 127.71057891845703
+      },
+      {
+        "station_code": "GAR",
+        "count": 562,
+        "delayed_rate": 0.9163701067615658,
+        "mean_delay": 93.42170715332031
+      },
+      {
+        "station_code": "SRID",
+        "count": 508,
+        "delayed_rate": 0.9153543307086615,
+        "mean_delay": 94.67913055419922
+      },
+      {
+        "station_code": "NU",
+        "count": 813,
+        "delayed_rate": 0.9138991389913899,
+        "mean_delay": 96.96924591064453
+      },
+      {
+        "station_code": "SMK",
+        "count": 522,
+        "delayed_rate": 0.9099616858237548,
+        "mean_delay": 87.26436614990234
+      },
+      {
+        "station_code": "BEA",
+        "count": 581,
+        "delayed_rate": 0.9001721170395869,
+        "mean_delay": 76.896728515625
+      },
+      {
+        "station_code": "MYR",
+        "count": 1091,
+        "delayed_rate": 0.9000916590284143,
+        "mean_delay": 97.55728912353516
+      },
+      {
+        "station_code": "HD",
+        "count": 598,
+        "delayed_rate": 0.8996655518394648,
+        "mean_delay": 111.55518341064453
+      },
+      {
+        "station_code": "HJI",
+        "count": 570,
+        "delayed_rate": 0.8947368421052632,
+        "mean_delay": 59.21754455566406
+      },
+      {
+        "station_code": "BYT",
+        "count": 549,
+        "delayed_rate": 0.8925318761384335,
+        "mean_delay": 115.34243774414062
+      },
+      {
+        "station_code": "BRD",
+        "count": 538,
+        "delayed_rate": 0.8921933085501859,
+        "mean_delay": 184.55947875976562
+      },
+      {
+        "station_code": "NK",
+        "count": 1484,
+        "delayed_rate": 0.8807277628032345,
+        "mean_delay": 124.00943756103516
+      }
+    ],
+    "punctual_list": [
+      {
+        "station_code": "STMM",
+        "count": 827,
+        "delayed_rate": 0.0,
+        "mean_delay": -2.319226026535034
+      },
+      {
+        "station_code": "CG",
+        "count": 536,
+        "delayed_rate": 0.0,
+        "mean_delay": -0.05783582106232643
+      },
+      {
+        "station_code": "VLCY",
+        "count": 1653,
+        "delayed_rate": 0.0006049606775559589,
+        "mean_delay": 1.973381757736206
+      },
+      {
+        "station_code": "MTMY",
+        "count": 1652,
+        "delayed_rate": 0.0012106537530266344,
+        "mean_delay": 3.0799031257629395
+      },
+      {
+        "station_code": "MCPK",
+        "count": 1651,
+        "delayed_rate": 0.0012113870381586917,
+        "mean_delay": 2.724409341812134
+      },
+      {
+        "station_code": "TLX",
+        "count": 822,
+        "delayed_rate": 0.006082725060827251,
+        "mean_delay": 4.972019672393799
+      },
+      {
+        "station_code": "LKPR",
+        "count": 799,
+        "delayed_rate": 0.008760951188986232,
+        "mean_delay": 1.9224029779434204
+      },
+      {
+        "station_code": "MKK",
+        "count": 3352,
+        "delayed_rate": 0.00954653937947494,
+        "mean_delay": 3.567422389984131
+      },
+      {
+        "station_code": "DH",
+        "count": 556,
+        "delayed_rate": 0.01079136690647482,
+        "mean_delay": 1.8776978254318237
+      },
+      {
+        "station_code": "PV",
+        "count": 3365,
+        "delayed_rate": 0.011292719167904903,
+        "mean_delay": 3.6552748680114746
+      },
+      {
+        "station_code": "NAI",
+        "count": 741,
+        "delayed_rate": 0.012145748987854251,
+        "mean_delay": 5.727395534515381
+      },
+      {
+        "station_code": "SPR",
+        "count": 3727,
+        "delayed_rate": 0.012610678830158305,
+        "mean_delay": 4.594043254852295
+      },
+      {
+        "station_code": "STM",
+        "count": 3396,
+        "delayed_rate": 0.012661955241460542,
+        "mean_delay": 3.617785692214966
+      },
+      {
+        "station_code": "BRP",
+        "count": 2348,
+        "delayed_rate": 0.013202725724020443,
+        "mean_delay": 3.9412264823913574
+      },
+      {
+        "station_code": "GOF",
+        "count": 942,
+        "delayed_rate": 0.014861995753715499,
+        "mean_delay": 5.626327037811279
+      }
+    ]
+  },
+  "pers": {
+    "lag1_correlation": 0.6264414011776066,
+    "consecutive_pairs_count": 122382,
+    "bucket_stats": [
+      {
+        "prev_bucket": "Early (<0m)",
+        "next_delayed_rate": 0.07810093322460814,
+        "next_mean_delay": 1.9988759756088257,
+        "count": 11037
+      },
+      {
+        "prev_bucket": "On-time (0-15m)",
+        "next_delayed_rate": 0.1994492210640921,
+        "next_mean_delay": 10.910947799682617,
+        "count": 62457
+      },
+      {
+        "prev_bucket": "Moderate (15-60m)",
+        "next_delayed_rate": 0.6729032085131477,
+        "next_mean_delay": 30.33136558532715,
+        "count": 37307
+      },
+      {
+        "prev_bucket": "Severe (>60m)",
+        "next_delayed_rate": 0.8950867800708057,
+        "next_mean_delay": 100.14640045166016,
+        "count": 11581
+      }
+    ]
+  },
+  "prop": {
+    "within_run_correlation": 0.8947462753231025,
+    "p_delayed_given_curr_delayed": 88.48845186370913,
+    "p_delayed_given_curr_ontime": 15.321275447911638,
+    "propagation_lift": 5.775527772772372,
+    "evaluated_pairs": 78949
+  },
+  "miss": {
+    "cat_missingness": [
+      {
+        "category": "VNDM",
+        "total": 667,
+        "missing_rate": 0.09295352323838081
+      },
+      {
+        "category": "GBR",
+        "total": 4719,
+        "missing_rate": 0.10277601186692095
+      },
+      {
+        "category": "SUF",
+        "total": 247228,
+        "missing_rate": 0.12007135114145646
+      },
+      {
+        "category": "VNDS",
+        "total": 435,
+        "missing_rate": 0.12183908045977011
+      },
+      {
+        "category": "RAJ",
+        "total": 6319,
+        "missing_rate": 0.13134989713562273
+      },
+      {
+        "category": "VNDB",
+        "total": 19542,
+        "missing_rate": 0.13314911472725413
+      },
+      {
+        "category": "AMTB",
+        "total": 8238,
+        "missing_rate": 0.14360281621752852
+      },
+      {
+        "category": "SHT",
+        "total": 5504,
+        "missing_rate": 0.15606831395348839
+      },
+      {
+        "category": "TOD",
+        "total": 49730,
+        "missing_rate": 0.15765131711240699
+      },
+      {
+        "category": "MEX",
+        "total": 680214,
+        "missing_rate": 0.15913962370665702
+      },
+      {
+        "category": "JSH",
+        "total": 11263,
+        "missing_rate": 0.1663855100772441
+      },
+      {
+        "category": "DRNT",
+        "total": 2103,
+        "missing_rate": 0.1773656680932002
+      },
+      {
+        "category": "TEJ",
+        "total": 712,
+        "missing_rate": 0.21629213483146068
+      },
+      {
+        "category": "PEXP",
+        "total": 453,
+        "missing_rate": 0.26048565121412803
+      },
+      {
+        "category": "PAS",
+        "total": 363957,
+        "missing_rate": 0.35157449918534334
+      },
+      {
+        "category": "MEMU",
+        "total": 415795,
+        "missing_rate": 0.40082733077598337
+      },
+      {
+        "category": "DMU",
+        "total": 140225,
+        "missing_rate": 0.4265929755749688
+      },
+      {
+        "category": "EMU",
+        "total": 21500,
+        "missing_rate": 0.4821860465116279
+      },
+      {
+        "category": "SUB",
+        "total": 826844,
+        "missing_rate": 0.6200794829496253
+      },
+      {
+        "category": "TRST",
+        "total": 126,
+        "missing_rate": 0.6746031746031746
+      }
+    ],
+    "seq_missingness": [
+      {
+        "seq_bucket": "(0.999, 4.0]",
+        "missing_rate": 0.5194335890714721
+      },
+      {
+        "seq_bucket": "(4.0, 9.0]",
+        "missing_rate": 0.350983722683891
+      },
+      {
+        "seq_bucket": "(9.0, 14.0]",
+        "missing_rate": 0.3481854394246923
+      },
+      {
+        "seq_bucket": "(14.0, 21.0]",
+        "missing_rate": 0.33253768014741925
+      },
+      {
+        "seq_bucket": "(21.0, 1071.0]",
+        "missing_rate": 0.27579728977167256
+      }
+    ]
+  }
+}

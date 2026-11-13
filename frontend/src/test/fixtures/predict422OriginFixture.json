@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "ORIGIN_STOP_NOT_APPLICABLE",
+    "message": "Origin stops (seq=1) depart from the origin station and have no arrival delay. Arrival delay is only defined for subsequent stops (seq > 1)."
+  }
+}

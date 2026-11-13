@@ -1,0 +1,145 @@
+{
+  "capabilities": {
+    "methodology": "Predefined parameterised templates matched via local TF-IDF (1-2 word + 3-5 char n-grams) and RapidFuzz over precomputed SQLite catalogs. No runtime LLMs or free-form SQL generation.",
+    "supported_topics": [
+      "Fleet-level punctuality and delay summary",
+      "Category delay rankings and comparisons (SUB, MEX, SUF, VNDB, etc.)",
+      "Hourly arrival patterns (0-23 IST) and weekday variations",
+      "Station delay hotspots with Wilson 95% confidence intervals",
+      "Train timetable deep dive and worst-supported route stops",
+      "Model transparency and evaluation metrics (AP, ROC-AUC, threshold)"
+    ],
+    "unsupported_topics": [
+      "Ticket booking, PNR status, seat availability, or IRCTC accounts",
+      "Live GPS train running tracking or real-time location",
+      "Physical causality claims (fog, signaling failures, track maintenance)"
+    ]
+  },
+  "data_as_of": "2026-10-25",
+  "examples": [
+    {
+      "badge": "Overview",
+      "intent": "fleet_summary",
+      "question": "What is the overall delay rate across Indian Railways?"
+    },
+    {
+      "badge": "Categories",
+      "intent": "category_ranking",
+      "question": "Which train category is most delayed?"
+    },
+    {
+      "badge": "Comparison",
+      "intent": "compare_categories",
+      "question": "How punctual are Suburban trains compared to Express?"
+    },
+    {
+      "badge": "Train Timetable",
+      "intent": "train_worst_stops",
+      "question": "What are the worst stops for train 12951?"
+    },
+    {
+      "badge": "Hotspots",
+      "intent": "station_hotspots",
+      "question": "Which stations are the worst delay hotspots?"
+    },
+    {
+      "badge": "Temporal",
+      "intent": "hour_pattern",
+      "question": "What time of day are trains most delayed?"
+    },
+    {
+      "badge": "Stations",
+      "intent": "station_summary",
+      "question": "How punctual is station NDLS?"
+    },
+    {
+      "badge": "Hinglish",
+      "intent": "train_hotspots",
+      "question": "Sabse zyada late kaun si train hoti hai?"
+    },
+    {
+      "badge": "Prediction",
+      "intent": "predict_redirect",
+      "question": "Will train 12951 be delayed tomorrow?"
+    },
+    {
+      "badge": "Non-Causal",
+      "intent": "causal_refusal",
+      "question": "Why are Indian trains always late?"
+    }
+  ],
+  "supported_intents": [
+    {
+      "description": "Overall Indian Railways fleet delay statistics and total monitored volume.",
+      "intent": "fleet_summary"
+    },
+    {
+      "description": "Dataset date window, label definitions (>15m threshold), and audit boundaries.",
+      "intent": "data_coverage_and_definition"
+    },
+    {
+      "description": "Rankings of train service classifications by observed delayed rate.",
+      "intent": "category_ranking"
+    },
+    {
+      "description": "Specific delay statistics and volume for a single train category (e.g. SUB, MEX, VNDB).",
+      "intent": "category_detail"
+    },
+    {
+      "description": "Direct comparison between two train classifications (e.g. Suburban vs Express).",
+      "intent": "compare_categories"
+    },
+    {
+      "description": "Hour of day delay patterns (0-23 IST) showing temporal fluctuations.",
+      "intent": "hour_pattern"
+    },
+    {
+      "description": "Day of week delay patterns (Monday-Sunday) and weekend vs weekday differences.",
+      "intent": "dow_pattern"
+    },
+    {
+      "description": "Delay progression as trains advance along their route sequence (early vs deep journey).",
+      "intent": "position_pattern"
+    },
+    {
+      "description": "Observed delay hotspots or most punctual stations across the network.",
+      "intent": "station_hotspots"
+    },
+    {
+      "description": "Observed worst delayed or most punctual train services across the fleet.",
+      "intent": "train_hotspots"
+    },
+    {
+      "description": "Detailed timetable, delay rate, and mean delay for a specific train.",
+      "intent": "train_summary"
+    },
+    {
+      "description": "The worst delayed stops and stations along a specific train route.",
+      "intent": "train_worst_stops"
+    },
+    {
+      "description": "Historical delay rate, total calling trains, and calling train sample for a station.",
+      "intent": "station_summary"
+    },
+    {
+      "description": "Direct comparison between two specific trains on punctuality and average delay.",
+      "intent": "compare_trains"
+    },
+    {
+      "description": "Day-by-day delay rate trends across the 19-day historical collection window.",
+      "intent": "daily_trend"
+    },
+    {
+      "description": "Overview of the machine learning delay prediction model, evaluation metrics, and features.",
+      "intent": "model_overview"
+    },
+    {
+      "description": "Queries asking for future trip delay predictions or booking advice, redirecting to Tab 3.",
+      "intent": "predict_redirect"
+    },
+    {
+      "description": "Causal queries asking why trains are late, signaling issues, fog, or physical causes.",
+      "intent": "causal_refusal"
+    }
+  ]
+}

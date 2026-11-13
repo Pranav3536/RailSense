@@ -1,0 +1,12 @@
+{
+  "benchmark_timestamp": "2026-11-05T13:47:40.713606",
+  "iterations": 200,
+  "warmup_iterations": 15,
+  "measured_single_prediction_p50_ms": 27.26,
+  "measured_single_prediction_p95_ms": 30.41,
+  "measured_single_prediction_p99_ms": 34.33,
+  "measured_single_prediction_mean_ms": 27.7,
+  "target_p95_ms": 25.0,
+  "method": "In-process Python 3.10 CPU single-threaded predict_single calls on real schedule inputs with factor extraction",
+  "provenance": "machine-local, single-threaded, in-process Python CPU (excludes network/HTTP framing)"
+}

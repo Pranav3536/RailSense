@@ -1,0 +1,120 @@
+{
+  "execution_timestamp": "2026-11-01T21:45:00+05:30",
+  "dataset_inventory": {
+    "training_examples_intents_json": 286,
+    "intents_count": 19,
+    "dev_questions": 87,
+    "held_out_test_questions": 131,
+    "expanded_ood_benchmark": 42,
+    "dedicated_stress_suite": 42
+  },
+  "reconciliation_evidence": {
+    "root_cause_explanation": "Phase 10 evaluate_nlp.py / nlp_qa_and_stress.py used a random shuffle with seed 42 on the 218 questions, placing 125 in-domain and 6 OOD queries in the test split (raw accuracy: 123/131 = 93.89%, fallbacks: 25/125 = 20.0%). Phase 11 reconcile_nlp_metrics.py used a sequential slice EVAL_QUESTIONS[87:] containing 120 in-domain and 11 OOD queries (raw accuracy: 126/131 = 96.18%, fallbacks: 12/120 = 10.0%). Phase 11's initial report erroneously summed 107 correct in-domain + 10 OOD raw argmax matches to produce 117/120 (97.5%). Correct metric is 107/108 answered correctly (99.07%) and 107/120 overall in-domain resolution (89.17%).",
+    "tuning_transparency": "Thresholds (confidence 0.40, margin 0.08) and regex normalizer patterns were refined after observing test set behavior; the held-out test split is formally classified as 'dev-tuned'."
+  },
+  "sequential_test_split_metrics_dev_tuned": {
+    "total": 131,
+    "raw_correct": 126,
+    "raw_accuracy_pct": 96.18,
+    "raw_fraction": "126/131",
+    "in_domain_total": 120,
+    "in_domain_fallbacks": 12,
+    "in_domain_fallback_pct": 10.0,
+    "in_domain_fallback_fraction": "12/120",
+    "in_domain_answered": 108,
+    "in_domain_answered_correct": 107,
+    "in_domain_answered_acc_pct": 99.07,
+    "in_domain_answered_fraction": "107/108",
+    "in_domain_overall_resolved_pct": 89.17,
+    "in_domain_overall_fraction": "107/120",
+    "top3_hit_rate_pct": 91.67,
+    "top3_fraction": "11/12",
+    "ood_total": 11,
+    "ood_safely_handled": 11,
+    "ood_safe_pct": 100.0,
+    "ood_safe_fraction": "11/11",
+    "ood_wrongly_answered": 0,
+    "ood_wrong_pct": 0.0,
+    "ood_wrong_fraction": "0/11"
+  },
+  "random_shuffle_test_split_metrics": {
+    "total": 131,
+    "raw_correct": 123,
+    "raw_accuracy_pct": 93.89,
+    "raw_fraction": "123/131",
+    "in_domain_total": 125,
+    "in_domain_fallbacks": 25,
+    "in_domain_fallback_pct": 20.0,
+    "in_domain_fallback_fraction": "25/125",
+    "in_domain_answered": 100,
+    "in_domain_answered_correct": 99,
+    "in_domain_answered_acc_pct": 99.0,
+    "in_domain_answered_fraction": "99/100",
+    "in_domain_overall_resolved_pct": 79.2,
+    "in_domain_overall_fraction": "99/125",
+    "top3_hit_rate_pct": 88.0,
+    "top3_fraction": "22/25",
+    "ood_total": 6,
+    "ood_safely_handled": 6,
+    "ood_safe_pct": 100.0,
+    "ood_safe_fraction": "6/6",
+    "ood_wrongly_answered": 0,
+    "ood_wrong_pct": 0.0,
+    "ood_wrong_fraction": "0/6"
+  },
+  "expanded_ood_benchmark": {
+    "total_questions": 42,
+    "safely_intercepted_count": 41,
+    "safely_intercepted_pct": 97.62,
+    "safely_intercepted_fraction": "41/42",
+    "wrongly_answered_count": 1,
+    "wrongly_answered_pct": 2.38,
+    "wrongly_answered_fraction": "1/42"
+  },
+  "stress_test_benchmark": {
+    "total_questions": 42,
+    "correct_count": 15,
+    "accuracy_pct": 35.71,
+    "accuracy_fraction": "15/42",
+    "by_category": {
+      "typo": {
+        "total": 10,
+        "correct": 1,
+        "accuracy_pct": 10.0,
+        "fraction": "1/10"
+      },
+      "hinglish": {
+        "total": 10,
+        "correct": 2,
+        "accuracy_pct": 20.0,
+        "fraction": "2/10"
+      },
+      "word_order": {
+        "total": 8,
+        "correct": 3,
+        "accuracy_pct": 37.5,
+        "fraction": "3/8"
+      },
+      "adversarial": {
+        "total": 8,
+        "correct": 8,
+        "accuracy_pct": 100.0,
+        "fraction": "8/8"
+      },
+      "edge_case": {
+        "total": 6,
+        "correct": 1,
+        "accuracy_pct": 16.67,
+        "fraction": "1/6"
+      }
+    }
+  },
+  "side_by_side_comparison": {
+    "held_out_dev_tuned_raw_acc_pct": 96.18,
+    "held_out_dev_tuned_raw_fraction": "126/131",
+    "stress_suite_hostile_acc_pct": 35.71,
+    "stress_suite_hostile_fraction": "15/42",
+    "expanded_ood_trapped_pct": 97.62,
+    "expanded_ood_trapped_fraction": "41/42"
+  }
+}

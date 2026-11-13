@@ -1,0 +1,280 @@
+import { WAKE_UP_TIMEOUT_MS } from '../config/constants';
+/**
+ * RailSense — Fetch API Client (src/api/client.js)
+ * 
+ * Features:
+ * - Base URL configured from VITE_API_BASE_URL (default: http://localhost:5000/api)
+ * - 15-second AbortController request timeout
+ * - In-flight Promise deduplication (prevents double-firing under React StrictMode)
+ * - In-memory client-side GET caching with configurable TTL (respects 120 req/min rate limit)
+ * - Uniform error extraction preserving backend {code, message, details, request_id}
+ */
+
+// Wake-up notice state management for free-tier spin-down
+let activeRequestCount = 0;
+let wakeUpTimeoutId = null;
+
+function notifyWakeUpState(isWakingUp) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('railsense:wakeup', { detail: { isWakingUp } }));
+  }
+}
+
+function onFetchStart() {
+  activeRequestCount += 1;
+  if (activeRequestCount === 1 && !wakeUpTimeoutId) {
+    wakeUpTimeoutId = setTimeout(() => {
+      if (activeRequestCount > 0) {
+        notifyWakeUpState(true);
+      }
+    }, WAKE_UP_TIMEOUT_MS);
+  }
+}
+
+function onFetchEnd() {
+  activeRequestCount = Math.max(0, activeRequestCount - 1);
+  if (activeRequestCount === 0) {
+    if (wakeUpTimeoutId) {
+      clearTimeout(wakeUpTimeoutId);
+      wakeUpTimeoutId = null;
+    }
+    notifyWakeUpState(false);
+  }
+}
+
+const DEFAULT_BASE_URL = 'http://localhost:5000/api';
+const DEFAULT_TIMEOUT_MS = 60000;
+
+// In-memory cache: URL -> { data, expiresAt }
+const cacheStore = new Map();
+
+// In-flight Promise deduplication: URL -> Promise
+const inFlightRequests = new Map();
+
+// Dev-only request counter (disabled in production build)
+const devRequestCounter = {
+  totalRequests: 0,
+  windowStart: Date.now(),
+  getRatePerMinute() {
+    const elapsedMinutes = (Date.now() - this.windowStart) / 60000;
+    return elapsedMinutes > 0 ? (this.totalRequests / elapsedMinutes).toFixed(1) : 0;
+  },
+  recordRequest() {
+    if (import.meta.env?.DEV) {
+      this.totalRequests += 1;
+    }
+  },
+};
+
+/**
+ * Returns dev request metrics for profiling.
+ */
+export function getDevRequestMetrics() {
+  if (!import.meta.env?.DEV) return null;
+  return {
+    totalRequests: devRequestCounter.totalRequests,
+    requestsPerMinute: Number(devRequestCounter.getRatePerMinute()),
+    activeCachedEntries: cacheStore.size,
+  };
+}
+
+export class ApiClientError extends Error {
+  constructor(message, status, code, details = null, requestId = null) {
+    super(message);
+    this.name = 'ApiClientError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+    this.requestId = requestId;
+  }
+}
+
+export function getBaseUrl() {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl) return DEFAULT_BASE_URL;
+  return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+}
+
+/**
+ * Clears the in-memory GET cache. Useful for testing or manual refreshes.
+ */
+export function clearApiCache() {
+  cacheStore.clear();
+  inFlightRequests.clear();
+}
+
+/**
+ * Core HTTP fetch wrapper.
+ * @param {string} endpoint e.g. '/overview' or '/trains/12951'
+ * @param {object} options
+ * @param {string} options.method 'GET' | 'POST'
+ * @param {object} [options.body] JSON body
+ * @param {number} [options.timeoutMs]
+ * @param {number} [options.ttlMs] Cache TTL in milliseconds for GET (default: 0 for no cache)
+ * @param {boolean} [options.bypassCache] If true, ignores cached response
+ * @param {AbortSignal} [options.signal] External abort signal
+ */
+export async function apiRequest(endpoint, options = {}) {
+  const {
+    method = 'GET',
+    body,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    ttlMs = 0,
+    bypassCache = false,
+    signal: externalSignal,
+    headers = {},
+  } = options;
+
+  const baseUrl = getBaseUrl();
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const fullUrl = `${baseUrl}${cleanEndpoint}`;
+
+  // 1. GET Cache Check
+  const now = Date.now();
+  if (method === 'GET' && !bypassCache && ttlMs > 0) {
+    const cached = cacheStore.get(fullUrl);
+    if (cached && cached.expiresAt > now) {
+      return cached.data;
+    }
+  }
+
+  // Pre-check if caller external signal is already aborted
+  if (externalSignal?.aborted) {
+    const abortErr = new Error('The operation was aborted');
+    abortErr.name = 'AbortError';
+    throw abortErr;
+  }
+
+  const executeFetch = async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    onFetchStart();
+    try {
+      const response = await fetch(fullUrl, {
+        method,
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...headers,
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+
+      devRequestCounter.recordRequest();
+
+      clearTimeout(timeoutId);
+
+      // Parse JSON response safely
+      let responseData = null;
+      if (typeof response.text === 'function') {
+        const text = await response.text();
+        if (text) {
+          try {
+            responseData = JSON.parse(text);
+          } catch {
+            responseData = { raw: text };
+          }
+        }
+      } else if (typeof response.json === 'function') {
+        responseData = await response.json();
+      }
+
+      if (!response.ok) {
+        // Extract backend error envelope: { error: { code, message, details, request_id } }
+        const errObj = responseData?.error || {};
+        const code = errObj.code || (response.status === 429 ? 'RATE_LIMIT_EXCEEDED' : 'HTTP_ERROR');
+        let message = errObj.message;
+
+        if (response.status === 429) {
+          message = message || 'API rate limit reached (120 req/min). Please wait a moment before trying again.';
+        } else if (response.status >= 500) {
+          message = message || 'An internal backend error occurred. Please try again.';
+        } else if (!message) {
+          message = `HTTP request failed with status ${response.status}.`;
+        }
+
+        throw new ApiClientError(
+          message,
+          response.status,
+          code,
+          errObj.details || null,
+          errObj.request_id || response.headers.get('X-Request-ID') || null
+        );
+      }
+
+      // Store in GET Cache if TTL specified
+      if (method === 'GET' && ttlMs > 0) {
+        cacheStore.set(fullUrl, {
+          data: responseData,
+          expiresAt: Date.now() + ttlMs,
+        });
+      }
+
+      return responseData;
+    } catch (err) {
+      clearTimeout(timeoutId);
+
+      if (err instanceof ApiClientError) {
+        throw err;
+      }
+
+      if (err.name === 'AbortError') {
+        throw new ApiClientError(
+          `Request timed out after ${timeoutMs / 1000} seconds.`,
+          408,
+          'TIMEOUT'
+        );
+      }
+
+      // Browser network failure / server offline
+      throw new ApiClientError(
+              'Unable to connect to RailSense API server. The backend may be waking up, please wait a few seconds and try again.',
+              0,
+              'NETWORK_ERROR'
+            );
+    } finally {
+      onFetchEnd();
+      if (method === 'GET') {
+        inFlightRequests.delete(fullUrl);
+      }
+    }
+  };
+
+  // 2. In-Flight Request Deduplication for GET
+  let fetchPromise;
+  if (method === 'GET') {
+    fetchPromise = inFlightRequests.get(fullUrl);
+    if (!fetchPromise) {
+      fetchPromise = executeFetch();
+      inFlightRequests.set(fullUrl, fetchPromise);
+    }
+  } else {
+    fetchPromise = executeFetch();
+  }
+
+  // If caller provided an external signal, wrap shared promise so caller can abort individually
+  // without canceling the underlying shared fetch for other concurrent callers
+  if (externalSignal) {
+    return new Promise((resolve, reject) => {
+      const onAbort = () => {
+        const abortErr = new Error('The operation was aborted');
+        abortErr.name = 'AbortError';
+        reject(abortErr);
+      };
+      externalSignal.addEventListener('abort', onAbort, { once: true });
+      fetchPromise
+        .then((data) => {
+          externalSignal.removeEventListener('abort', onAbort);
+          resolve(data);
+        })
+        .catch((err) => {
+          externalSignal.removeEventListener('abort', onAbort);
+          reject(err);
+        });
+    });
+  }
+
+  return fetchPromise;
+}

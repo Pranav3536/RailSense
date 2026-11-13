@@ -1,0 +1,1452 @@
+{
+  "curves": {
+    "calibration_reliability": [
+      {
+        "bin_mid": 0.05,
+        "observed_frequency": 0.049,
+        "predicted_prob": 0.034,
+        "samples_count": 32993
+      },
+      {
+        "bin_mid": 0.15,
+        "observed_frequency": 0.169,
+        "predicted_prob": 0.15,
+        "samples_count": 19598
+      },
+      {
+        "bin_mid": 0.25,
+        "observed_frequency": 0.298,
+        "predicted_prob": 0.258,
+        "samples_count": 21165
+      },
+      {
+        "bin_mid": 0.35,
+        "observed_frequency": 0.41,
+        "predicted_prob": 0.372,
+        "samples_count": 14461
+      },
+      {
+        "bin_mid": 0.45,
+        "observed_frequency": 0.486,
+        "predicted_prob": 0.45,
+        "samples_count": 14690
+      },
+      {
+        "bin_mid": 0.55,
+        "observed_frequency": 0.559,
+        "predicted_prob": 0.517,
+        "samples_count": 8842
+      },
+      {
+        "bin_mid": 0.65,
+        "observed_frequency": 0.653,
+        "predicted_prob": 0.641,
+        "samples_count": 23466
+      },
+      {
+        "bin_mid": 0.75,
+        "observed_frequency": 0.773,
+        "predicted_prob": 0.758,
+        "samples_count": 20977
+      },
+      {
+        "bin_mid": 0.85,
+        "observed_frequency": 0.876,
+        "predicted_prob": 0.867,
+        "samples_count": 19998
+      },
+      {
+        "bin_mid": 0.95,
+        "observed_frequency": 0.965,
+        "predicted_prob": 0.954,
+        "samples_count": 17775
+      }
+    ],
+    "precision_recall": [
+      {
+        "precision": 0.492,
+        "recall": 1.0
+      },
+      {
+        "precision": 0.495,
+        "recall": 1.0
+      },
+      {
+        "precision": 0.53,
+        "recall": 0.997
+      },
+      {
+        "precision": 0.53,
+        "recall": 0.997
+      },
+      {
+        "precision": 0.539,
+        "recall": 0.996
+      },
+      {
+        "precision": 0.541,
+        "recall": 0.995
+      },
+      {
+        "precision": 0.557,
+        "recall": 0.992
+      },
+      {
+        "precision": 0.57,
+        "recall": 0.988
+      },
+      {
+        "precision": 0.571,
+        "recall": 0.988
+      },
+      {
+        "precision": 0.573,
+        "recall": 0.987
+      },
+      {
+        "precision": 0.581,
+        "recall": 0.984
+      },
+      {
+        "precision": 0.581,
+        "recall": 0.984
+      },
+      {
+        "precision": 0.592,
+        "recall": 0.979
+      },
+      {
+        "precision": 0.602,
+        "recall": 0.974
+      },
+      {
+        "precision": 0.602,
+        "recall": 0.974
+      },
+      {
+        "precision": 0.627,
+        "recall": 0.958
+      },
+      {
+        "precision": 0.63,
+        "recall": 0.956
+      },
+      {
+        "precision": 0.63,
+        "recall": 0.956
+      },
+      {
+        "precision": 0.631,
+        "recall": 0.956
+      },
+      {
+        "precision": 0.659,
+        "recall": 0.932
+      },
+      {
+        "precision": 0.677,
+        "recall": 0.913
+      },
+      {
+        "precision": 0.681,
+        "recall": 0.908
+      },
+      {
+        "precision": 0.681,
+        "recall": 0.908
+      },
+      {
+        "precision": 0.685,
+        "recall": 0.903
+      },
+      {
+        "precision": 0.701,
+        "recall": 0.882
+      },
+      {
+        "precision": 0.708,
+        "recall": 0.872
+      },
+      {
+        "precision": 0.717,
+        "recall": 0.859
+      },
+      {
+        "precision": 0.74,
+        "recall": 0.82
+      },
+      {
+        "precision": 0.748,
+        "recall": 0.807
+      },
+      {
+        "precision": 0.756,
+        "recall": 0.793
+      },
+      {
+        "precision": 0.781,
+        "recall": 0.746
+      },
+      {
+        "precision": 0.789,
+        "recall": 0.729
+      },
+      {
+        "precision": 0.797,
+        "recall": 0.711
+      },
+      {
+        "precision": 0.816,
+        "recall": 0.668
+      },
+      {
+        "precision": 0.816,
+        "recall": 0.668
+      },
+      {
+        "precision": 0.816,
+        "recall": 0.668
+      },
+      {
+        "precision": 0.848,
+        "recall": 0.584
+      },
+      {
+        "precision": 0.848,
+        "recall": 0.584
+      },
+      {
+        "precision": 0.86,
+        "recall": 0.55
+      },
+      {
+        "precision": 0.873,
+        "recall": 0.513
+      },
+      {
+        "precision": 0.873,
+        "recall": 0.513
+      },
+      {
+        "precision": 0.873,
+        "recall": 0.513
+      },
+      {
+        "precision": 0.874,
+        "recall": 0.51
+      },
+      {
+        "precision": 0.885,
+        "recall": 0.478
+      },
+      {
+        "precision": 0.918,
+        "recall": 0.363
+      },
+      {
+        "precision": 0.918,
+        "recall": 0.362
+      },
+      {
+        "precision": 0.923,
+        "recall": 0.343
+      },
+      {
+        "precision": 0.924,
+        "recall": 0.34
+      },
+      {
+        "precision": 0.924,
+        "recall": 0.34
+      },
+      {
+        "precision": 0.943,
+        "recall": 0.269
+      },
+      {
+        "precision": 0.946,
+        "recall": 0.256
+      },
+      {
+        "precision": 0.946,
+        "recall": 0.256
+      },
+      {
+        "precision": 0.959,
+        "recall": 0.2
+      },
+      {
+        "precision": 0.965,
+        "recall": 0.176
+      },
+      {
+        "precision": 0.97,
+        "recall": 0.152
+      },
+      {
+        "precision": 0.975,
+        "recall": 0.129
+      },
+      {
+        "precision": 0.98,
+        "recall": 0.084
+      },
+      {
+        "precision": 0.982,
+        "recall": 0.061
+      },
+      {
+        "precision": 0.996,
+        "recall": 0.018
+      },
+      {
+        "precision": 1.0,
+        "recall": 0.0
+      }
+    ],
+    "roc": [
+      {
+        "fpr": 0.0,
+        "tpr": 0.0
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.018
+      },
+      {
+        "fpr": 0.001,
+        "tpr": 0.04
+      },
+      {
+        "fpr": 0.002,
+        "tpr": 0.083
+      },
+      {
+        "fpr": 0.002,
+        "tpr": 0.09
+      },
+      {
+        "fpr": 0.005,
+        "tpr": 0.152
+      },
+      {
+        "fpr": 0.006,
+        "tpr": 0.176
+      },
+      {
+        "fpr": 0.006,
+        "tpr": 0.18
+      },
+      {
+        "fpr": 0.008,
+        "tpr": 0.2
+      },
+      {
+        "fpr": 0.014,
+        "tpr": 0.256
+      },
+      {
+        "fpr": 0.016,
+        "tpr": 0.269
+      },
+      {
+        "fpr": 0.025,
+        "tpr": 0.331
+      },
+      {
+        "fpr": 0.027,
+        "tpr": 0.34
+      },
+      {
+        "fpr": 0.028,
+        "tpr": 0.343
+      },
+      {
+        "fpr": 0.028,
+        "tpr": 0.343
+      },
+      {
+        "fpr": 0.031,
+        "tpr": 0.362
+      },
+      {
+        "fpr": 0.034,
+        "tpr": 0.376
+      },
+      {
+        "fpr": 0.06,
+        "tpr": 0.478
+      },
+      {
+        "fpr": 0.071,
+        "tpr": 0.51
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.072,
+        "tpr": 0.513
+      },
+      {
+        "fpr": 0.08,
+        "tpr": 0.533
+      },
+      {
+        "fpr": 0.08,
+        "tpr": 0.533
+      },
+      {
+        "fpr": 0.101,
+        "tpr": 0.584
+      },
+      {
+        "fpr": 0.101,
+        "tpr": 0.584
+      },
+      {
+        "fpr": 0.126,
+        "tpr": 0.634
+      },
+      {
+        "fpr": 0.146,
+        "tpr": 0.668
+      },
+      {
+        "fpr": 0.146,
+        "tpr": 0.668
+      },
+      {
+        "fpr": 0.176,
+        "tpr": 0.711
+      },
+      {
+        "fpr": 0.189,
+        "tpr": 0.729
+      },
+      {
+        "fpr": 0.202,
+        "tpr": 0.746
+      },
+      {
+        "fpr": 0.204,
+        "tpr": 0.748
+      },
+      {
+        "fpr": 0.248,
+        "tpr": 0.793
+      },
+      {
+        "fpr": 0.264,
+        "tpr": 0.807
+      },
+      {
+        "fpr": 0.279,
+        "tpr": 0.82
+      },
+      {
+        "fpr": 0.307,
+        "tpr": 0.843
+      },
+      {
+        "fpr": 0.329,
+        "tpr": 0.859
+      },
+      {
+        "fpr": 0.348,
+        "tpr": 0.872
+      },
+      {
+        "fpr": 0.365,
+        "tpr": 0.882
+      },
+      {
+        "fpr": 0.403,
+        "tpr": 0.903
+      },
+      {
+        "fpr": 0.412,
+        "tpr": 0.908
+      },
+      {
+        "fpr": 0.412,
+        "tpr": 0.908
+      },
+      {
+        "fpr": 0.422,
+        "tpr": 0.913
+      },
+      {
+        "fpr": 0.46,
+        "tpr": 0.929
+      },
+      {
+        "fpr": 0.488,
+        "tpr": 0.939
+      },
+      {
+        "fpr": 0.542,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.543,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.544,
+        "tpr": 0.956
+      },
+      {
+        "fpr": 0.625,
+        "tpr": 0.974
+      },
+      {
+        "fpr": 0.649,
+        "tpr": 0.979
+      },
+      {
+        "fpr": 0.682,
+        "tpr": 0.983
+      },
+      {
+        "fpr": 0.702,
+        "tpr": 0.986
+      },
+      {
+        "fpr": 0.72,
+        "tpr": 0.988
+      },
+      {
+        "fpr": 0.721,
+        "tpr": 0.988
+      },
+      {
+        "fpr": 0.764,
+        "tpr": 0.992
+      },
+      {
+        "fpr": 0.818,
+        "tpr": 0.995
+      },
+      {
+        "fpr": 0.856,
+        "tpr": 0.997
+      },
+      {
+        "fpr": 0.928,
+        "tpr": 0.999
+      },
+      {
+        "fpr": 1.0,
+        "tpr": 1.0
+      }
+    ]
+  },
+  "feature_importance": [
+    {
+      "feature": "train_hist_delay_rate",
+      "importance_gain": 803004.295922721,
+      "importance_split": 2664
+    },
+    {
+      "feature": "train_hist_mean_delay",
+      "importance_gain": 244572.41275245656,
+      "importance_split": 2466
+    },
+    {
+      "feature": "station_hist_delay_rate",
+      "importance_gain": 136058.16965296958,
+      "importance_split": 2316
+    },
+    {
+      "feature": "seq",
+      "importance_gain": 82698.7960481273,
+      "importance_split": 2047
+    },
+    {
+      "feature": "station_hist_mean_delay",
+      "importance_gain": 54147.71724364359,
+      "importance_split": 2544
+    },
+    {
+      "feature": "log_seq",
+      "importance_gain": 30496.6968220599,
+      "importance_split": 640
+    },
+    {
+      "feature": "category_prior_rate",
+      "importance_gain": 12209.118521829649,
+      "importance_split": 629
+    },
+    {
+      "feature": "scheduled_hour",
+      "importance_gain": 11407.964472465685,
+      "importance_split": 994
+    },
+    {
+      "feature": "sin_hour",
+      "importance_gain": 10581.723941417316,
+      "importance_split": 741
+    },
+    {
+      "feature": "cos_hour",
+      "importance_gain": 7406.037216961384,
+      "importance_split": 730
+    },
+    {
+      "feature": "category_prior_mean",
+      "importance_gain": 5419.3280839324,
+      "importance_split": 294
+    },
+    {
+      "feature": "day_of_week",
+      "importance_gain": 5026.42971264926,
+      "importance_split": 520
+    },
+    {
+      "feature": "sin_dow",
+      "importance_gain": 4966.401187145323,
+      "importance_split": 478
+    },
+    {
+      "feature": "cos_dow",
+      "importance_gain": 4323.8249022215605,
+      "importance_split": 351
+    },
+    {
+      "feature": "cat_MEX",
+      "importance_gain": 4189.290505017991,
+      "importance_split": 202
+    }
+  ],
+  "final_test_metrics": {
+    "brier_score": 0.1536,
+    "confusion_matrix": {
+      "fn": 17152,
+      "fp": 27470,
+      "tn": 71067,
+      "tp": 78276
+    },
+    "ece": 0.0213,
+    "f1_macro": 0.7699,
+    "f1_positive": 0.7782,
+    "pr_auc": 0.8482,
+    "precision": 0.7402,
+    "precision_at_recall_80": 0.7476,
+    "recall": 0.8203,
+    "roc_auc": 0.8592,
+    "threshold": 0.41
+  },
+  "lifts": {
+    "lift_over_category_pct": 42.03,
+    "lift_over_history_pct": 4.95,
+    "lift_over_majority_pct": 72.4
+  },
+  "model_comparison": {
+    "Category Prior": {
+      "ap_test": 0.5972,
+      "ap_val": 0.5892,
+      "roc_test": 0.6539,
+      "roc_val": 0.6495
+    },
+    "En-Route LightGBM": {
+      "ap_test": 0.9289,
+      "ap_val": 0.9324,
+      "roc_test": 0.9272,
+      "roc_val": 0.9318
+    },
+    "LightGBM (Calibrated)": {
+      "ap_test": 0.8482,
+      "ap_val": 0.8608,
+      "roc_test": 0.8592,
+      "roc_val": 0.8722
+    },
+    "LightGBM (Raw)": {
+      "ap_test": 0.8529,
+      "ap_val": 0.8657,
+      "roc_test": 0.8594,
+      "roc_val": 0.8724
+    },
+    "Majority Baseline": {
+      "ap_test": 0.492,
+      "ap_val": 0.4851,
+      "roc_test": 0.5,
+      "roc_val": 0.5
+    },
+    "Train Historical Prior": {
+      "ap_test": 0.8082,
+      "ap_val": 0.8245,
+      "roc_test": 0.8206,
+      "roc_val": 0.8376
+    }
+  },
+  "model_metadata": {
+    "algorithm": "LightGBM Gradient Boosted Decision Trees + Isotonic Regression",
+    "banned_features": [
+      "actual_arrival",
+      "actual_departure",
+      "departure_delay_min",
+      "arrival_reported",
+      "status",
+      "run_quality"
+    ],
+    "best_iteration": 298,
+    "features_count": 28,
+    "model_name": "RailSense Delay Predictor (LightGBM + Isotonic Calibration)",
+    "recall80_threshold": 0.45499999999999996,
+    "threshold": 0.41000000000000003,
+    "version": "1.0.0"
+  },
+  "per_category_test": {
+    "AMTB": {
+      "count": 690,
+      "f1": 0.7921,
+      "pr_auc": 0.8267,
+      "precision": 0.7605,
+      "prevalence": 0.6681,
+      "recall": 0.8265
+    },
+    "DMU": {
+      "count": 9031,
+      "f1": 0.7656,
+      "pr_auc": 0.8371,
+      "precision": 0.7297,
+      "prevalence": 0.5007,
+      "recall": 0.8052
+    },
+    "DRNT": {
+      "count": 168,
+      "f1": 0.7174,
+      "pr_auc": 0.7804,
+      "precision": 0.6535,
+      "prevalence": 0.494,
+      "recall": 0.7952
+    },
+    "EMU": {
+      "count": 1454,
+      "f1": 0.8871,
+      "pr_auc": 0.9544,
+      "precision": 0.805,
+      "prevalence": 0.7414,
+      "recall": 0.9879
+    },
+    "GBR": {
+      "count": 465,
+      "f1": 0.7761,
+      "pr_auc": 0.8724,
+      "precision": 0.7376,
+      "prevalence": 0.5462,
+      "recall": 0.8189
+    },
+    "JSH": {
+      "count": 1052,
+      "f1": 0.7275,
+      "pr_auc": 0.7783,
+      "precision": 0.7132,
+      "prevalence": 0.4648,
+      "recall": 0.7423
+    },
+    "MEMU": {
+      "count": 28151,
+      "f1": 0.8301,
+      "pr_auc": 0.9055,
+      "precision": 0.795,
+      "prevalence": 0.5978,
+      "recall": 0.8684
+    },
+    "MEX": {
+      "count": 61066,
+      "f1": 0.7717,
+      "pr_auc": 0.8251,
+      "precision": 0.7183,
+      "prevalence": 0.5646,
+      "recall": 0.8336
+    },
+    "PAS": {
+      "count": 27044,
+      "f1": 0.8165,
+      "pr_auc": 0.8972,
+      "precision": 0.7845,
+      "prevalence": 0.5656,
+      "recall": 0.8513
+    },
+    "PEXP": {
+      "count": 27,
+      "f1": 0.7879,
+      "pr_auc": 0.8519,
+      "precision": 0.6842,
+      "prevalence": 0.5185,
+      "recall": 0.9286
+    },
+    "RAJ": {
+      "count": 543,
+      "f1": 0.5875,
+      "pr_auc": 0.6028,
+      "precision": 0.59,
+      "prevalence": 0.4438,
+      "recall": 0.5851
+    },
+    "SHT": {
+      "count": 516,
+      "f1": 0.542,
+      "pr_auc": 0.6613,
+      "precision": 0.6574,
+      "prevalence": 0.2984,
+      "recall": 0.461
+    },
+    "SUB": {
+      "count": 35856,
+      "f1": 0.5357,
+      "pr_auc": 0.5774,
+      "precision": 0.5827,
+      "prevalence": 0.1496,
+      "recall": 0.4957
+    },
+    "SUF": {
+      "count": 21637,
+      "f1": 0.7656,
+      "pr_auc": 0.8239,
+      "precision": 0.7186,
+      "prevalence": 0.5697,
+      "recall": 0.8192
+    },
+    "TEJ": {
+      "count": 90,
+      "f1": 0.7164,
+      "pr_auc": 0.6314,
+      "precision": 0.7742,
+      "prevalence": 0.4,
+      "recall": 0.6667
+    },
+    "TOD": {
+      "count": 3988,
+      "f1": 0.898,
+      "pr_auc": 0.9491,
+      "precision": 0.8581,
+      "prevalence": 0.7826,
+      "recall": 0.9417
+    },
+    "TRST": {
+      "count": 4,
+      "f1": 0.0,
+      "pr_auc": 0.125,
+      "precision": 0.0,
+      "prevalence": 0.25,
+      "recall": 0.0
+    },
+    "VNDB": {
+      "count": 2069,
+      "f1": 0.5884,
+      "pr_auc": 0.6856,
+      "precision": 0.6853,
+      "prevalence": 0.3103,
+      "recall": 0.5156
+    },
+    "VNDM": {
+      "count": 63,
+      "f1": 0.6383,
+      "pr_auc": 0.735,
+      "precision": 0.7143,
+      "prevalence": 0.4127,
+      "recall": 0.5769
+    },
+    "VNDS": {
+      "count": 51,
+      "f1": 0.0,
+      "pr_auc": 0.6508,
+      "precision": 0.0,
+      "prevalence": 0.2745,
+      "recall": 0.0
+    }
+  },
+  "per_position_test": {
+    "Deep (>50)": {
+      "count": 2756,
+      "f1": 0.8715,
+      "pr_auc": 0.9213,
+      "precision": 0.7984,
+      "prevalence": 0.7388,
+      "recall": 0.9592
+    },
+    "Early (2-3)": {
+      "count": 20669,
+      "f1": 0.5724,
+      "pr_auc": 0.6519,
+      "precision": 0.6435,
+      "prevalence": 0.2585,
+      "recall": 0.5155
+    },
+    "Late (26-50)": {
+      "count": 24766,
+      "f1": 0.8394,
+      "pr_auc": 0.9015,
+      "precision": 0.7748,
+      "prevalence": 0.6383,
+      "recall": 0.9157
+    },
+    "Mid (11-25)": {
+      "count": 79060,
+      "f1": 0.8036,
+      "pr_auc": 0.8713,
+      "precision": 0.7532,
+      "prevalence": 0.541,
+      "recall": 0.8611
+    },
+    "Mid-Early (4-10)": {
+      "count": 66714,
+      "f1": 0.7361,
+      "pr_auc": 0.8088,
+      "precision": 0.7142,
+      "prevalence": 0.4418,
+      "recall": 0.7593
+    }
+  },
+  "provenance": {
+    "build_script_version": "1.0.0",
+    "built_at": "2026-10-30 17:51:14 UTC",
+    "date_range": "2026-10-07 to 2026-10-25",
+    "row_count": 2805574,
+    "runs_count": 147367,
+    "source": "TiDB Cloud railsense.train_records (via local cache)"
+  },
+  "simple_explanations_markdown": "# RailSense \u2014 Model Explanations in Plain English\n\n> **Audience:** Non-technical passengers, railway operators, and portfolio reviewers.  \n> **Key Rule:** Machine learning models identify **observed statistical associations**, not physical or operational causes.\n\n---\n\n## What Drives the Model's Delay Predictions?\n\nOur LightGBM model looks at four major categories of timetable and historical information to estimate whether your train will arrive late by more than 15 minutes:\n\n### 1. Train Historical Performance (`train_hist_delay_rate`, `train_hist_mean_delay`)\n- **What it means:** How often this exact train was late over the previous 7 completed days.\n- **Why it matters:** In Indian Railways, certain rakes (train compositions) run consecutive daily schedules across high-density corridors. A train with a history of persistent delays has a substantially higher probability of facing schedule disruptions today.\n\n### 2. Station Historical Delay Records (`station_hist_delay_rate`, `station_hist_mean_delay`)\n- **What it means:** The observed historical delay frequency at your arrival station.\n- **Why it matters:** Major junction stations handle intersecting trunk lines, passenger connections, and platform dwell constraints. High-traffic junction stations are observed delay hotspots.\n\n### 3. Train Category & Track Priority (`category`, `category_prior_rate`)\n- **What it means:** The service classification of the service (Suburban `SUB`, Vande Bharat `VNDB`, Superfast `SUF`, Express `MEX`, Special `TOD`).\n- **Why it matters:** Indian Railways dispatchers operate under structured timetable scheduling:\n  - **Suburban (`SUB`):** Dedicated tracks and strict suburban schedules mean Suburban trains arrive punctually 83% of the time.\n  - **Special / Holiday (`TOD`):** Unscheduled holiday specials receive lower line priority and are observed late 76% of the time.\n\n### 4. Journey Sequence Position (`seq`, `log_seq`, `is_deep_journey`)\n- **What it means:** How far along its route the train currently is (e.g. stop #3 vs stop #45).\n- **Why it matters:** Timetable buffers are gradually absorbed over hundreds of kilometers. Trains near the beginning of their route are frequently punctual; trains past stop #30 accumulate compounded route delays.\n\n---\n\n## When is the Model Most Reliable?\n\n1. **High Confidence Predictions:**\n   - **Suburban Trains:** Predicts on-time arrivals with >90% precision.\n   - **Late Journey Superfasts:** High accuracy in identifying compound delay cascades once a train enters multi-state trunk routes.\n\n2. **Model Limitations & Weaknesses:**\n   - **Cold-Start Trains:** Rare, newly numbered holiday specials with zero 7-day prior history rely strictly on category-level priors.\n   - **Early-Morning Long Hauls:** Express trains scheduled between 02:00 and 05:00 IST exhibit high variance associated with overnight schedule variance.\n",
+  "algorithm_benchmark": {
+    "provenance": {
+      "generated_at": "2026-11-11 06:07:15 UTC",
+      "random_seed": 42,
+      "splits": {
+        "train_dates": [
+          "2026-10-08",
+          "2026-10-09",
+          "2026-10-10",
+          "2026-10-11",
+          "2026-10-12",
+          "2026-10-13",
+          "2026-10-14",
+          "2026-10-15",
+          "2026-10-16",
+          "2026-10-17",
+          "2026-10-18",
+          "2026-10-19",
+          "2026-10-20"
+        ],
+        "train_eligible_rows": 1302077,
+        "val_dates": [
+          "2026-10-21",
+          "2026-10-22"
+        ],
+        "val_rows": 204308,
+        "test_dates": [
+          "2026-10-23",
+          "2026-10-24"
+        ],
+        "test_rows": 193965
+      },
+      "subsamples": {
+        "train_dense_subsample_rf_dt_xgb": 200000,
+        "train_dense_subsample_linear_models": 200000,
+        "train_svm_subsample": 100000,
+        "train_knn_subsample": 50000,
+        "eval_knn_sample": 10000
+      },
+      "hardware": {
+        "os": "Windows 10",
+        "python_version": "3.10.11",
+        "cpu_cores": 12,
+        "total_ram_gb": 7.68
+      },
+      "timing_method": "Single-row latency: p50 and p95 over 250 in-process iterations after 50 warm-up runs, excluding network/HTTP overhead.",
+      "shuffled_label_sanity_check": {
+        "model": "Logistic Regression (Shuffled Labels)",
+        "validation_pr_auc": 0.5062,
+        "validation_roc_auc": 0.471,
+        "validation_prevalence": 0.4851,
+        "status": "PASS (Zero leakage)"
+      },
+      "library_versions": {
+        "scikit_learn": "1.7.2",
+        "lightgbm": "4.7.0",
+        "xgboost": "3.2.0",
+        "pandas": "2.3.3",
+        "numpy": "2.2.6",
+        "joblib": "1.6.0"
+      }
+    },
+    "models": [
+      {
+        "model_id": "majority_baseline",
+        "model_name": "Majority Baseline",
+        "family": "Baseline",
+        "is_baseline": true,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.4851,
+          "roc_auc": 0.5,
+          "f1": 0.6533,
+          "precision": 0.4851,
+          "recall": 1.0,
+          "threshold": 0.5
+        },
+        "test_metrics": {
+          "pr_auc": 0.492,
+          "roc_auc": 0.5,
+          "f1": 0.6595,
+          "precision": 0.492,
+          "recall": 1.0,
+          "threshold": 0.5
+        },
+        "fit_time_seconds": 0.25,
+        "single_prediction_p50_ms": 0.001,
+        "single_prediction_p95_ms": 0.002,
+        "model_size_mb": 0.01,
+        "verdict": "Baseline",
+        "notes": "Always predicts overall training prevalence. PR-AUC equals positive class prevalence."
+      },
+      {
+        "model_id": "category_prior",
+        "model_name": "Category Prior",
+        "family": "Baseline",
+        "is_baseline": true,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.5892,
+          "roc_auc": 0.6495,
+          "f1": 0.704,
+          "precision": 0.5609,
+          "recall": 0.9452,
+          "threshold": 0.35
+        },
+        "test_metrics": {
+          "pr_auc": 0.5972,
+          "roc_auc": 0.6539,
+          "f1": 0.7114,
+          "precision": 0.5742,
+          "recall": 0.9347,
+          "threshold": 0.35
+        },
+        "fit_time_seconds": 2.51,
+        "single_prediction_p50_ms": 0.005,
+        "single_prediction_p95_ms": 0.009,
+        "model_size_mb": 0.02,
+        "verdict": "Baseline",
+        "notes": "Lookup of empirical delayed rate by train service category. Threshold chosen on validation F1."
+      },
+      {
+        "model_id": "train_history_prior",
+        "model_name": "Train Historical Prior",
+        "family": "Baseline",
+        "is_baseline": true,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8245,
+          "roc_auc": 0.8376,
+          "f1": 0.7623,
+          "precision": 0.6679,
+          "recall": 0.8879,
+          "threshold": 0.4
+        },
+        "test_metrics": {
+          "pr_auc": 0.8082,
+          "roc_auc": 0.8206,
+          "f1": 0.7547,
+          "precision": 0.6759,
+          "recall": 0.8544,
+          "threshold": 0.4
+        },
+        "fit_time_seconds": 3.766,
+        "single_prediction_p50_ms": 0.006,
+        "single_prediction_p95_ms": 0.01,
+        "model_size_mb": 0.65,
+        "verdict": "Strong train-level prior",
+        "notes": "Empirical Bayesian smoothed historical delay rate per train number. Threshold chosen on validation F1."
+      },
+      {
+        "model_id": "linear_regression",
+        "model_name": "Linear Regression",
+        "family": "Linear",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.799,
+          "roc_auc": 0.8155,
+          "f1": 0.7487,
+          "precision": 0.6821,
+          "recall": 0.8297,
+          "threshold": 17.0615
+        },
+        "test_metrics": {
+          "pr_auc": 0.7907,
+          "roc_auc": 0.8034,
+          "f1": 0.7416,
+          "precision": 0.6673,
+          "recall": 0.8345,
+          "threshold": 17.0615
+        },
+        "fit_time_seconds": 2.283,
+        "single_prediction_p50_ms": 1.803,
+        "single_prediction_p95_ms": 2.53,
+        "model_size_mb": 0.0,
+        "verdict": "Linear delay estimation",
+        "notes": "OLS regressing continuous arrival delay minutes on 28 features; ranked by predicted minutes with decision cutoff chosen on validation F1."
+      },
+      {
+        "model_id": "logistic_regression",
+        "model_name": "Logistic Regression",
+        "family": "Linear",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8542,
+          "roc_auc": 0.8636,
+          "f1": 0.7809,
+          "precision": 0.7185,
+          "recall": 0.8551,
+          "threshold": 0.43
+        },
+        "test_metrics": {
+          "pr_auc": 0.8407,
+          "roc_auc": 0.8487,
+          "f1": 0.771,
+          "precision": 0.7228,
+          "recall": 0.8261,
+          "threshold": 0.43
+        },
+        "fit_time_seconds": 1.507,
+        "single_prediction_p50_ms": 0.241,
+        "single_prediction_p95_ms": 0.397,
+        "model_size_mb": 0.0,
+        "verdict": "Fast linear probability model",
+        "notes": "L2-regularized logistic regression on standardized features (200k stratified train subsample). Threshold chosen on validation F1."
+      },
+      {
+        "model_id": "decision_tree",
+        "model_name": "Decision Tree",
+        "family": "Tree",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8445,
+          "roc_auc": 0.8576,
+          "f1": 0.7755,
+          "precision": 0.7248,
+          "recall": 0.8339,
+          "threshold": 0.46
+        },
+        "test_metrics": {
+          "pr_auc": 0.8351,
+          "roc_auc": 0.8476,
+          "f1": 0.7694,
+          "precision": 0.7352,
+          "recall": 0.8071,
+          "threshold": 0.46
+        },
+        "fit_time_seconds": 3.809,
+        "single_prediction_p50_ms": 1.636,
+        "single_prediction_p95_ms": 2.123,
+        "model_size_mb": 0.28,
+        "verdict": "Single tree baseline",
+        "notes": "Single CART decision tree (max_depth=12, min_samples_leaf=20, 200k subsample). High interpretability but lower generalization."
+      },
+      {
+        "model_id": "random_forest",
+        "model_name": "Random Forest",
+        "family": "Tree Ensemble",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8595,
+          "roc_auc": 0.8679,
+          "f1": 0.7836,
+          "precision": 0.7168,
+          "recall": 0.8643,
+          "threshold": 0.44
+        },
+        "test_metrics": {
+          "pr_auc": 0.8482,
+          "roc_auc": 0.8553,
+          "f1": 0.7778,
+          "precision": 0.7263,
+          "recall": 0.8372,
+          "threshold": 0.44
+        },
+        "fit_time_seconds": 4.48,
+        "single_prediction_p50_ms": 57.353,
+        "single_prediction_p95_ms": 74.472,
+        "model_size_mb": 15.08,
+        "verdict": "Large memory footprint",
+        "notes": "Ensemble of 100 decision trees (max_depth=12, 100k stratified subsample). Strong accuracy but 10x larger model size than LightGBM."
+      },
+      {
+        "model_id": "knn",
+        "model_name": "K-Nearest Neighbors (KNN)",
+        "family": "Instance-Based",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.7951,
+          "roc_auc": 0.8284,
+          "f1": 0.759,
+          "precision": 0.6756,
+          "recall": 0.8659,
+          "threshold": 0.41
+        },
+        "test_metrics": {
+          "pr_auc": 0.7988,
+          "roc_auc": 0.8225,
+          "f1": 0.7639,
+          "precision": 0.6975,
+          "recall": 0.8444,
+          "threshold": 0.41
+        },
+        "fit_time_seconds": 0.05,
+        "single_prediction_p50_ms": 4.225,
+        "single_prediction_p95_ms": 6.216,
+        "model_size_mb": 11.06,
+        "verdict": "6x slower single prediction",
+        "notes": "Distance-weighted KNN (k=15, 50k standardized train subsample). Evaluated on 10k stratified test sample due to O(N) inference cost."
+      },
+      {
+        "model_id": "linear_svc",
+        "model_name": "Linear Support Vector Machine (LinearSVC)",
+        "family": "Kernel/Margin",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8551,
+          "roc_auc": 0.8638,
+          "f1": 0.7807,
+          "precision": 0.7113,
+          "recall": 0.8652,
+          "threshold": -0.1195
+        },
+        "test_metrics": {
+          "pr_auc": 0.8419,
+          "roc_auc": 0.8488,
+          "f1": 0.7721,
+          "precision": 0.7151,
+          "recall": 0.8391,
+          "threshold": -0.1195
+        },
+        "fit_time_seconds": 1.913,
+        "single_prediction_p50_ms": 0.158,
+        "single_prediction_p95_ms": 0.225,
+        "model_size_mb": 0.0,
+        "verdict": "Linear maximum-margin classifier",
+        "notes": "Linear Support Vector Classification on standardized features (100k subsample). Scored via decision function; cutoff chosen on validation F1."
+      },
+      {
+        "model_id": "naive_bayes",
+        "model_name": "Gaussian Naive Bayes",
+        "family": "Probabilistic",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.7855,
+          "roc_auc": 0.8159,
+          "f1": 0.7574,
+          "precision": 0.684,
+          "recall": 0.8484,
+          "threshold": 0.32
+        },
+        "test_metrics": {
+          "pr_auc": 0.7813,
+          "roc_auc": 0.8079,
+          "f1": 0.7533,
+          "precision": 0.6948,
+          "recall": 0.8226,
+          "threshold": 0.32
+        },
+        "fit_time_seconds": 1.81,
+        "single_prediction_p50_ms": 2.682,
+        "single_prediction_p95_ms": 3.804,
+        "model_size_mb": 0.0,
+        "verdict": "Strong conditional independence penalty",
+        "notes": "Gaussian Naive Bayes fitted on full 1.30M training rows. Assumes feature independence, underperforming tree interactions."
+      },
+      {
+        "model_id": "xgboost",
+        "model_name": "XGBoost",
+        "family": "Boosting",
+        "is_baseline": false,
+        "is_selected": false,
+        "val_metrics": {
+          "pr_auc": 0.8629,
+          "roc_auc": 0.87,
+          "f1": 0.7853,
+          "precision": 0.7251,
+          "recall": 0.8564,
+          "threshold": 0.45
+        },
+        "test_metrics": {
+          "pr_auc": 0.8503,
+          "roc_auc": 0.8572,
+          "f1": 0.7774,
+          "precision": 0.7344,
+          "recall": 0.8257,
+          "threshold": 0.45
+        },
+        "fit_time_seconds": 2.218,
+        "single_prediction_p50_ms": 4.168,
+        "single_prediction_p95_ms": 4.732,
+        "model_size_mb": 0.42,
+        "verdict": "Competitive boosting baseline",
+        "notes": "Extreme Gradient Boosting (100 trees, max_depth=6, 200k subsample). High accuracy, slightly larger latency than LightGBM."
+      },
+      {
+        "model_id": "lightgbm",
+        "model_name": "LightGBM (Calibrated)",
+        "family": "Boosting",
+        "is_baseline": false,
+        "is_selected": true,
+        "val_metrics": {
+          "pr_auc": 0.8608,
+          "roc_auc": 0.8722,
+          "f1": 0.7867,
+          "precision": 0.7343,
+          "recall": 0.847,
+          "threshold": 0.41
+        },
+        "test_metrics": {
+          "pr_auc": 0.8482,
+          "roc_auc": 0.8592,
+          "f1": 0.7782,
+          "precision": 0.7402,
+          "recall": 0.8203,
+          "threshold": 0.41
+        },
+        "fit_time_seconds": 18.4,
+        "single_prediction_p50_ms": 1.348,
+        "single_prediction_p95_ms": 1.934,
+        "model_size_mb": 1.97,
+        "verdict": "Selected (Production Model)",
+        "notes": "LightGBM GBDT with histogram binning (max_bin=255, 63 leaves, 298 iterations) + Isotonic probability calibration."
+      }
+    ],
+    "unsupervised": {
+      "pca": {
+        "total_features": 28,
+        "components_for_90_variance": 16,
+        "components_for_95_variance": 18,
+        "explained_variance_ratio": [
+          0.1655,
+          0.1021,
+          0.0915,
+          0.0734,
+          0.0598,
+          0.0542,
+          0.0465,
+          0.0417,
+          0.0414,
+          0.0407,
+          0.0386,
+          0.0372,
+          0.0364,
+          0.0351,
+          0.0338,
+          0.0314,
+          0.0181,
+          0.0111,
+          0.0088,
+          0.0086,
+          0.0081,
+          0.006,
+          0.0055,
+          0.0021,
+          0.0017,
+          0.0005,
+          0.0002,
+          0.0
+        ],
+        "cumulative_explained_variance": [
+          0.1655,
+          0.2676,
+          0.359,
+          0.4324,
+          0.4922,
+          0.5465,
+          0.593,
+          0.6347,
+          0.6761,
+          0.7168,
+          0.7554,
+          0.7926,
+          0.829,
+          0.8641,
+          0.8979,
+          0.9293,
+          0.9474,
+          0.9584,
+          0.9672,
+          0.9759,
+          0.984,
+          0.99,
+          0.9955,
+          0.9976,
+          0.9993,
+          0.9998,
+          1.0,
+          1.0
+        ],
+        "logistic_regression_val_pr_auc_with_pca": 0.8537,
+        "logistic_regression_val_pr_auc_full_features": 0.8542,
+        "notes": "Standardized PCA shows 16 components capture 90% and 18 components capture 95% of total variance across 28 features."
+      },
+      "kmeans": {
+        "k_candidates": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "silhouette_scores": {
+          "3": 0.1558,
+          "4": 0.1557,
+          "5": 0.1603,
+          "6": 0.1653,
+          "7": 0.1778,
+          "8": 0.1644
+        },
+        "chosen_k": 7,
+        "chosen_silhouette": 0.1778,
+        "cluster_sizes_val": {
+          "cluster_0": 2264,
+          "cluster_1": 30378,
+          "cluster_2": 23744,
+          "cluster_3": 96,
+          "cluster_4": 5037,
+          "cluster_5": 108025,
+          "cluster_6": 34764
+        },
+        "cluster_delayed_rates_val": {
+          "cluster_0": 0.2504,
+          "cluster_1": 0.6964,
+          "cluster_2": 0.531,
+          "cluster_3": 0.5938,
+          "cluster_4": 0.7824,
+          "cluster_5": 0.5187,
+          "cluster_6": 0.1364
+        },
+        "notes": "K-Means with k=7 partitions stops into clusters with delay rates ranging from 13.6% to 78.2%. Unsupervised: not scored as a classifier."
+      }
+    },
+    "lightgbm_hyperparameters": {
+      "boosting_type": "gbdt",
+      "num_leaves": 63,
+      "max_depth": 8,
+      "learning_rate": 0.08,
+      "max_bin": 255,
+      "best_iteration": 298,
+      "objective": "binary",
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "calibrator": "IsotonicRegression"
+    }
+  }
+}

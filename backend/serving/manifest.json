@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-10-30T23:30:00+05:30",
+  "total_artifacts": 9,
+  "total_size_bytes": 48141491,
+  "total_size_mb": 45.91,
+  "artifacts": [
+    {
+      "path": "serving/serving.sqlite",
+      "filename": "serving.sqlite",
+      "size_bytes": 42881024,
+      "size_mb": 40.89,
+      "sha256": "fb3474d1d038f3fe19762ee270eee31b4116febaedd21ad9b80e9e4a9497ca43"
+    },
+    {
+      "path": "serving/overview.json",
+      "filename": "overview.json",
+      "size_bytes": 11182,
+      "size_mb": 0.01,
+      "sha256": "6d09ffd7191c07747f12423168777c0f0b12a6c3f8b8396b87a6d22fdd598070"
+    },
+    {
+      "path": "serving/patterns.json",
+      "filename": "patterns.json",
+      "size_bytes": 55917,
+      "size_mb": 0.05,
+      "sha256": "6710ac421532abec50b08f822768a3317688318d235d11fd708482c6aaea2340"
+    },
+    {
+      "path": "serving/model_lab.json",
+      "filename": "model_lab.json",
+      "size_bytes": 38116,
+      "size_mb": 0.04,
+      "sha256": "d30d4d78727ceef00ba8a1dff5d32c43ffe4778aad7fc08f1ab56c263e5fd7c9"
+    },
+    {
+      "path": "models/deployment_model.joblib",
+      "filename": "deployment_model.joblib",
+      "size_bytes": 2066954,
+      "size_mb": 1.97,
+      "sha256": "f535641f9c62ae86227d683ecfa424efb1ac269a8a5719133192f5da24662e29"
+    },
+    {
+      "path": "models/calibrator.joblib",
+      "filename": "calibrator.joblib",
+      "size_bytes": 3335,
+      "size_mb": 0.0,
+      "sha256": "308bd3d1eac8e108534580a0b13a53750c60c56799389ba6c87bb424455310bf"
+    },
+    {
+      "path": "models/hist_transformer.joblib",
+      "filename": "hist_transformer.joblib",
+      "size_bytes": 643276,
+      "size_mb": 0.61,
+      "sha256": "004b5fb6931b930c9b46ca1525cfdbe00b0e751101de43fefc079b41c0cdd079"
+    },
+    {
+      "path": "models/historical_tables.json",
+      "filename": "historical_tables.json",
+      "size_bytes": 2440181,
+      "size_mb": 2.33,
+      "sha256": "0f10ac218989343f5f6c40c893ec745fd26c9e566b41119fbf9a2080360c9c1d"
+    },
+    {
+      "path": "models/model_metadata.json",
+      "filename": "model_metadata.json",
+      "size_bytes": 1506,
+      "size_mb": 0.0,
+      "sha256": "88fc5e54dcc6d13b97417e52c896872730f704506a2e85cbc217811547de0054"
+    }
+  ]
+}

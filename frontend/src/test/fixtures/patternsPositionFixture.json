@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "delayed_rate": 26.31,
+      "mean_delay_min": 18.3,
+      "position_bucket": "Early (2-3)",
+      "stops_count": 185293
+    },
+    {
+      "delayed_rate": 44.32,
+      "mean_delay_min": 28.09,
+      "position_bucket": "Mid-Early (4-10)",
+      "stops_count": 597242
+    },
+    {
+      "delayed_rate": 54.48,
+      "mean_delay_min": 40.66,
+      "position_bucket": "Mid (11-25)",
+      "stops_count": 719558
+    },
+    {
+      "delayed_rate": 64.76,
+      "mean_delay_min": 61.67,
+      "position_bucket": "Late (26-50)",
+      "stops_count": 238778
+    },
+    {
+      "delayed_rate": 77.25,
+      "mean_delay_min": 105.74,
+      "position_bucket": "Deep (>50)",
+      "stops_count": 32197
+    }
+  ],
+  "data_as_of": "2026-10-25",
+  "definition": "delayed = arrival_delay_min > 15m on label-eligible arrivals (seq > 1, arrival_reported = 1)",
+  "kind": "position"
+}

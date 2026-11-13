@@ -1,0 +1,79 @@
+{
+  "architecture": "LightGBM Gradient Boosted Decision Trees + Isotonic Regression",
+  "calibration": {
+    "method": "Isotonic Regression (sklearn.isotonic.IsotonicRegression)",
+    "test_brier_score": 0.1536,
+    "training_split": "Validation Split (2026-10-21 to 2026-10-22)",
+    "validation_ece_reduction": "0.0307 -> 0.0093"
+  },
+  "data_as_of": "2026-10-25",
+  "features": {
+    "banned_leaky_features": [
+      "actual_arrival",
+      "actual_departure",
+      "departure_delay_min",
+      "arrival_reported",
+      "status",
+      "run_quality"
+    ],
+    "feature_names": [
+      "scheduled_hour",
+      "sin_hour",
+      "cos_hour",
+      "day_of_week",
+      "sin_dow",
+      "cos_dow",
+      "is_weekend",
+      "is_night",
+      "seq",
+      "log_seq",
+      "is_origin_adjacent",
+      "is_deep_journey",
+      "cat_SUB",
+      "cat_MEX",
+      "cat_SUF",
+      "cat_PAS",
+      "cat_MEMU",
+      "cat_DMU",
+      "cat_VNDB",
+      "cat_SHT",
+      "cat_TOD",
+      "cat_OTHER",
+      "category_prior_rate",
+      "category_prior_mean",
+      "train_hist_delay_rate",
+      "train_hist_mean_delay",
+      "station_hist_delay_rate",
+      "station_hist_mean_delay"
+    ],
+    "total_features": 28
+  },
+  "latency": {
+    "measured_single_prediction_ms": 2.1,
+    "target_p95_ms": 15.0
+  },
+  "model_name": "RailSense Delay Predictor (LightGBM + Isotonic Calibration)",
+  "operational_thresholds": {
+    "balanced_f1_threshold": 0.41,
+    "default_threshold": 0.5,
+    "note": "Calibrated probabilities reflect true historical empirical frequencies. The 0.410 threshold maximizes F1 score (0.7782 on untouched test split).",
+    "recall_80_threshold": 0.455
+  },
+  "split_design": {
+    "censored_partition": "2026-10-25 (excluded from evaluation due to 23:08 IST right-censoring)",
+    "protocol": "Strict temporal causal ordering (no random cross-validation)",
+    "test_partition": "2026-10-23 to 2026-10-24 (2 days, ~194k stops)",
+    "train_partition": "2026-10-08 to 2026-10-20 (13 days, ~1.3M stops)",
+    "validation_partition": "2026-10-21 to 2026-10-22 (2 days, ~200k stops)",
+    "warmup_partition": "2026-10-07 (used strictly for rolling historical lag population)"
+  },
+  "target": {
+    "definition": "arrival_delay_min > 15 minutes",
+    "eligibility": "seq > 1 AND arrival_reported == 1 AND NOT extreme_outlier",
+    "name": "delayed",
+    "positive_prevalence_test": 0.492,
+    "positive_prevalence_train": 0.499
+  },
+  "task_type": "binary_classification",
+  "version": "1.0.0"
+}

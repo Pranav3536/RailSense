@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-11-01T22:20:00+05:30",
+  "total_requests": 5000,
+  "concurrency_mode": "in-process WSGI client with sliding-window limiter",
+  "status_distribution": {
+    "200": 290,
+    "429": 4710
+  },
+  "other_statuses": {},
+  "duration_seconds": 1.71,
+  "throughput_rps": 2923.6,
+  "latency_percentiles_ms": {
+    "mean": 0.34,
+    "p50": 0.28,
+    "p95": 0.76,
+    "p99": 1.48
+  },
+  "rss_memory_mb": {
+    "initial": 174.87,
+    "final": 175.62,
+    "delta": 0.75,
+    "trajectory_every_500_reqs": [
+      [
+        0,
+        174.87
+      ],
+      [
+        500,
+        175.34
+      ],
+      [
+        1000,
+        175.34
+      ],
+      [
+        1500,
+        175.35
+      ],
+      [
+        2000,
+        175.35
+      ],
+      [
+        2500,
+        175.48
+      ],
+      [
+        3000,
+        175.48
+      ],
+      [
+        3500,
+        175.5
+      ],
+      [
+        4000,
+        175.57
+      ],
+      [
+        4500,
+        175.57
+      ],
+      [
+        5000,
+        175.62
+      ]
+    ]
+  },
+  "sample_429_response": {
+    "error_code": "RATE_LIMIT_EXCEEDED",
+    "retry_after": "60",
+    "request_id_present": true
+  },
+  "verified": true
+}

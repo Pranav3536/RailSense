@@ -1,0 +1,28 @@
+# =============================================================================
+# RailSense — Backend Runtime Requirements (Phase 8.5)
+# Minimal runtime dependencies for the deployed Flask prediction & analytics API.
+# Zero TiDB/database credentials, zero remote database drivers.
+# =============================================================================
+
+# --- Web framework ---
+flask==3.1.3
+flask-cors==6.0.5
+
+# --- WSGI Server ---
+waitress==3.0.2
+gunicorn==23.0.0; sys_platform != 'win32'
+
+# --- Configuration ---
+python-dotenv==1.2.4
+
+# --- Data processing & Feature transforms ---
+pandas==2.3.3
+numpy==2.2.6
+
+# --- Machine Learning Inference ---
+scikit-learn==1.7.2
+lightgbm==4.7.0
+joblib==1.6.0
+
+# --- Fast Search & String Matching ---
+rapidfuzz==3.14.5

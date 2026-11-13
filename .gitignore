@@ -1,0 +1,102 @@
+# =============================================================================
+# RailSense — .gitignore
+# =============================================================================
+
+# ---------- Environment / Secrets (NEVER commit) ----------
+.env
+.env.*
+!.env.example
+
+# TLS / certificate files
+*.pem
+*.crt
+*.key
+*.ca-bundle
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env_local/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ---------- Model binaries (too large for git) ----------
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.onnx
+
+# Explicit un-ignore for deployment runtime artifacts (total ~45.9 MB, under GitHub limits)
+!backend/models/deployment_model.joblib
+!backend/models/calibrator.joblib
+!backend/models/hist_transformer.joblib
+!backend/serving/manifest.json
+
+# Small model metadata JSON files ARE tracked (no rule to exclude them)
+
+# ---------- Handoff file (local AI agent context) ----------
+docs/CLAUDE_HANDOFF.md
+
+# ---------- Local data dumps (never commit raw data) ----------
+*.csv
+*.parquet
+*.feather
+*.arrow
+*.sqlite
+*.sqlite3
+*.db
+!backend/serving/serving.sqlite
+data/
+raw/
+backend/data_cache/
+data_cache/
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+*.ipynb_metadata/
+
+# ---------- Node / Frontend ----------
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/test-results/
+frontend/playwright-report/
+test-results/
+playwright-report/
+.pnp
+.pnp.js
+
+# ---------- Build / IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.log
+tmp/
+temp/

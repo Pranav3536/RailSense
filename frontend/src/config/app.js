@@ -1,0 +1,73 @@
+/**
+ * RailSense — Application & Navigation Configuration
+ * 
+ * Strict Single Source of Truth for:
+ * - App version pill: "v2.0.4"
+ * - Dataset badge: "Observed Railway Dataset" (provenance unverified)
+ * - Navigation tabs (fixed 6-tab order)
+ * - Standard delay definition
+ */
+
+export const APP_CONFIG = {
+  name: 'RailSense',
+  versionPill: 'v2.0.4',
+  datasetBadge: 'Observed Railway Dataset',
+  delayDefinition: 'Delayed = arrival delay > 15 min on label-eligible stops (seq > 1, arrival_reported = 1). Early arrivals (negative delays) are valid operations and never clipped.',
+};
+
+export const NAV_ITEMS = [
+  {
+    path: '/',
+    title: 'Get Started',
+    label: 'Home',
+    iconName: 'Home',
+    phase: 'Phase 11.10',
+    endpoints: ['/api/overview'],
+    description: 'Welcome to RailSense. Learn how the delay estimation engine works and get started exploring train routes or system-wide railway patterns.'
+  },
+  {
+    path: '/overview',
+    title: 'Railway at a Glance',
+    label: 'Overview',
+    iconName: 'LayoutDashboard',
+    phase: 'Phase 7',
+    endpoints: ['/api/overview', '/api/health/ready'],
+    description: 'Fleet-level KPIs, macro delay distributions, category breakdown, and daily delay rate trends across the observed dataset.'
+  },
+  {
+    path: '/trains',
+    title: 'Train Intelligence & Prediction',
+    label: 'Train Hub',
+    iconName: 'Route',
+    phase: 'Phase 11.7',
+    endpoints: ['/api/trains', '/api/trains/<train_number>', '/api/predict'],
+    description: 'Search trains, inspect canonical stops and timetable history, and estimate schedule-time pre-departure delay risk.'
+  },
+  {
+    path: '/model-lab',
+    title: 'Model Evaluation & Transparency',
+    label: 'Model Lab',
+    iconName: 'FlaskConical',
+    phase: 'Phase 8',
+    endpoints: ['/api/model/info', '/api/model/metrics'],
+    description: 'Interactive evaluation benchmark comparing 8 models/baselines across PR-AUC, ROC-AUC, Brier score, ECE, calibration curves, and feature importance rankings.'
+  },
+  {
+    path: '/patterns',
+    title: 'Historical Analytics',
+    label: 'Delay Patterns',
+    iconName: 'BarChart3',
+    phase: 'Phase 9',
+    endpoints: ['/api/patterns/<kind>', '/api/stations'],
+    description: 'Empirical delay patterns decomposed by scheduled hour, day of week, train category, journey sequence depth, and observed station hotspots.'
+  },
+  {
+    path: '/insights',
+    title: 'Natural Language Analytics',
+    label: 'Smart Insights',
+    iconName: 'MessageSquareText',
+    phase: 'Phase 9',
+    endpoints: ['/api/insights/query'],
+    description: 'Deterministic natural language query interface answering structured delay intelligence queries, route histories, and fleet-wide benchmarks.'
+  }
+];

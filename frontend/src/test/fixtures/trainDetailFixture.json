@@ -1,0 +1,89 @@
+{
+  "train_number": "12951",
+  "train_name": "NDLS TEJAS RAJ",
+  "category": "RAJ",
+  "runs_count": 18,
+  "days_observed": 18,
+  "stops_count": 8,
+  "origin_station_code": "MMCT",
+  "terminus_station_code": "NDLS",
+  "delayed_rate": 20.49,
+  "mean_delay": 25.4,
+  "eligible_stops_count": 126,
+  "data_as_of": "2026-10-25",
+  "definition": "Delay is classified as arrival_delay_min > 15 minutes evaluated strictly on label-eligible stops.",
+  "stops": [
+    {
+      "seq": 1,
+      "station_code": "MMCT",
+      "scheduled_arrival_time": null,
+      "scheduled_departure_time": "17:00",
+      "arrival_day_offset": 0,
+      "departure_day_offset": 0,
+      "is_origin": 1,
+      "is_terminus": 0,
+      "observed_stops_count": 0,
+      "observed_delayed_rate": null,
+      "observed_mean_delay_min": null
+    },
+    {
+      "seq": 2,
+      "station_code": "BVI",
+      "scheduled_arrival_time": "17:20",
+      "scheduled_departure_time": "17:22",
+      "arrival_day_offset": 0,
+      "departure_day_offset": 0,
+      "is_origin": 0,
+      "is_terminus": 0,
+      "observed_stops_count": 14,
+      "observed_delayed_rate": 28.57,
+      "observed_mean_delay_min": 34.93
+    },
+    {
+      "seq": 3,
+      "station_code": "ST",
+      "scheduled_arrival_time": "19:43",
+      "scheduled_departure_time": "19:48",
+      "arrival_day_offset": 0,
+      "departure_day_offset": 0,
+      "is_origin": 0,
+      "is_terminus": 0,
+      "observed_stops_count": 18,
+      "observed_delayed_rate": 11.11,
+      "observed_mean_delay_min": 27.67
+    },
+    {
+      "seq": 8,
+      "station_code": "NDLS",
+      "scheduled_arrival_time": "08:32",
+      "scheduled_departure_time": null,
+      "arrival_day_offset": 1,
+      "departure_day_offset": 0,
+      "is_origin": 0,
+      "is_terminus": 1,
+      "observed_stops_count": 18,
+      "observed_delayed_rate": 27.78,
+      "observed_mean_delay_min": 47.06
+    }
+  ],
+  "history_by_date": [
+    {
+      "start_date": "2026-10-07",
+      "stops_count": 7,
+      "delayed_rate": 0.0,
+      "mean_delay": 5.86
+    },
+    {
+      "start_date": "2026-10-08",
+      "stops_count": 7,
+      "delayed_rate": 14.29,
+      "mean_delay": 18.4
+    },
+    {
+      "start_date": "2026-10-25",
+      "stops_count": 7,
+      "delayed_rate": 28.57,
+      "mean_delay": 31.2
+    }
+  ]
+}

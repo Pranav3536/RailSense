@@ -1,0 +1,442 @@
+{
+  "provenance": {
+    "built_at": "2026-11-05 14:03:31 UTC",
+    "source": "TiDB Cloud railsense.train_records (via local cache)",
+    "row_count": 2805574,
+    "runs_count": 147367,
+    "date_range": "2026-10-07 to 2026-10-25",
+    "build_script_version": "1.0.0"
+  },
+  "fleet_kpis": {
+    "total_stops_observed": 2805574,
+    "total_train_runs": 147367,
+    "distinct_train_numbers": 10743,
+    "distinct_stations": 8584,
+    "date_range": {
+      "start": "2026-10-07",
+      "end": "2026-10-25",
+      "days": 19
+    }
+  },
+  "delay_summary": {
+    "definition": "Delay is classified as arrival_delay_min > 15 minutes evaluated strictly on label-eligible stops (arrival_reported=1, seq>1, |delay|<=1440m). Negative delays are valid early arrivals and never clipped.",
+    "eligible_stops_count": 1773068,
+    "label_coverage_pct": 63.2,
+    "fleet_delayed_rate": 49.91,
+    "fleet_mean_delay_min": 38.1,
+    "fleet_median_delay_min": 15.0,
+    "fleet_early_arrival_pct": 8.56
+  },
+  "delay_distribution": [
+    {
+      "bucket": "<-30",
+      "label": "Early (>30m)",
+      "stops_count": 7010,
+      "percentage": 0.4,
+      "classification": "early"
+    },
+    {
+      "bucket": "-30..-5",
+      "label": "Early (5-30m)",
+      "stops_count": 69678,
+      "percentage": 3.93,
+      "classification": "early"
+    },
+    {
+      "bucket": "-5..5",
+      "label": "On-Time (\u00b15m)",
+      "stops_count": 404190,
+      "percentage": 22.8,
+      "classification": "ontime"
+    },
+    {
+      "bucket": "5..15",
+      "label": "Minor (5-15m)",
+      "stops_count": 407232,
+      "percentage": 22.97,
+      "classification": "minor"
+    },
+    {
+      "bucket": "15..30",
+      "label": "Moderate (15-30m)",
+      "stops_count": 323363,
+      "percentage": 18.24,
+      "classification": "moderate"
+    },
+    {
+      "bucket": "30..60",
+      "label": "Significant (30-60m)",
+      "stops_count": 263620,
+      "percentage": 14.87,
+      "classification": "significant"
+    },
+    {
+      "bucket": "60..180",
+      "label": "Severe (1-3h)",
+      "stops_count": 226138,
+      "percentage": 12.75,
+      "classification": "severe"
+    },
+    {
+      "bucket": ">180",
+      "label": "Extreme (>3h)",
+      "stops_count": 71837,
+      "percentage": 4.05,
+      "classification": "extreme"
+    }
+  ],
+  "category_breakdown": [
+    {
+      "category": "MEX",
+      "total_stops": 680214,
+      "eligible_stops": 571895,
+      "delayed_rate": 57.02,
+      "mean_delay_min": 39.41,
+      "median_delay_min": 20.0
+    },
+    {
+      "category": "SUB",
+      "total_stops": 826844,
+      "eligible_stops": 313903,
+      "delayed_rate": 17.07,
+      "mean_delay_min": 9.57,
+      "median_delay_min": 6.0
+    },
+    {
+      "category": "MEMU",
+      "total_stops": 415795,
+      "eligible_stops": 249068,
+      "delayed_rate": 59.35,
+      "mean_delay_min": 42.18,
+      "median_delay_min": 22.0
+    },
+    {
+      "category": "PAS",
+      "total_stops": 363957,
+      "eligible_stops": 235974,
+      "delayed_rate": 55.22,
+      "mean_delay_min": 38.59,
+      "median_delay_min": 19.0
+    },
+    {
+      "category": "SUF",
+      "total_stops": 247228,
+      "eligible_stops": 217500,
+      "delayed_rate": 57.41,
+      "mean_delay_min": 53.09,
+      "median_delay_min": 20.0
+    },
+    {
+      "category": "DMU",
+      "total_stops": 140225,
+      "eligible_stops": 80397,
+      "delayed_rate": 50.58,
+      "mean_delay_min": 31.06,
+      "median_delay_min": 16.0
+    },
+    {
+      "category": "TOD",
+      "total_stops": 49730,
+      "eligible_stops": 41812,
+      "delayed_rate": 76.1,
+      "mean_delay_min": 146.75,
+      "median_delay_min": 73.0
+    },
+    {
+      "category": "VNDB",
+      "total_stops": 19542,
+      "eligible_stops": 16940,
+      "delayed_rate": 28.83,
+      "mean_delay_min": 11.64,
+      "median_delay_min": 8.0
+    },
+    {
+      "category": "EMU",
+      "total_stops": 21500,
+      "eligible_stops": 11129,
+      "delayed_rate": 75.79,
+      "mean_delay_min": 56.37,
+      "median_delay_min": 40.0
+    },
+    {
+      "category": "JSH",
+      "total_stops": 11263,
+      "eligible_stops": 9389,
+      "delayed_rate": 45.12,
+      "mean_delay_min": 23.95,
+      "median_delay_min": 13.0
+    },
+    {
+      "category": "AMTB",
+      "total_stops": 8238,
+      "eligible_stops": 7055,
+      "delayed_rate": 60.92,
+      "mean_delay_min": 60.67,
+      "median_delay_min": 25.0
+    },
+    {
+      "category": "RAJ",
+      "total_stops": 6319,
+      "eligible_stops": 5489,
+      "delayed_rate": 46.13,
+      "mean_delay_min": 33.81,
+      "median_delay_min": 14.0
+    },
+    {
+      "category": "SHT",
+      "total_stops": 5504,
+      "eligible_stops": 4644,
+      "delayed_rate": 28.01,
+      "mean_delay_min": 13.56,
+      "median_delay_min": 8.0
+    },
+    {
+      "category": "GBR",
+      "total_stops": 4719,
+      "eligible_stops": 4234,
+      "delayed_rate": 57.23,
+      "mean_delay_min": 55.51,
+      "median_delay_min": 21.0
+    },
+    {
+      "category": "DRNT",
+      "total_stops": 2103,
+      "eligible_stops": 1730,
+      "delayed_rate": 53.18,
+      "mean_delay_min": 89.96,
+      "median_delay_min": 17.0
+    },
+    {
+      "category": "VNDM",
+      "total_stops": 667,
+      "eligible_stops": 605,
+      "delayed_rate": 34.88,
+      "mean_delay_min": 12.83,
+      "median_delay_min": 11.0
+    },
+    {
+      "category": "TEJ",
+      "total_stops": 712,
+      "eligible_stops": 558,
+      "delayed_rate": 33.69,
+      "mean_delay_min": 40.27,
+      "median_delay_min": 10.0
+    },
+    {
+      "category": "VNDS",
+      "total_stops": 435,
+      "eligible_stops": 382,
+      "delayed_rate": 24.87,
+      "mean_delay_min": 7.76,
+      "median_delay_min": 9.0
+    },
+    {
+      "category": "PEXP",
+      "total_stops": 453,
+      "eligible_stops": 324,
+      "delayed_rate": 72.84,
+      "mean_delay_min": 226.05,
+      "median_delay_min": 147.5
+    },
+    {
+      "category": "TRST",
+      "total_stops": 126,
+      "eligible_stops": 40,
+      "delayed_rate": 60.0,
+      "mean_delay_min": 60.08,
+      "median_delay_min": 35.0
+    }
+  ],
+  "per_date_trend": [
+    {
+      "date": "2026-10-07",
+      "total_stops": 22377,
+      "runs_count": 1034,
+      "eligible_stops": 18788,
+      "delayed_rate": 60.47,
+      "mean_delay_min": 53.71,
+      "is_partial": true,
+      "partial_note": "Left-truncated collection start"
+    },
+    {
+      "date": "2026-10-08",
+      "total_stops": 155680,
+      "runs_count": 8181,
+      "eligible_stops": 94868,
+      "delayed_rate": 50.13,
+      "mean_delay_min": 35.7,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-09",
+      "total_stops": 162922,
+      "runs_count": 8385,
+      "eligible_stops": 99862,
+      "delayed_rate": 50.6,
+      "mean_delay_min": 37.07,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-10",
+      "total_stops": 161401,
+      "runs_count": 8285,
+      "eligible_stops": 96941,
+      "delayed_rate": 49.17,
+      "mean_delay_min": 36.53,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-11",
+      "total_stops": 155188,
+      "runs_count": 7901,
+      "eligible_stops": 97493,
+      "delayed_rate": 49.53,
+      "mean_delay_min": 37.36,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-12",
+      "total_stops": 160744,
+      "runs_count": 8405,
+      "eligible_stops": 102287,
+      "delayed_rate": 50.15,
+      "mean_delay_min": 37.6,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-13",
+      "total_stops": 159130,
+      "runs_count": 8324,
+      "eligible_stops": 100301,
+      "delayed_rate": 50.59,
+      "mean_delay_min": 37.62,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-14",
+      "total_stops": 159170,
+      "runs_count": 8342,
+      "eligible_stops": 100778,
+      "delayed_rate": 51.74,
+      "mean_delay_min": 41.15,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-15",
+      "total_stops": 159814,
+      "runs_count": 8361,
+      "eligible_stops": 101483,
+      "delayed_rate": 51.89,
+      "mean_delay_min": 43.67,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-16",
+      "total_stops": 160539,
+      "runs_count": 8435,
+      "eligible_stops": 102715,
+      "delayed_rate": 53.38,
+      "mean_delay_min": 43.6,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-17",
+      "total_stops": 158646,
+      "runs_count": 8319,
+      "eligible_stops": 100949,
+      "delayed_rate": 53.25,
+      "mean_delay_min": 45.67,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-18",
+      "total_stops": 152356,
+      "runs_count": 7922,
+      "eligible_stops": 99676,
+      "delayed_rate": 50.32,
+      "mean_delay_min": 43.72,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-19",
+      "total_stops": 159957,
+      "runs_count": 8426,
+      "eligible_stops": 103052,
+      "delayed_rate": 48.37,
+      "mean_delay_min": 36.26,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-20",
+      "total_stops": 158689,
+      "runs_count": 8341,
+      "eligible_stops": 101672,
+      "delayed_rate": 46.5,
+      "mean_delay_min": 35.57,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-21",
+      "total_stops": 158996,
+      "runs_count": 8361,
+      "eligible_stops": 101681,
+      "delayed_rate": 47.9,
+      "mean_delay_min": 33.91,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-22",
+      "total_stops": 159322,
+      "runs_count": 8368,
+      "eligible_stops": 102627,
+      "delayed_rate": 49.1,
+      "mean_delay_min": 37.5,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-23",
+      "total_stops": 157966,
+      "runs_count": 8378,
+      "eligible_stops": 101964,
+      "delayed_rate": 50.61,
+      "mean_delay_min": 36.81,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-24",
+      "total_stops": 144959,
+      "runs_count": 7887,
+      "eligible_stops": 92001,
+      "delayed_rate": 47.64,
+      "mean_delay_min": 31.59,
+      "is_partial": false,
+      "partial_note": null
+    },
+    {
+      "date": "2026-10-25",
+      "total_stops": 97718,
+      "runs_count": 5712,
+      "eligible_stops": 53930,
+      "delayed_rate": 41.37,
+      "mean_delay_min": 24.57,
+      "is_partial": true,
+      "partial_note": "Right-censored collection cut-off"
+    }
+  ]
+}

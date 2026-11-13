@@ -1,0 +1,52 @@
+{
+  "provenance": {
+    "built_at": "2026-10-30 08:27:19 UTC",
+    "source": "TiDB Cloud railsense.train_records (via local cache)",
+    "row_count": 2805574,
+    "runs_count": 147367,
+    "date_range": "2026-10-07 to 2026-10-25",
+    "build_script_version": "1.0.0"
+  },
+  "fleet_kpis": {
+    "total_stops_observed": 2805574,
+    "total_train_runs": 147367,
+    "distinct_train_numbers": 10743,
+    "distinct_stations": 8584,
+    "date_range": {
+      "start": "2026-10-07",
+      "end": "2026-10-25",
+      "days": 19
+    }
+  },
+  "delay_summary": {
+    "definition": "Delay is classified as arrival_delay_min > 15 minutes evaluated strictly on label-eligible stops (arrival_reported=1, seq>1, |delay|<=1440m). Negative delays are valid early arrivals and never clipped.",
+    "eligible_stops_count": 1773068,
+    "label_coverage_pct": 63.2,
+    "fleet_delayed_rate": 49.91,
+    "fleet_mean_delay_min": 38.1,
+    "fleet_median_delay_min": 15.0,
+    "fleet_early_arrival_pct": 8.56
+  },
+  "delay_distribution": [
+    { "bucket": "<-30", "label": "Early (>30m)", "stops_count": 7010, "percentage": 0.4, "classification": "early" },
+    { "bucket": "-30..-5", "label": "Early (5-30m)", "stops_count": 69678, "percentage": 3.93, "classification": "early" },
+    { "bucket": "-5..5", "label": "On-Time (±5m)", "stops_count": 404190, "percentage": 22.8, "classification": "ontime" },
+    { "bucket": "5..15", "label": "Minor (5-15m)", "stops_count": 407232, "percentage": 22.97, "classification": "minor" },
+    { "bucket": "15..30", "label": "Moderate (15-30m)", "stops_count": 323363, "percentage": 18.24, "classification": "moderate" },
+    { "bucket": "30..60", "label": "Significant (30-60m)", "stops_count": 263620, "percentage": 14.87, "classification": "significant" },
+    { "bucket": "60..180", "label": "Severe (1-3h)", "stops_count": 226138, "percentage": 12.75, "classification": "severe" },
+    { "bucket": ">180", "label": "Extreme (>3h)", "stops_count": 71837, "percentage": 4.05, "classification": "extreme" }
+  ],
+  "category_breakdown": [
+    { "category": "MEX", "total_stops": 571895, "eligible_stops": 571895, "delayed_rate": 57.02, "mean_delay_min": 44.5, "median_delay_min": 22.0 },
+    { "category": "SUB", "total_stops": 313903, "eligible_stops": 313903, "delayed_rate": 17.07, "mean_delay_min": 7.2, "median_delay_min": 3.0 },
+    { "category": "SUF", "total_stops": 217500, "eligible_stops": 217500, "delayed_rate": 57.41, "mean_delay_min": 43.1, "median_delay_min": 21.0 },
+    { "category": "TOD", "total_stops": 41812, "eligible_stops": 41812, "delayed_rate": 76.1, "mean_delay_min": 85.0, "median_delay_min": 52.0 },
+    { "category": "TRST", "total_stops": 40, "eligible_stops": 20, "delayed_rate": 60.0, "mean_delay_min": 30.0, "median_delay_min": 15.0 }
+  ],
+  "per_date_trend": [
+    { "date": "2026-10-07", "total_stops": 80000, "runs_count": 4500, "eligible_stops": 50000, "delayed_rate": 45.1, "mean_delay_min": 32.0, "is_partial": true, "partial_note": "Left-truncated collection start" },
+    { "date": "2026-10-08", "total_stops": 150000, "runs_count": 8000, "eligible_stops": 95000, "delayed_rate": 50.2, "mean_delay_min": 38.0, "is_partial": false, "partial_note": null },
+    { "date": "2026-10-25", "total_stops": 90000, "runs_count": 5000, "eligible_stops": 60000, "delayed_rate": 48.9, "mean_delay_min": 36.5, "is_partial": true, "partial_note": "Right-censored collection cut-off" }
+  ]
+}
